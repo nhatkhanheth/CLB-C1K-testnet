@@ -14,6 +14,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -851,6 +852,206 @@ tr:hover td{background:rgba(255,255,255,.035)}
   .tab{justify-content:center;padding:10px 8px}
   .modal{border-radius:28px 28px 0 0}
 }
+
+/* C1K refined polish: softer orange, clearer status, mobile history fit */
+:root{
+  --acc-soft:rgba(247,147,26,.12);
+  --acc-line:rgba(247,147,26,.28);
+  --acc-deep:#a95609;
+  --danger-soft:rgba(239,68,68,.12);
+}
+#abar{
+  gap:8px;
+  padding:8px 14px;
+}
+#sync-dot,
+#auth-badge{
+  min-height:32px;
+  padding:7px 10px;
+  border:1px solid var(--bord);
+  border-radius:999px;
+  background:rgba(255,255,255,.045);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045);
+}
+#sync-dot{font-weight:600}
+.sync-led{
+  width:8px;
+  height:8px;
+  box-shadow:none;
+}
+.sync-led.connecting,
+.sync-led.loading,
+.sync-led.saving{
+  background:var(--acc);
+  box-shadow:0 0 0 4px rgba(247,147,26,.10);
+  animation:statusPulse 1.2s infinite;
+}
+.sync-led.saved,
+.sync-led.synced,
+.sync-led.ok{background:var(--grn);box-shadow:0 0 0 4px rgba(34,197,94,.10)}
+.sync-led.offline,
+.sync-led.error{background:var(--red);box-shadow:0 0 0 4px rgba(239,68,68,.10)}
+@keyframes statusPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.58;transform:scale(.82)}}
+
+.btn,
+.login-btn{
+  border-radius:15px;
+  font-weight:700;
+}
+.bp,
+.login-btn{
+  background:linear-gradient(135deg,rgba(247,147,26,.86),rgba(169,86,9,.82));
+  border:1px solid rgba(255,255,255,.10);
+  color:#fff;
+  box-shadow:0 10px 24px rgba(247,147,26,.14),inset 0 1px 0 rgba(255,255,255,.16);
+}
+.bp:hover,
+.login-btn:hover{
+  background:linear-gradient(135deg,rgba(255,159,36,.90),rgba(186,92,10,.86));
+  box-shadow:0 12px 28px rgba(247,147,26,.18),inset 0 1px 0 rgba(255,255,255,.18);
+}
+.bb{
+  background:rgba(247,147,26,.10);
+  border-color:rgba(247,147,26,.26);
+  color:#F7F4EA;
+}
+.bd{
+  background:rgba(239,68,68,.14);
+  border:1px solid rgba(239,68,68,.28);
+  color:#ffb8b8;
+  box-shadow:none;
+}
+.bd:hover{background:rgba(239,68,68,.22);color:#fff}
+.bdg-debt{
+  border-radius:12px;
+  background:rgba(239,68,68,.16);
+  border-color:rgba(239,68,68,.30);
+  color:#ffb8b8;
+  box-shadow:none;
+}
+.bdg-debt:hover{background:rgba(239,68,68,.24);box-shadow:0 8px 18px rgba(239,68,68,.16)}
+nav.sidebar a.nav-link.active{
+  background:linear-gradient(135deg,rgba(247,147,26,.82),rgba(169,86,9,.76));
+  box-shadow:0 12px 26px rgba(247,147,26,.14),inset 0 1px 0 rgba(255,255,255,.14);
+}
+.tab.on{
+  background:linear-gradient(135deg,rgba(247,147,26,.82),rgba(169,86,9,.72));
+  box-shadow:0 8px 18px rgba(247,147,26,.12),inset 0 1px 0 rgba(255,255,255,.14);
+}
+.chip.on,
+.qtag.sel{background:rgba(247,147,26,.13)}
+
+#toast{
+  min-width:260px;
+  max-width:min(420px,calc(100vw - 28px));
+  padding:12px 14px;
+  border-radius:18px;
+  background:rgba(24,24,32,.88);
+  box-shadow:0 22px 54px rgba(0,0,0,.38);
+}
+#toast.ok{border-left:0;border-color:rgba(34,197,94,.22)}
+#toast.err{border-left:0;border-color:rgba(239,68,68,.26)}
+#toast.warn{border-color:rgba(247,147,26,.28);color:var(--acc)}
+#toast .toast-msg{line-height:1.35}
+.toast-action{
+  margin-left:auto;
+  border:1px solid rgba(247,147,26,.34);
+  background:rgba(247,147,26,.12);
+  color:#F7F4EA;
+  border-radius:999px;
+  padding:6px 10px;
+  font:inherit;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+.toast-action:active{transform:scale(.98)}
+
+.history-filter-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(150px,1fr));
+  gap:10px;
+}
+.history-filter-grid select{width:100%!important}
+.history-list-card{overflow:visible}
+.hist-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.hist-table-wrap table{min-width:760px}
+.hist-delete-btn{width:34px;height:34px;padding:0;border-radius:999px}
+.hist-mobile-list{display:none}
+.hist-item{
+  border:1px solid var(--bord);
+  border-radius:20px;
+  background:rgba(255,255,255,.035);
+  padding:14px;
+  margin-bottom:10px;
+}
+.hist-item-top,
+.hist-item-meta{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+.hist-item-desc{font-size:14px;font-weight:800;color:var(--txt);line-height:1.35}
+.hist-item-date{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--txt-3);white-space:nowrap}
+.hist-item-amount{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:900;white-space:nowrap}
+.hist-item-members{font-size:12px;color:var(--txt-3);line-height:1.45;margin-top:8px}
+
+.super-only{display:none}
+body.role-superadmin .super-only{display:block}
+.is-locked,
+body.ro .wo{
+  opacity:.42;
+  filter:saturate(.55);
+  cursor:not-allowed!important;
+}
+body.ro .wo{pointer-events:none}
+
+.pdf-report{
+  position:fixed;
+  left:-10000px;
+  top:0;
+  width:794px;
+  background:#f7f4ea;
+  color:#151515;
+  padding:34px;
+  font-family:Inter,Arial,sans-serif;
+  z-index:-1;
+}
+.pdf-report *{box-sizing:border-box}
+.pdf-report h1{font-size:28px;margin:0;color:#111}
+.pdf-report .pdf-muted{color:#6b7280;font-size:12px}
+.pdf-report .pdf-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:18px;margin-bottom:20px}
+.pdf-report .pdf-brand{display:flex;gap:12px;align-items:center}
+.pdf-report .pdf-mark{width:42px;height:42px;border-radius:14px;background:#111;color:#f7931a;display:flex;align-items:center;justify-content:center;font-weight:900}
+.pdf-report .pdf-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0}
+.pdf-report .pdf-card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:12px}
+.pdf-report .pdf-label{font-size:9px;color:#6b7280;text-transform:uppercase;font-weight:800;letter-spacing:.06em}
+.pdf-report .pdf-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:900;margin-top:6px;color:#111}
+.pdf-report table{width:100%;border-collapse:collapse;font-size:10px;margin-top:10px;background:#fff;border:1px solid #e5e7eb}
+.pdf-report th{background:#111;color:#fff;text-align:left;padding:8px;border-bottom:0;font-size:9px}
+.pdf-report td{padding:7px;border-bottom:1px solid #e5e7eb;color:#111;vertical-align:top}
+.pdf-report .pdf-section{margin-top:22px}
+.pdf-report .pdf-section-title{font-size:14px;font-weight:900;color:#111;margin-bottom:6px}
+.pdf-report .pdf-footer{margin-top:24px;padding-top:12px;border-top:1px solid #d1d5db;color:#6b7280;font-size:10px;text-align:center}
+
+@media(max-width:768px){
+  #abar{margin:10px 12px 0;padding:9px 10px;gap:6px}
+  #sync-dot,#auth-badge{padding:7px 9px;font-size:11px}
+  #btn-auth{padding:8px 12px;font-size:12px;min-height:34px}
+  nav.sidebar{height:72px;padding:7px}
+  nav.sidebar a.nav-link{height:56px;border-radius:20px;font-size:10.5px}
+  nav.sidebar a.nav-link.active,
+  nav.sidebar a#nav-record.active{
+    background:linear-gradient(135deg,rgba(247,147,26,.86),rgba(169,86,9,.78));
+    box-shadow:0 12px 28px rgba(247,147,26,.18),inset 0 1px 0 rgba(255,255,255,.14);
+  }
+  .history-filter-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .hist-table-wrap{display:none}
+  .hist-mobile-list{display:block}
+  .history-list-card{padding:12px}
+  #toast{bottom:calc(104px + env(safe-area-inset-bottom,0px));left:12px;right:12px;min-width:0}
+}
 </style>
 </head>
 <body class="ro">
@@ -873,27 +1074,28 @@ tr:hover td{background:rgba(255,255,255,.035)}
     </div>
     <div class="login-tabs">
       <button class="login-tab on" id="ltab-admin" onclick="switchLoginTab('admin')"><i data-lucide="user-cog"></i> Admin</button>
-      <button class="login-tab" id="ltab-changepw" onclick="switchLoginTab('changepw')"><i data-lucide="key-round"></i> Đổi mật khẩu</button>
+      <button class="login-tab" id="ltab-super" onclick="switchLoginTab('super')"><i data-lucide="shield-check"></i> Super Admin</button>
     </div>
 
     <div id="ltab-c-admin">
       <label class="login-label">Mật khẩu Admin</label>
       <div class="login-pw-wrap">
-        <input type="password" class="login-input" id="login-pw" placeholder="Nhập mật khẩu..." onkeydown="if(event.key==='Enter')doLogin()">
+        <input type="password" class="login-input" id="login-pw" placeholder="Nhập mật khẩu..." onkeydown="if(event.key==='Enter')doLogin('admin')">
         <button type="button" class="login-pw-eye" onclick="togglePwVis('login-pw',this)"><i data-lucide="eye"></i></button>
       </div>
-      <button class="login-btn" onclick="doLogin()"><i data-lucide="log-in"></i> Đăng nhập</button>
+      <button class="login-btn" onclick="doLogin('admin')"><i data-lucide="log-in"></i> Đăng nhập Admin</button>
       <button class="login-btn login-btn-view" onclick="continueAsViewer()"><i data-lucide="eye"></i> Xem không cần đăng nhập</button>
       <div class="login-err" id="login-err"></div>
     </div>
 
-    <div id="ltab-c-changepw" style="display:none">
-      <label class="login-label">Mật khẩu mới</label>
-      <input type="password" class="login-input" id="cpw-new" placeholder="Mật khẩu mới" style="margin-bottom:12px">
+    <div id="ltab-c-super" style="display:none">
+      <label class="login-label">Mật khẩu Admin</label>
+      <input type="password" class="login-input" id="super-pw1" placeholder="Mật khẩu Admin" style="margin-bottom:12px" onkeydown="if(event.key==='Enter')doLogin('superadmin')">
       <label class="login-label">Mật khẩu cấp 2</label>
-      <input type="password" class="login-input" id="cpw-pw2" placeholder="Xác nhận">
-      <button class="login-btn" onclick="changePwLogin()"><i data-lucide="save"></i> Đổi mật khẩu</button>
-      <div class="login-err" id="cpw-err"></div>
+      <input type="password" class="login-input" id="super-pw2" placeholder="Xác nhận quyền Super Admin" onkeydown="if(event.key==='Enter')doLogin('superadmin')">
+      <button class="login-btn" onclick="doLogin('superadmin')"><i data-lucide="shield-check"></i> Đăng nhập Super Admin</button>
+      <button class="login-btn login-btn-view" onclick="continueAsViewer()"><i data-lucide="eye"></i> Xem không cần đăng nhập</button>
+      <div class="login-err" id="super-err"></div>
     </div>
   </div>
 </div>
@@ -1127,13 +1329,13 @@ tr:hover td{background:rgba(255,255,255,.035)}
     <div class="tab-indicator" id="hist-tab-ind"></div>
   </div>
   <div id="hist-content">
-    <div class="fl g8 mb16" style="flex-wrap:wrap">
+    <div class="history-filter-grid mb16">
       <select id="f-month" onchange="renderHistory()" style="width:auto"></select>
       <select id="f-type" onchange="renderHistory()" style="width:auto"><option value="">Tất cả loại</option><option value="session">Buổi chi tiêu</option><option value="topup">Nạp/Trừ</option></select>
       <select id="f-person" onchange="renderHistory()" style="width:auto"><option value="">Tất cả thành viên</option></select>
       <select id="f-cat" onchange="renderHistory()" style="width:auto"><option value="">Tất cả danh mục</option></select>
     </div>
-    <div class="card"><div id="tbl-history"></div></div>
+    <div class="card history-list-card"><div id="tbl-history"></div></div>
     <div id="person-summary" style="display:none" class="card mt20"></div>
   </div>
   <div id="export-content" style="display:none">
@@ -1150,30 +1352,36 @@ tr:hover td{background:rgba(255,255,255,.035)}
       <div class="sec"><i data-lucide="file-spreadsheet"></i> Xuất báo cáo Excel</div>
       <div class="fg mb12">
         <div><label>Tháng</label>
-          <select id="exp-mo">
+          <select id="exp-mo" onchange="renderExpPrev();renderPdfPreview()">
             <option value="1">Tháng 1</option><option value="2">Tháng 2</option><option value="3">Tháng 3</option>
             <option value="4">Tháng 4</option><option value="5">Tháng 5</option><option value="6">Tháng 6</option>
             <option value="7">Tháng 7</option><option value="8">Tháng 8</option><option value="9">Tháng 9</option>
             <option value="10">Tháng 10</option><option value="11">Tháng 11</option><option value="12">Tháng 12</option>
           </select>
         </div>
-        <div><label>Năm</label><input type="number" id="exp-yr"></div>
+        <div><label>Năm</label><input type="number" id="exp-yr" oninput="renderExpPrev();renderPdfPreview()"></div>
       </div>
-      <button class="btn bp" onclick="exportXL()"><i data-lucide="download"></i> Tải Excel</button>
+      <button class="btn bp wo" data-role-min="admin" onclick="exportXL()"><i data-lucide="download"></i> Tải Excel</button>
       <div id="exp-prev" class="mt12"></div>
     </div>
-    <div class="card mb20 wo">
+    <div class="card mb20">
+      <div class="sec"><i data-lucide="file-text"></i> Xuất báo cáo PDF</div>
+      <p class="tm mb12">Báo cáo tháng dạng PDF sạch, có thể gửi ngay cho team.</p>
+      <button class="btn bp wo" data-role-min="admin" onclick="exportPDF()"><i data-lucide="file-down"></i> Tải PDF</button>
+      <div id="pdf-prev" class="mt12"></div>
+    </div>
+    <div class="card mb20 super-only">
       <div class="sec"><i data-lucide="key-round"></i> Đổi mật khẩu</div>
       <div class="fg mb12">
         <div><label>Mật khẩu mới</label><input type="password" id="new-pw" placeholder="Mật khẩu mới"></div>
         <div><label>Mật khẩu cấp 2</label><input type="password" id="pw2" placeholder="Xác nhận"></div>
       </div>
-      <button class="btn bg wo" onclick="changePw()"><i data-lucide="save"></i> Lưu</button>
+      <button class="btn bg" onclick="changePw()"><i data-lucide="save"></i> Lưu</button>
     </div>
-    <div class="card" style="border-color:rgba(239,68,68,.3);background:linear-gradient(135deg,rgba(239,68,68,.04),transparent)">
+    <div class="card super-only" style="border-color:rgba(239,68,68,.3);background:linear-gradient(135deg,rgba(239,68,68,.04),transparent)">
       <div class="sec" style="color:var(--red)"><i data-lucide="alert-octagon"></i> Vùng nguy hiểm</div>
       <p class="tm mb12">Xoá toàn bộ dữ liệu. Không thể hoàn tác.</p>
-      <button class="btn bd wo" onclick="clearAll()"><i data-lucide="trash-2"></i> Xoá tất cả</button>
+      <button class="btn bd" onclick="clearAll()"><i data-lucide="trash-2"></i> Xoá tất cả</button>
     </div>
     <div class="card mt20">
       <div class="sec"><i data-lucide="settings-2"></i> Tuỳ chọn</div>
@@ -1290,6 +1498,19 @@ tr:hover td{background:rgba(255,255,255,.035)}
   </div>
 </div>
 
+<div class="ov" id="ov-confirm">
+  <div class="modal">
+    <div class="sheet-handle"></div>
+    <button class="modal-close" onclick="resolveConfirm(false)"><i data-lucide="x"></i></button>
+    <div class="mt" id="confirm-title"><i data-lucide="alert-triangle"></i>Xác nhận</div>
+    <p class="tm mb16" id="confirm-message">Hành động này cần xác nhận.</p>
+    <div class="fl g8">
+      <button class="btn bd" id="confirm-ok" onclick="resolveConfirm(true)" style="flex:1"><i data-lucide="trash-2"></i> Xác nhận</button>
+      <button class="btn bg" onclick="resolveConfirm(false)">Hủy</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <!-- iOS Install Banner -->
@@ -1312,10 +1533,15 @@ let S = { members:[], transactions:[], recurring:[] };
 let snapshots = {};
 let isAdmin = false;
 let isViewer = false;
+let currentRole = 'viewer';
+let lastDeletedTxn = null;
+let lastDeletedTimer = null;
+let lastSyncAt = 0;
 let PW1 = btoa('213141@@');
 const PW2 = btoa('999999');
 const SK = 'clb_admin_persistent_v4';
 const VK = 'clb_viewer_continue';
+const RK = 'clb_role_v1';
 let splitMode = 'split';
 let selCat = '🎾 Tennis';
 let recMode = 'fixed';
@@ -1333,14 +1559,16 @@ function td(){ return new Date().toISOString().split('T')[0]; }
 function escapeHTML(s){return (s||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function refreshIcons(){ if(window.lucide && lucide.createIcons) lucide.createIcons(); }
 
-function toast(msg,type='ok'){
+function toast(msg,type='ok',opts={}){
   const t=document.getElementById('toast');
-  const icon = type==='ok' ? 'check-circle-2' : type==='err' ? 'alert-circle' : 'info';
-  t.innerHTML = `<i data-lucide="${icon}" class="toast-icon"></i><span class="toast-msg">${escapeHTML(msg)}</span>`;
+  const icon = type==='ok' ? 'check-circle-2' : type==='err' ? 'alert-circle' : type==='warn' ? 'alert-triangle' : 'info';
+  t.innerHTML = `<i data-lucide="${icon}" class="toast-icon"></i><span class="toast-msg">${escapeHTML(msg)}</span>${opts.actionText?`<button class="toast-action" id="toast-action">${escapeHTML(opts.actionText)}</button>`:''}`;
   t.className='show '+type;
+  const action=document.getElementById('toast-action');
+  if(action && opts.onAction) action.onclick=()=>{clearTimeout(t._t);t.className='';opts.onAction();};
   refreshIcons();
   clearTimeout(t._t);
-  t._t=setTimeout(()=>t.className='',2800);
+  t._t=setTimeout(()=>t.className='',opts.duration||2800);
   if(type==='ok') playSound('ok'); else if(type==='err') playSound('err');
 }
 
@@ -1378,25 +1606,95 @@ function animateCount(el, from, to, dur=600, formatter=n=>n){
   requestAnimationFrame(tick);
 }
 
+function roleLevel(role){return role==='superadmin'?2:role==='admin'?1:0;}
+function hasRole(role){return roleLevel(currentRole)>=roleLevel(role);}
+function requireRole(role,msg){
+  if(hasRole(role)) return true;
+  toast(msg || (role==='superadmin'?'Cần quyền Super Admin':'Cần quyền Admin'), 'err');
+  return false;
+}
+function setRole(role){
+  currentRole=role;
+  isAdmin=hasRole('admin');
+  isViewer=role==='viewer';
+  document.body.classList.toggle('ro',!isAdmin);
+  document.body.classList.remove('role-viewer','role-admin','role-superadmin');
+  document.body.classList.add('role-'+role);
+  applyRoleUI();
+}
+function applyRoleUI(){
+  const label=currentRole==='superadmin'?'Super Admin':currentRole==='admin'?'Admin':'Viewer';
+  const icon=currentRole==='superadmin'?'shield-check':currentRole==='admin'?'shield':'eye';
+  const badge=document.getElementById('auth-badge');
+  if(badge){
+    badge.innerHTML=`<i data-lucide="${icon}"></i> ${label}`;
+    badge.style.color=currentRole==='viewer'?'var(--mut)':'var(--acc)';
+    badge.title=currentRole==='viewer'?'Chỉ xem, không thể ghi dữ liệu':currentRole==='admin'?'Có thể ghi dữ liệu và export':'Toàn quyền quản trị';
+  }
+  const b=document.getElementById('btn-auth');
+  if(b){
+    b.innerHTML=currentRole==='viewer'?'<i data-lucide="lock"></i> Đăng nhập':'<i data-lucide="log-out"></i> Đăng xuất';
+    b.onclick=currentRole==='viewer'?openLoginScreen:doLogout;
+  }
+  document.querySelectorAll('[data-role-min]').forEach(el=>{
+    const need=el.dataset.roleMin;
+    const locked=!hasRole(need);
+    el.classList.toggle('is-locked',locked);
+    if('disabled' in el) el.disabled=locked;
+    el.title=locked?(need==='superadmin'?'Cần quyền Super Admin':'Cần quyền Admin'):'';
+  });
+  document.querySelectorAll('.wo').forEach(el=>{
+    const locked=!isAdmin;
+    el.classList.toggle('is-locked',locked);
+    if('disabled' in el) el.disabled=locked;
+    el.title=locked?'Cần quyền Admin':'';
+  });
+  refreshIcons();
+}
+
+let confirmResolver=null;
+function confirmAction({title='Xác nhận',message='Hành động này cần xác nhận.',confirmText='Xác nhận',danger=true}={}){
+  document.getElementById('confirm-title').innerHTML=`<i data-lucide="${danger?'alert-triangle':'info'}"></i>${escapeHTML(title)}`;
+  document.getElementById('confirm-message').textContent=message;
+  const ok=document.getElementById('confirm-ok');
+  ok.className=danger?'btn bd':'btn bp';
+  ok.innerHTML=`<i data-lucide="${danger?'trash-2':'check'}"></i> ${escapeHTML(confirmText)}`;
+  document.getElementById('ov-confirm').classList.add('open');
+  refreshIcons();
+  return new Promise(resolve=>{confirmResolver=resolve;});
+}
+function resolveConfirm(v){
+  document.getElementById('ov-confirm').classList.remove('open');
+  if(confirmResolver){confirmResolver(v);confirmResolver=null;}
+}
+
 // ═══════════════════════════════════════════════════════════════
 // FIREBASE
 // ═══════════════════════════════════════════════════════════════
 function fbSave(){
   if(!isAdmin) return;
   syncDot('saving');
-  window._fbSet && window._fbSet({members:S.members,transactions:S.transactions,recurring:S.recurring,updatedAt:Date.now()}).catch(console.error);
+  const payload={members:S.members,transactions:S.transactions,recurring:S.recurring,updatedAt:Date.now()};
   localStorage.setItem('clb_cache',JSON.stringify(S));
+  if(window._fbSet){
+    window._fbSet(payload)
+      .then(()=>syncDot('saved',payload.updatedAt))
+      .catch(e=>{console.error(e);syncDot('error');toast('Lỗi đồng bộ Firebase. Dữ liệu đã lưu tạm trên máy.','err',{duration:5200});});
+  }else{
+    syncDot('saved',payload.updatedAt);
+  }
 }
 function startFB(){
   if(!window._fbListen) return;
+  syncDot('loading');
   window._fbListen(val=>{
-    if(!val) return;
+    if(!val){syncDot('synced');return;}
     S.members=val.members||[];
     S.transactions=val.transactions||[];
     S.recurring=val.recurring||[];
     ensureFundMember();
     localStorage.setItem('clb_cache',JSON.stringify(S));
-    render(); syncDot('ok',val.updatedAt);
+    render(); syncDot('synced',val.updatedAt);
     checkMonthSnapshot();
   });
   window._fbListenPw && window._fbListenPw(val=>{ if(val&&val.h) PW1=val.h; });
@@ -1413,6 +1711,27 @@ function syncDot(st,ts){
   else msg='Kết nối...';
   if(txt) txt.textContent=msg;
   if(nav) nav.textContent=st==='ok'?'Online':'Connecting';
+}
+
+function syncDot(st,ts){
+  if(st==='ok'||st==='saved') st='synced';
+  const led=document.querySelector('.sync-led');
+  const txt=document.getElementById('sync-txt');
+  const pill=document.getElementById('sync-dot');
+  const nav=document.getElementById('sync-nav');
+  if(led) led.className='sync-led '+st;
+  let msg;
+  if(st==='synced'){
+    lastSyncAt=ts||Date.now();
+    msg='Đồng bộ lúc '+new Date(lastSyncAt).toLocaleTimeString('vi-VN');
+  }else if(st==='saving') msg='Đang lưu...';
+  else if(st==='loading') msg='Đang tải dữ liệu...';
+  else if(st==='offline') msg='Mất kết nối';
+  else if(st==='error') msg='Lỗi đồng bộ';
+  else msg='Đang kết nối...';
+  if(txt) txt.textContent=msg;
+  if(pill) pill.title=lastSyncAt?`Cập nhật cuối: ${new Date(lastSyncAt).toLocaleString('vi-VN')}`:msg;
+  if(nav) nav.textContent=st==='synced'?'Online':(st==='offline'||st==='error'?'Offline':'Syncing');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1447,6 +1766,9 @@ function openLoginScreen(){
   document.getElementById('login-screen').classList.add('show');
   document.getElementById('login-pw').value='';
   document.getElementById('login-err').textContent='';
+  document.getElementById('super-pw1')&&(document.getElementById('super-pw1').value='');
+  document.getElementById('super-pw2')&&(document.getElementById('super-pw2').value='');
+  document.getElementById('super-err')&&(document.getElementById('super-err').textContent='');
   switchLoginTab('admin');
   setTimeout(()=>document.getElementById('login-pw').focus(),300);
 }
@@ -1542,6 +1864,66 @@ function togglePwVis(id,btn){
   refreshIcons();
 }
 
+function switchLoginTab(t){
+  document.getElementById('ltab-admin')?.classList.toggle('on',t==='admin');
+  document.getElementById('ltab-super')?.classList.toggle('on',t==='super');
+  const admin=document.getElementById('ltab-c-admin');
+  const sup=document.getElementById('ltab-c-super');
+  if(admin) admin.style.display=t==='admin'?'block':'none';
+  if(sup) sup.style.display=t==='super'?'block':'none';
+  refreshIcons();
+}
+function doLogin(role='admin'){
+  const err=document.getElementById(role==='superadmin'?'super-err':'login-err');
+  const p1=role==='superadmin'?document.getElementById('super-pw1').value:document.getElementById('login-pw').value;
+  const p2=role==='superadmin'?document.getElementById('super-pw2').value:'';
+  if(btoa(p1)===PW1 && (role!=='superadmin'||btoa(p2)===PW2)){
+    setRole(role);
+    localStorage.setItem(SK,'logged_in');
+    localStorage.setItem(VK,'1');
+    localStorage.setItem(RK,role);
+    closeLoginScreen();
+    toast(role==='superadmin'?'Đã đăng nhập Super Admin':'Đã đăng nhập Admin');
+    haptic(20);
+  }else{
+    if(err) err.textContent=role==='superadmin'?'Sai mật khẩu Admin hoặc cấp 2!':'Sai mật khẩu!';
+    playSound('err');
+    haptic([40,30,40]);
+  }
+}
+function continueAsViewer(){
+  setRole('viewer');
+  localStorage.setItem(VK,'1');
+  localStorage.setItem(RK,'viewer');
+  closeLoginScreen();
+  toast('Bạn đang xem ở chế độ Viewer');
+}
+function doLogout(){
+  setRole('viewer');
+  localStorage.removeItem(SK);
+  localStorage.removeItem(VK);
+  localStorage.removeItem(RK);
+  document.getElementById('main-shell').style.display='none';
+  document.getElementById('abar').style.display='none';
+  openLoginScreen();
+}
+function applyAdmin(a){
+  setRole(a?'admin':'viewer');
+}
+function changePw(){
+  if(!requireRole('superadmin','Cần quyền Super Admin để đổi mật khẩu')) return;
+  const nw=document.getElementById('new-pw').value;
+  const p2=document.getElementById('pw2').value;
+  if(!nw) return toast('Nhập mật khẩu mới','err');
+  if(btoa(p2)!==PW2) return toast('Sai mật khẩu cấp 2!','err');
+  PW1=btoa(nw);
+  window._fbSetPw && window._fbSetPw(PW1);
+  localStorage.removeItem(SK);
+  document.getElementById('new-pw').value='';
+  document.getElementById('pw2').value='';
+  toast('Đã đổi mật khẩu. Cần đăng nhập lại.');
+}
+
 // ═══════════════════════════════════════════════════════════════
 // NAV
 // ═══════════════════════════════════════════════════════════════
@@ -1550,7 +1932,7 @@ function go(id){
   document.querySelectorAll('nav.sidebar a.nav-link').forEach(a=>a.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.getElementById('nav-'+id).classList.add('active');
-  if(id==='history'){ fillMonths(); fillPersonFilter(); fillCatFilter(); renderHistory(); renderExpPrev(); moveHistTabInd(); }
+  if(id==='history'){ fillMonths(); fillPersonFilter(); fillCatFilter(); renderHistory(); renderExpPrev(); renderPdfPreview(); moveHistTabInd(); }
   if(id==='record'){ renderChips(); renderRecPick(); renderQMem(); moveRecTabInd(); }
   if(id==='leaderboard'){ fillLbMonths(); renderLeaderboard(); }
   haptic(5);
@@ -1561,7 +1943,7 @@ function switchHistTab(t){
   document.getElementById('tab-hist').classList.toggle('on',t==='hist');
   document.getElementById('tab-export').classList.toggle('on',t==='export');
   moveHistTabInd();
-  if(t==='export') renderExpPrev();
+  if(t==='export'){ renderExpPrev(); renderPdfPreview(); }
 }
 function moveHistTabInd(){
   const on=document.querySelector('#page-history .tab.on');
@@ -1591,6 +1973,7 @@ function render(){
   renderDash(); renderMembersList(); renderTopupSel();
   renderChips(); renderRecList(); renderRecPick(); renderQMem(); renderRecMemChips();
   fillLbMonths(); renderLeaderboard();
+  applyRoleUI();
   refreshIcons();
 }
 
@@ -1670,7 +2053,7 @@ function renderDash(){
 }
 
 function quickPayDash(id){
-  if(!isAdmin){toast('Cần đăng nhập admin','err');return;}
+  if(!requireRole('admin','Cần quyền Admin để ghi trả nợ')) return;
   const m=S.members.find(x=>x.id===id); if(!m) return;
   const bal=m.balance||0;
   if(bal>=0) return toast('Không có nợ','err');
@@ -1934,7 +2317,7 @@ function renderHistory(){
 
   const el=document.getElementById('tbl-history'); if(!el) return;
   el.innerHTML=txns.length
-    ? `<table><thead><tr><th>Ngày</th><th>Mô tả</th><th>Danh mục</th><th>Số tiền</th><th class="hm">Mỗi người</th><th class="hm">Thành viên</th><th></th></tr></thead><tbody>
+    ? `<div class="hist-table-wrap"><table><thead><tr><th>Ngày</th><th>Mô tả</th><th>Danh mục</th><th>Số tiền</th><th>Mỗi người</th><th>Thành viên</th><th></th></tr></thead><tbody>
         ${txns.map(t=>{
           const names=(t.memberIds||[]).map(id=>(S.members.find(x=>x.id===id)||{}).name||'?').join(', ');
           return`<tr>
@@ -1942,11 +2325,31 @@ function renderHistory(){
             <td>${escapeHTML(t.desc)}</td>
             <td>${typeBadge(t)}</td>
             <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${t.type==='topup'&&t.amount>0?'var(--grn)':'var(--red)'}">${fmt(Math.abs(t.amount))}</td>
-            <td class="az hm">${t.perPerson?fmt(t.perPerson):'—'}</td>
-            <td class="tm hm">${escapeHTML(names||'—')}</td>
-            <td><button class="btn bd btn-sm wo" onclick="delTxn('${t.id}')"><i data-lucide="x"></i></button></td>
+            <td class="az">${t.perPerson?fmt(t.perPerson):'—'}</td>
+            <td class="tm">${escapeHTML(names||'—')}</td>
+            <td><button class="btn bd btn-sm wo hist-delete-btn" onclick="delTxn('${t.id}')" data-role-min="admin" title="Xóa giao dịch"><i data-lucide="x"></i></button></td>
           </tr>`;
-        }).join('')}</tbody></table>`
+        }).join('')}</tbody></table></div>
+        <div class="hist-mobile-list">
+          ${txns.map(t=>{
+            const names=(t.memberIds||[]).map(id=>(S.members.find(x=>x.id===id)||{}).name||'?').join(', ');
+            const amountColor=t.type==='topup'&&t.amount>0?'var(--grn)':'var(--red)';
+            return `<div class="hist-item">
+              <div class="hist-item-top">
+                <div>
+                  <div class="hist-item-desc">${escapeHTML(t.desc)}</div>
+                  <div class="hist-item-date">${t.date}</div>
+                </div>
+                <button class="btn bd btn-sm wo hist-delete-btn" onclick="delTxn('${t.id}')" data-role-min="admin" title="Xóa giao dịch"><i data-lucide="x"></i></button>
+              </div>
+              <div class="hist-item-meta mt12">
+                <div>${typeBadge(t)}</div>
+                <div class="hist-item-amount" style="color:${amountColor}">${fmt(Math.abs(t.amount))}</div>
+              </div>
+              <div class="hist-item-members">${t.perPerson?`Mỗi người: ${fmt(t.perPerson)} · `:''}${escapeHTML(names||'—')}</div>
+            </div>`;
+          }).join('')}
+        </div>`
     : '<div class="empty"><i data-lucide="inbox"></i>Không có giao dịch</div>';
 
   const ps=document.getElementById('person-summary');
@@ -1965,6 +2368,7 @@ function renderHistory(){
         </div>`;
     }
   } else ps.style.display='none';
+  applyRoleUI();
   refreshIcons();
 }
 function renderExpPrev(){
@@ -1982,10 +2386,115 @@ function renderExpPrev(){
   </div>`;
 }
 
+function buildPdfReportData(mo,yr){
+  const ym=`${yr}-${String(mo).padStart(2,'0')}`;
+  const fund=S.members.find(m=>m.id===FUND_ID);
+  const members=getSortedMembers().filter(m=>m.id!==FUND_ID);
+  const sessions=S.transactions.filter(t=>t.type==='session'&&t.date.startsWith(ym));
+  const topups=S.transactions.filter(t=>t.type==='topup'&&t.date.startsWith(ym));
+  const monthTxns=S.transactions.filter(t=>t.date.startsWith(ym)).sort((a,b)=>a.date.localeCompare(b.date));
+  const rows=members.map((m,i)=>{
+    const ms=sessions.filter(t=>(t.memberIds||[]).includes(m.id));
+    const paid=topups.filter(t=>(t.memberIds||[]).includes(m.id)&&t.amount>0).reduce((s,t)=>s+t.amount,0);
+    const spent=ms.reduce((s,t)=>s+(t.perPerson||0),0);
+    return {stt:i+1,name:m.name,count:ms.length,spent,paid,balance:m.balance||0,status:m.balance>0?'Đủ tiền':m.balance<0?'Đang nợ':'Hòa'};
+  });
+  const totalDebt=members.filter(m=>(m.balance||0)<0).reduce((s,m)=>s+(m.balance||0),0);
+  return {
+    mo,yr,ym,
+    fundBal:fund?(fund.balance||0):0,
+    totalSpent:sessions.reduce((s,t)=>s+t.amount,0),
+    totalTopup:topups.filter(t=>t.amount>0).reduce((s,t)=>s+t.amount,0),
+    totalDebt,
+    debtCount:members.filter(m=>(m.balance||0)<0).length,
+    rows,
+    txns:monthTxns.map(t=>({
+      date:t.date,
+      desc:t.desc,
+      type:t.category || (t.type==='topup'?(t.amount>=0?'Nạp':'Trừ'):'Buổi chi tiêu'),
+      amount:t.amount,
+      perPerson:t.perPerson||0,
+      names:(t.memberIds||[]).map(id=>(S.members.find(x=>x.id===id)||{}).name||'?').join(', ')
+    }))
+  };
+}
+function renderPdfPreview(){
+  const el=document.getElementById('pdf-prev'); if(!el) return;
+  const mo=parseInt(document.getElementById('exp-mo')?.value||new Date().getMonth()+1);
+  const yr=parseInt(document.getElementById('exp-yr')?.value||new Date().getFullYear());
+  const d=buildPdfReportData(mo,yr);
+  el.innerHTML=`<div class="sgrid mt12">
+    <div class="stat"><div class="stat-head"><div class="sl">Số buổi</div></div><div class="sv">${d.txns.filter(t=>t.perPerson>0).length}</div></div>
+    <div class="stat"><div class="stat-head"><div class="sl">Tổng chi</div></div><div class="sv" style="color:var(--red)">${fmt(d.totalSpent)}</div></div>
+    <div class="stat"><div class="stat-head"><div class="sl">Tổng nạp</div></div><div class="sv" style="color:var(--grn)">${fmt(d.totalTopup)}</div></div>
+    <div class="stat"><div class="stat-head"><div class="sl">Tổng nợ</div></div><div class="sv" style="color:var(--red)">${fmt(d.totalDebt)}</div></div>
+  </div>`;
+}
+function makePdfReportEl(d){
+  const el=document.createElement('div');
+  el.className='pdf-report';
+  el.innerHTML=`
+    <div class="pdf-head">
+      <div class="pdf-brand"><div class="pdf-mark">C1K</div><div><h1>CLB C1K</h1><div class="pdf-muted">Báo cáo chi tiêu tháng ${String(d.mo).padStart(2,'0')}/${d.yr}</div></div></div>
+      <div class="pdf-muted" style="text-align:right">Ngày xuất<br><b>${new Date().toLocaleDateString('vi-VN')}</b></div>
+    </div>
+    <div class="pdf-grid">
+      <div class="pdf-card"><div class="pdf-label">Quỹ team</div><div class="pdf-val">${fmt(d.fundBal)}</div></div>
+      <div class="pdf-card"><div class="pdf-label">Tổng chi tháng</div><div class="pdf-val">${fmt(d.totalSpent)}</div></div>
+      <div class="pdf-card"><div class="pdf-label">Tổng nạp tháng</div><div class="pdf-val">${fmt(d.totalTopup)}</div></div>
+      <div class="pdf-card"><div class="pdf-label">Tổng nợ hiện tại</div><div class="pdf-val">${fmt(d.totalDebt)}</div></div>
+      <div class="pdf-card"><div class="pdf-label">Đang nợ</div><div class="pdf-val">${d.debtCount} người</div></div>
+    </div>
+    <div class="pdf-section"><div class="pdf-section-title">Tổng hợp thành viên</div>
+      <table><thead><tr><th>STT</th><th>Thành viên</th><th>Số buổi</th><th>Tổng chi</th><th>Đã nạp</th><th>Số dư</th><th>Trạng thái</th></tr></thead>
+      <tbody>${d.rows.map(r=>`<tr><td>${r.stt}</td><td>${escapeHTML(r.name)}</td><td>${r.count}</td><td>${fmt(r.spent)}</td><td>${fmt(r.paid)}</td><td>${fmt(r.balance)}</td><td>${r.status}</td></tr>`).join('')}</tbody></table>
+    </div>
+    <div class="pdf-section"><div class="pdf-section-title">Chi tiết giao dịch</div>
+      <table><thead><tr><th>Ngày</th><th>Mô tả</th><th>Danh mục/Loại</th><th>Tổng tiền</th><th>Mỗi người</th><th>Thành viên liên quan</th></tr></thead>
+      <tbody>${d.txns.length?d.txns.map(t=>`<tr><td>${t.date}</td><td>${escapeHTML(t.desc)}</td><td>${escapeHTML(t.type)}</td><td>${fmt(Math.abs(t.amount))}</td><td>${t.perPerson?fmt(t.perPerson):'—'}</td><td>${escapeHTML(t.names||'—')}</td></tr>`).join(''):`<tr><td colspan="6">Không có giao dịch trong tháng này</td></tr>`}</tbody></table>
+    </div>
+    <div class="pdf-footer">Generated by CLB C1K</div>`;
+  return el;
+}
+async function exportPDF(){
+  if(!requireRole('admin','Cần quyền Admin để xuất PDF')) return;
+  const mo=parseInt(document.getElementById('exp-mo').value);
+  const yr=parseInt(document.getElementById('exp-yr').value);
+  if(!window.jspdf?.jsPDF) return toast('Chưa tải được thư viện PDF, thử lại sau','err');
+  const d=buildPdfReportData(mo,yr);
+  const report=makePdfReportEl(d);
+  document.body.appendChild(report);
+  toast('Đang tạo PDF...');
+  try{
+    await new Promise(r=>requestAnimationFrame(r));
+    const canvas=await html2canvas(report,{backgroundColor:'#f7f4ea',scale:2,useCORS:true,logging:false});
+    const pdf=new window.jspdf.jsPDF('p','mm','a4');
+    const img=canvas.toDataURL('image/png');
+    const pageW=210,pageH=297;
+    const imgH=canvas.height*pageW/canvas.width;
+    let pos=0,remaining=imgH;
+    pdf.addImage(img,'PNG',0,pos,pageW,imgH);
+    remaining-=pageH;
+    while(remaining>0){
+      pos-=pageH;
+      pdf.addPage();
+      pdf.addImage(img,'PNG',0,pos,pageW,imgH);
+      remaining-=pageH;
+    }
+    pdf.save(`CLB-C1K-Bao-Cao-${String(mo).padStart(2,'0')}-${yr}.pdf`);
+    toast('Đã tải PDF');
+  }catch(e){
+    console.error(e); toast('Lỗi tạo PDF','err');
+  }finally{
+    report.remove();
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════
 // ACTIONS
 // ═══════════════════════════════════════════════════════════════
 function openAddMember(){
+  if(!requireRole('admin','Cần quyền Admin để thêm thành viên')) return;
   document.getElementById('mem-name').value='';
   document.getElementById('mem-bal').value='0';
   document.getElementById('ov-member').classList.add('open');
@@ -1993,6 +2502,7 @@ function openAddMember(){
 }
 function closeOv(id){ document.getElementById(id).classList.remove('open'); }
 function addMember(){
+  if(!requireRole('admin')) return;
   const name=document.getElementById('mem-name').value.trim();
   const bal=kVal('mem-bal');
   if(!name) return toast('Nhập tên thành viên','err');
@@ -2000,12 +2510,15 @@ function addMember(){
   S.members.push({id:uid(),name,balance:bal,totalIn:bal>0?bal:0,totalOut:bal<0?-bal:0,order:S.members.length});
   fbSave(); closeOv('ov-member'); render(); toast('Đã thêm '+name);
 }
-function delMember(id){
-  if(!confirm('Xóa thành viên?')) return;
+async function delMember(id){
+  if(!requireRole('admin')) return;
+  const ok=await confirmAction({title:'Xóa thành viên',message:'Thành viên sẽ bị xóa khỏi danh sách. Lịch sử giao dịch cũ vẫn giữ theo dữ liệu hiện có.',confirmText:'Xóa thành viên'});
+  if(!ok) return;
   S.members=S.members.filter(m=>m.id!==id);
   fbSave(); render(); toast('Đã xóa');
 }
 function openEditMember(id){
+  if(!requireRole('admin')) return;
   const m=S.members.find(x=>x.id===id); if(!m) return;
   document.getElementById('edit-mem-id').value=id;
   document.getElementById('edit-mem-name').value=m.name;
@@ -2013,6 +2526,7 @@ function openEditMember(id){
   setTimeout(()=>document.getElementById('edit-mem-name').focus(),250);
 }
 function saveEditMember(){
+  if(!requireRole('admin')) return;
   const id=document.getElementById('edit-mem-id').value;
   const name=document.getElementById('edit-mem-name').value.trim();
   if(!name) return toast('Nhập tên mới','err');
@@ -2022,6 +2536,7 @@ function saveEditMember(){
   fbSave(); closeOv('ov-edit-member'); render(); toast('Đã cập nhật');
 }
 function doTopup(sign){
+  if(!requireRole('admin','Cần quyền Admin để nạp/trừ tiền')) return;
   const mid=document.getElementById('topup-mem').value;
   let amt=kVal('topup-amt');
   const nt=document.getElementById('topup-note').value.trim();
@@ -2039,6 +2554,7 @@ function doTopup(sign){
   if(wasNegative && m.balance>=0) fireConfetti();
 }
 function quickTopup(){
+  if(!requireRole('admin','Cần quyền Admin để nạp/trả tiền')) return;
   const mid=document.getElementById('q-mem').value;
   const raw=parseFloat(document.getElementById('q-amt').value)||0;
   let amt=raw*1000;
@@ -2057,6 +2573,7 @@ function quickTopup(){
   if(wasNegative && m.balance>=0) fireConfetti();
 }
 function saveSession(){
+  if(!requireRole('admin','Cần quyền Admin để ghi chi tiêu')) return;
   const date=document.getElementById('sess-date').value;
   let desc=document.getElementById('sess-desc').value.trim()||selCat;
   const amt=kVal('sess-amt');
@@ -2092,25 +2609,74 @@ function resetSessionForm(){
   });
   updateSelCount();
 }
-function delTxn(id){
-  const t=S.transactions.find(x=>x.id===id);
-  if(!t||!confirm('Xóa giao dịch? Số dư sẽ được hoàn.')) return;
+function applyTransactionEffect(t){
   if(t.type==='session'){
-    t.memberIds.forEach(mid=>{const m=S.members.find(x=>x.id===mid);if(m){m.balance+=t.perPerson;m.totalOut=Math.max(0,(m.totalOut||0)-t.perPerson);}});
-    if(t.splitMode==='fund'&&t.paidBy){const payer=S.members.find(x=>x.id===t.paidBy);if(payer){payer.balance-=t.amount;payer.totalIn=Math.max(0,(payer.totalIn||0)-t.amount);}}
+    if(t.splitMode==='fund'&&t.paidBy){
+      const payer=S.members.find(x=>x.id===t.paidBy);
+      if(payer){payer.balance+=t.amount;payer.totalIn=(payer.totalIn||0)+t.amount;}
+    }
+    (t.memberIds||[]).forEach(mid=>{
+      const m=S.members.find(x=>x.id===mid);
+      if(m){m.balance-=t.perPerson||0;m.totalOut=(m.totalOut||0)+(t.perPerson||0);}
+    });
   }else{
-    t.memberIds.forEach(mid=>{const m=S.members.find(x=>x.id===mid);if(m){m.balance-=t.amount;if(t.amount>0)m.totalIn=Math.max(0,(m.totalIn||0)-t.amount);else m.totalOut=Math.max(0,(m.totalOut||0)+t.amount);}});
+    (t.memberIds||[]).forEach(mid=>{
+      const m=S.members.find(x=>x.id===mid);
+      if(m){m.balance+=t.amount;if(t.amount>0)m.totalIn=(m.totalIn||0)+t.amount;else m.totalOut=(m.totalOut||0)+Math.abs(t.amount);}
+    });
   }
-  S.transactions=S.transactions.filter(x=>x.id!==id);
-  fbSave(); render(); toast('Đã xóa giao dịch');
+}
+function revertTransactionEffect(t){
+  if(t.type==='session'){
+    (t.memberIds||[]).forEach(mid=>{
+      const m=S.members.find(x=>x.id===mid);
+      if(m){m.balance+=t.perPerson||0;m.totalOut=Math.max(0,(m.totalOut||0)-(t.perPerson||0));}
+    });
+    if(t.splitMode==='fund'&&t.paidBy){
+      const payer=S.members.find(x=>x.id===t.paidBy);
+      if(payer){payer.balance-=t.amount;payer.totalIn=Math.max(0,(payer.totalIn||0)-t.amount);}
+    }
+  }else{
+    (t.memberIds||[]).forEach(mid=>{
+      const m=S.members.find(x=>x.id===mid);
+      if(m){m.balance-=t.amount;if(t.amount>0)m.totalIn=Math.max(0,(m.totalIn||0)-t.amount);else m.totalOut=Math.max(0,(m.totalOut||0)-Math.abs(t.amount));}
+    });
+  }
+}
+async function delTxn(id){
+  if(!requireRole('admin','Cần quyền Admin để xóa giao dịch')) return;
+  const idx=S.transactions.findIndex(x=>x.id===id);
+  const t=S.transactions[idx];
+  if(!t) return;
+  const ok=await confirmAction({title:'Xóa giao dịch',message:'Số dư thành viên sẽ được hoàn lại ngay. Bạn có 8 giây để hoàn tác sau khi xóa.',confirmText:'Xóa giao dịch'});
+  if(!ok) return;
+  if(lastDeletedTimer) clearTimeout(lastDeletedTimer);
+  lastDeletedTxn={txn:JSON.parse(JSON.stringify(t)),index:idx};
+  revertTransactionEffect(t);
+  S.transactions.splice(idx,1);
+  fbSave(); render();
+  toast('Đã xóa giao dịch','warn',{duration:8000,actionText:'Hoàn tác',onAction:undoDeleteTxn});
+  lastDeletedTimer=setTimeout(()=>{lastDeletedTxn=null;lastDeletedTimer=null;},8000);
+}
+function undoDeleteTxn(){
+  if(!lastDeletedTxn) return;
+  const {txn,index}=lastDeletedTxn;
+  if(S.transactions.find(t=>t.id===txn.id)) return;
+  S.transactions.splice(Math.min(index,S.transactions.length),0,txn);
+  applyTransactionEffect(txn);
+  lastDeletedTxn=null;
+  if(lastDeletedTimer){clearTimeout(lastDeletedTimer);lastDeletedTimer=null;}
+  fbSave(); render(); toast('Đã hoàn tác');
 }
 function clearAll(){
+  if(!requireRole('superadmin','Cần quyền Super Admin để xóa toàn bộ dữ liệu')) return;
   document.getElementById('clear-pw1').value='';
   document.getElementById('clear-pw2').value='';
   document.getElementById('clear-err').textContent='';
   document.getElementById('ov-clearall').classList.add('open');
 }
 function confirmClearAll(){
+  if(!requireRole('superadmin','Cần quyền Super Admin để xóa toàn bộ dữ liệu')) return;
   const p1=document.getElementById('clear-pw1').value;
   const p2=document.getElementById('clear-pw2').value;
   const err=document.getElementById('clear-err');
@@ -2121,6 +2687,7 @@ function confirmClearAll(){
 }
 
 function openAddRec(){
+  if(!requireRole('admin')) return;
   document.getElementById('rec-edit-id').value='';
   document.getElementById('rec-modal-title').innerHTML='<i data-lucide="refresh-cw"></i>Thêm chi phí định kỳ';
   document.getElementById('rec-name').value='';
@@ -2137,6 +2704,7 @@ function openAddRec(){
   refreshIcons();
 }
 function editRec(id){
+  if(!requireRole('admin')) return;
   const r=S.recurring.find(x=>x.id===id); if(!r) return;
   document.getElementById('rec-edit-id').value=id;
   document.getElementById('rec-modal-title').innerHTML='<i data-lucide="pencil"></i>Sửa chi phí định kỳ';
@@ -2164,6 +2732,7 @@ function setRecMode(m){
   refreshIcons();
 }
 function saveRec(){
+  if(!requireRole('admin')) return;
   const name=document.getElementById('rec-name').value.trim();
   const amt=kVal('rec-amt');
   const cat=document.getElementById('rec-cat').value;
@@ -2176,8 +2745,10 @@ function saveRec(){
   else S.recurring.push({id:uid(),name,category:cat,mode,amount:amt,defaultMembers:dms});
   fbSave(); closeOv('ov-rec'); renderRecList(); renderRecPick(); toast('Đã lưu: '+name);
 }
-function delRec(id){
-  if(!confirm('Xóa template?')) return;
+async function delRec(id){
+  if(!requireRole('admin')) return;
+  const ok=await confirmAction({title:'Xóa template',message:'Template định kỳ sẽ bị xóa. Giao dịch đã tạo trước đó không bị ảnh hưởng.',confirmText:'Xóa template'});
+  if(!ok) return;
   S.recurring=S.recurring.filter(x=>x.id!==id);
   fbSave(); renderRecList(); renderRecPick(); toast('Đã xóa');
 }
@@ -2194,6 +2765,7 @@ function copySTK(){
   toast('✅ Đã copy STK');
 }
 function exportXL(){
+  if(!requireRole('admin','Cần quyền Admin để xuất báo cáo')) return;
   const mo=parseInt(document.getElementById('exp-mo').value);
   const yr=parseInt(document.getElementById('exp-yr').value);
   const ym=`${yr}-${String(mo).padStart(2,'0')}`,lb=`Tháng ${mo}/${yr}`;
@@ -2332,21 +2904,25 @@ if(soundOn) document.getElementById('sound-toggle')?.classList.add('on');
 
 setSplitMode('split');
 render();
+renderExpPrev();
+renderPdfPreview();
 refreshIcons();
 syncDot('connecting');
+window.addEventListener('offline',()=>syncDot('offline'));
+window.addEventListener('online',()=>{syncDot('connecting');setTimeout(()=>syncDot(lastSyncAt?'synced':'loading',lastSyncAt),600);});
 
 function initStartup(){
   const adminLogged = localStorage.getItem(SK)==='logged_in';
   const viewerOk    = localStorage.getItem(VK)==='1';
   if(adminLogged){
-    isAdmin=true;
+    const storedRole=localStorage.getItem(RK);
+    setRole(storedRole==='superadmin'?'superadmin':'admin');
     closeLoginScreen();
-    applyAdmin(true);
   }else if(viewerOk){
-    isViewer=true;
+    setRole('viewer');
     closeLoginScreen();
-    applyAdmin(false);
   }else{
+    setRole('viewer');
     openLoginScreen();
   }
 }
