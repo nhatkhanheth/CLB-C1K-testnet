@@ -6,7 +6,7 @@
 <title>CLB C1K — Quản lý chi tiêu</title>
 <link rel="manifest" id="pwa-manifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="CLB C1K">
 <meta name="theme-color" content="#0a0a0b">
 <link rel="apple-touch-icon" href="./logo.png">
@@ -1052,6 +1052,123 @@ body.ro .wo{pointer-events:none}
   .history-list-card{padding:12px}
   #toast{bottom:calc(104px + env(safe-area-inset-bottom,0px));left:12px;right:12px;min-width:0}
 }
+
+/* ArcNest-inspired C1K orange refinement: muted single-tone accent, compact safe-area top bar */
+:root{
+  --acc:#f7931a;
+  --acc-2:#d8750b;
+  --acc-d:rgba(247,147,26,.095);
+  --acc-soft:rgba(247,147,26,.105);
+  --acc-line:rgba(247,147,26,.22);
+  --acc-glow:rgba(247,147,26,.13);
+  --acc-active:rgba(179,91,10,.70);
+  --acc-active-hover:rgba(193,99,12,.76);
+  --acc-active-border:rgba(255,255,255,.11);
+  --mobile-top-safe:max(38px, env(safe-area-inset-top, 0px));
+}
+.card[style*="247,147,26"]{
+  background:rgba(247,147,26,.045)!important;
+  border-color:rgba(255,255,255,.08)!important;
+}
+.login-tab.on,
+.bp,
+.login-btn,
+nav.sidebar a.nav-link.active,
+.tab.on,
+.lb-rank.r1{
+  background:var(--acc-active)!important;
+  background-image:none!important;
+  color:#fff!important;
+  border-color:var(--acc-active-border)!important;
+  box-shadow:0 14px 32px var(--acc-glow), inset 0 1px 0 rgba(255,255,255,.13)!important;
+}
+.login-tab.on:hover,
+.bp:hover,
+.login-btn:hover,
+nav.sidebar a.nav-link.active:hover,
+.tab.on:hover{
+  background:var(--acc-active-hover)!important;
+  background-image:none!important;
+  box-shadow:0 16px 36px rgba(247,147,26,.16), inset 0 1px 0 rgba(255,255,255,.14)!important;
+}
+.bb,
+.toast-action{
+  background:rgba(247,147,26,.105)!important;
+  border-color:var(--acc-line)!important;
+  color:var(--txt)!important;
+  box-shadow:none!important;
+}
+.bb:hover,
+.toast-action:hover{background:rgba(247,147,26,.15)!important}
+.chip.on,
+.qtag.sel{
+  background:rgba(247,147,26,.105)!important;
+  border-color:var(--acc-line)!important;
+  color:var(--txt)!important;
+}
+.lb-row.top3,
+.lb-row.top1{background:rgba(247,147,26,.055)!important}
+
+@media(max-width:768px){
+  main{
+    padding-top:calc(var(--mobile-top-safe) + 66px)!important;
+    padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))!important;
+  }
+  #abar{
+    top:calc(var(--mobile-top-safe) + 6px)!important;
+    left:12px!important;
+    right:12px!important;
+    width:auto!important;
+    height:44px!important;
+    min-height:44px!important;
+    margin:0!important;
+    padding:6px 8px!important;
+    border:1px solid var(--bord)!important;
+    border-radius:22px!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:6px!important;
+    overflow:hidden;
+    background:rgba(18,18,28,.78)!important;
+    box-shadow:0 18px 52px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.07)!important;
+  }
+  #sync-dot,
+  #auth-badge{
+    min-height:30px!important;
+    height:30px!important;
+    padding:5px 8px!important;
+    font-size:10.5px!important;
+    white-space:nowrap;
+    flex:0 1 auto;
+  }
+  #sync-dot{
+    max-width:42vw;
+    min-width:0;
+    overflow:hidden;
+  }
+  #sync-txt{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  #auth-badge{flex-shrink:0}
+  #btn-auth{
+    min-height:30px!important;
+    height:30px!important;
+    padding:5px 9px!important;
+    border-radius:999px!important;
+    font-size:11px!important;
+    line-height:1!important;
+    flex-shrink:0;
+  }
+  nav.sidebar a.nav-link.active,
+  nav.sidebar a#nav-record.active{
+    background:var(--acc-active)!important;
+    background-image:none!important;
+    box-shadow:0 16px 34px rgba(247,147,26,.14), inset 0 1px 0 rgba(255,255,255,.13)!important;
+  }
+}
 </style>
 </head>
 <body class="ro">
@@ -1150,7 +1267,7 @@ body.ro .wo{pointer-events:none}
     </table>
   </div>
 
-  <div class="card mb20" style="border-color:rgba(247,147,26,.22);background:linear-gradient(135deg,rgba(247,147,26,.04),transparent)">
+  <div class="card mb20" style="border-color:rgba(247,147,26,.18);background:rgba(247,147,26,.035)">
     <div class="sec" style="color:var(--acc)"><i data-lucide="credit-card"></i> Thông tin thanh toán</div>
     <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
       <div style="flex-shrink:0;text-align:center">
@@ -1339,7 +1456,7 @@ body.ro .wo{pointer-events:none}
     <div id="person-summary" style="display:none" class="card mt20"></div>
   </div>
   <div id="export-content" style="display:none">
-    <div class="card mb20" style="border-color:rgba(247,147,26,.22);background:linear-gradient(135deg,rgba(247,147,26,.04),transparent)">
+    <div class="card mb20" style="border-color:rgba(247,147,26,.18);background:rgba(247,147,26,.035)">
       <div class="sec" style="color:var(--acc)"><i data-lucide="link"></i> Share link xem (read-only)</div>
       <p class="tm mb12">Link này ai cũng xem được số dư realtime.</p>
       <button class="btn bp" onclick="copyLink()"><i data-lucide="copy"></i> Copy link</button>
