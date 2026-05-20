@@ -1202,6 +1202,20 @@ nav.sidebar a.nav-link.active:hover,
     box-shadow:0 16px 34px rgba(247,147,26,.14), inset 0 1px 0 rgba(255,255,255,.13)!important;
   }
 }
+nav.sidebar a.nav-link{
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+}
+nav.sidebar a.nav-link *{pointer-events:none}
+@media(max-width:768px){
+  nav.sidebar{z-index:650}
+  nav.sidebar a.nav-link{
+    min-width:0;
+    will-change:transform;
+  }
+}
 </style>
 </head>
 <body class="ro">
@@ -1263,19 +1277,19 @@ nav.sidebar a.nav-link.active:hover,
     <div class="c1k-logo"><img src="./logo.png" alt="C1K" onerror="this.parentElement.classList.add('logo-fallback')"></div>
     <div class="logo-text"><div class="logo-t">CLB C1K</div><div class="logo-s">Quản lý chi tiêu</div></div>
   </div>
-  <a onclick="go('dash')" class="nav-link active" id="nav-dash">
+  <a href="#dash" data-nav="dash" class="nav-link active" id="nav-dash">
     <span class="tab-icon"><i data-lucide="layout-dashboard"></i></span>Tổng quan
   </a>
-  <a onclick="go('members')" class="nav-link" id="nav-members">
+  <a href="#members" data-nav="members" class="nav-link" id="nav-members">
     <span class="tab-icon"><i data-lucide="users"></i></span>Thành viên
   </a>
-  <a onclick="go('record')" class="nav-link" id="nav-record">
+  <a href="#record" data-nav="record" class="nav-link" id="nav-record">
     <span class="tab-icon"><i data-lucide="plus"></i></span>Chi tiêu
   </a>
-  <a onclick="go('leaderboard')" class="nav-link" id="nav-leaderboard">
+  <a href="#leaderboard" data-nav="leaderboard" class="nav-link" id="nav-leaderboard">
     <span class="tab-icon"><i data-lucide="trophy"></i></span>BXH
   </a>
-  <a onclick="go('history')" class="nav-link" id="nav-history">
+  <a href="#history" data-nav="history" class="nav-link" id="nav-history">
     <span class="tab-icon"><i data-lucide="history"></i></span>Lịch sử
   </a>
   <div class="sp"></div>
@@ -1517,6 +1531,17 @@ nav.sidebar a.nav-link.active:hover,
     <div class="card mb20">
       <div class="sec"><i data-lucide="file-text"></i> Xuất báo cáo PDF</div>
       <p class="tm mb12">Báo cáo tháng dạng PDF sạch, có thể gửi ngay cho team.</p>
+      <div class="fg mb12">
+        <div><label>Tháng PDF</label>
+          <select id="pdf-mo" onchange="renderPdfPreview()">
+            <option value="1">Tháng 1</option><option value="2">Tháng 2</option><option value="3">Tháng 3</option>
+            <option value="4">Tháng 4</option><option value="5">Tháng 5</option><option value="6">Tháng 6</option>
+            <option value="7">Tháng 7</option><option value="8">Tháng 8</option><option value="9">Tháng 9</option>
+            <option value="10">Tháng 10</option><option value="11">Tháng 11</option><option value="12">Tháng 12</option>
+          </select>
+        </div>
+        <div><label>Năm PDF</label><input type="number" id="pdf-yr" oninput="renderPdfPreview()"></div>
+      </div>
       <button class="btn bp wo" data-role-min="admin" onclick="exportPDF()"><i data-lucide="file-down"></i> Tải PDF</button>
       <div id="pdf-prev" class="mt12"></div>
     </div>
@@ -2077,11 +2102,37 @@ function changePw(){
 // ═══════════════════════════════════════════════════════════════
 // NAV
 // ═══════════════════════════════════════════════════════════════
+let lastNavTap={id:'',ts:0};
+function handleNavTap(id,e){
+  if(e){e.preventDefault();e.stopPropagation();}
+  const now=Date.now();
+  if(lastNavTap.id===id&&now-lastNavTap.ts<220) return;
+  lastNavTap={id,ts:now};
+  go(id);
+}
+function bindNavTaps(){
+  const nav=document.querySelector('nav.sidebar');
+  if(!nav||nav.dataset.tapBound) return;
+  nav.dataset.tapBound='1';
+  nav.addEventListener('pointerup',e=>{
+    const link=e.target.closest('a.nav-link');
+    if(!link||!nav.contains(link)) return;
+    handleNavTap(link.dataset.nav,e);
+  },{passive:false});
+  nav.addEventListener('click',e=>{
+    const link=e.target.closest('a.nav-link');
+    if(!link||!nav.contains(link)) return;
+    handleNavTap(link.dataset.nav,e);
+  });
+}
 function go(id){
+  const page=document.getElementById('page-'+id);
+  const nav=document.getElementById('nav-'+id);
+  if(!page||!nav) return;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('nav.sidebar a.nav-link').forEach(a=>a.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.getElementById('nav-'+id).classList.add('active');
+  page.classList.add('active');
+  nav.classList.add('active');
   if(id==='history'){ fillMonths(); fillPersonFilter(); fillCatFilter(); renderHistory(); renderExpPrev(); renderPdfPreview(); moveHistTabInd(); }
   if(id==='record'){ renderChips(); renderRecPick(); renderQMem(); moveRecTabInd(); }
   if(id==='leaderboard'){ fillLbMonths(); renderLeaderboard(); }
@@ -2568,12 +2619,17 @@ function buildPdfReportData(mo,yr){
     }))
   };
 }
+function getPdfPeriod(){
+  const now=new Date();
+  const mo=parseInt(document.getElementById('pdf-mo')?.value||document.getElementById('exp-mo')?.value||now.getMonth()+1);
+  const yr=parseInt(document.getElementById('pdf-yr')?.value||document.getElementById('exp-yr')?.value||now.getFullYear());
+  return {mo,yr};
+}
 function renderPdfPreview(){
   const el=document.getElementById('pdf-prev'); if(!el) return;
-  const mo=parseInt(document.getElementById('exp-mo')?.value||new Date().getMonth()+1);
-  const yr=parseInt(document.getElementById('exp-yr')?.value||new Date().getFullYear());
+  const {mo,yr}=getPdfPeriod();
   const d=buildPdfReportData(mo,yr);
-  el.innerHTML=`<div class="sgrid mt12">
+  el.innerHTML=`<p class="tm mb8">Báo cáo PDF tháng ${String(mo).padStart(2,'0')}/${yr}</p><div class="sgrid mt12">
     <div class="stat"><div class="stat-head"><div class="sl">Số buổi</div></div><div class="sv">${d.txns.filter(t=>t.perPerson>0).length}</div></div>
     <div class="stat"><div class="stat-head"><div class="sl">Tổng chi</div></div><div class="sv" style="color:var(--red)">${fmt(d.totalSpent)}</div></div>
     <div class="stat"><div class="stat-head"><div class="sl">Tổng nạp</div></div><div class="sv" style="color:var(--grn)">${fmt(d.totalTopup)}</div></div>
@@ -2608,8 +2664,7 @@ function makePdfReportEl(d){
 }
 async function exportPDF(){
   if(!requireRole('admin','Cần quyền Admin để xuất PDF')) return;
-  const mo=parseInt(document.getElementById('exp-mo').value);
-  const yr=parseInt(document.getElementById('exp-yr').value);
+  const {mo,yr}=getPdfPeriod();
   if(!window.jspdf?.jsPDF) return toast('Chưa tải được thư viện PDF, thử lại sau','err');
   const d=buildPdfReportData(mo,yr);
   const report=makePdfReportEl(d);
@@ -3049,6 +3104,8 @@ document.getElementById('sess-date').value=td();
 document.getElementById('q-date').value=td();
 document.getElementById('exp-mo').value=new Date().getMonth()+1;
 document.getElementById('exp-yr').value=new Date().getFullYear();
+document.getElementById('pdf-mo').value=new Date().getMonth()+1;
+document.getElementById('pdf-yr').value=new Date().getFullYear();
 
 if(soundOn) document.getElementById('sound-toggle')?.classList.add('on');
 
@@ -3057,6 +3114,7 @@ render();
 renderExpPrev();
 renderPdfPreview();
 refreshIcons();
+bindNavTaps();
 syncDot('connecting');
 window.addEventListener('offline',()=>syncDot('offline'));
 window.addEventListener('online',()=>{syncDot('connecting');setTimeout(()=>syncDot(lastSyncAt?'synced':'loading',lastSyncAt),600);});
