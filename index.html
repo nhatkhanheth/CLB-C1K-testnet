@@ -1288,6 +1288,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
   flex-shrink:0;
 }
+.birthday-banner-kicker svg{width:16px;height:16px;color:#ffe8ad}
 .birthday-banner-list{
   position:relative;
   z-index:2;
@@ -1678,6 +1679,199 @@ nav.sidebar a.nav-link *{pointer-events:none}
   color:var(--red);
   font-size:12px;
 }
+.birthday-gift-panel{
+  padding:12px 14px;
+  margin:-8px 0 16px;
+}
+.birthday-gift-panel.compact{
+  display:grid;
+  gap:12px;
+}
+.gift-compact-cta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  padding:12px;
+  background:rgba(0,0,0,.16);
+}
+.gift-compact-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  color:#fff5d6;
+  font-size:13px;
+  font-weight:900;
+}
+.gift-compact-title svg,
+.gift-feed-title svg{
+  width:15px;
+  height:15px;
+  color:#ffbf75;
+  flex-shrink:0;
+}
+.gift-compact-title span{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.gift-compact-sub{
+  color:var(--txt-3);
+  font-size:11.5px;
+  margin-top:2px;
+}
+.gift-cta-btn{
+  min-height:34px;
+  padding:8px 12px!important;
+  border-radius:999px!important;
+  flex-shrink:0;
+}
+.gift-modal-note{
+  border:1px solid rgba(255,159,28,.15);
+  border-radius:14px;
+  background:rgba(255,159,28,.055);
+  color:var(--txt-2);
+  padding:11px 12px;
+  font-size:12.5px;
+  line-height:1.45;
+}
+.gift-choice-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+}
+.gift-choice-card{
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:14px;
+  padding:11px 10px;
+  background:rgba(255,255,255,.045);
+  color:var(--txt);
+  cursor:pointer;
+  font:inherit;
+  text-align:left;
+  min-height:74px;
+  transition:all .2s var(--ease);
+}
+.gift-choice-card:hover,
+.gift-choice-card.on{
+  border-color:rgba(255,159,28,.42);
+  background:linear-gradient(135deg,rgba(255,159,28,.16),rgba(236,72,153,.12),rgba(168,85,247,.12));
+  box-shadow:0 12px 24px rgba(236,72,153,.10),inset 0 1px 0 rgba(255,255,255,.10);
+}
+.gift-choice-name{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:12.5px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.gift-choice-icon{font-size:13px;line-height:1}
+.gift-choice-price{
+  margin-top:7px;
+  font-family:'JetBrains Mono',monospace;
+  color:#ffd28a;
+  font-size:12px;
+  font-weight:900;
+}
+.gift-modal-actions .gift-submit{width:100%;min-height:42px}
+#ov-gift-pin{z-index:2100}
+.gift-feed{
+  margin-top:0;
+  padding-top:0;
+  border-top:0;
+}
+.gift-feed-title{
+  color:#ffddb0;
+  font-size:12.5px;
+  letter-spacing:.01em;
+}
+.gift-feed-row{
+  padding:8px 10px;
+  border-radius:12px;
+  font-size:12px;
+  background:rgba(0,0,0,.14);
+}
+.gift-feed-row.cancelled{
+  opacity:.78;
+}
+.gift-feed-text{
+  font-weight:650;
+  color:var(--txt-2);
+  line-height:1.35;
+}
+.gift-feed-name{
+  color:#fff;
+  font-weight:900;
+}
+.gift-feed-receiver{
+  color:#ffe2a8;
+  font-weight:850;
+}
+.gift-feed-money{
+  color:#ffbf75;
+  font-family:'JetBrains Mono',monospace;
+  font-weight:900;
+  white-space:nowrap;
+}
+.gift-badge{
+  display:inline-flex;
+  align-items:center;
+  padding:2px 7px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  font-size:10.5px;
+  font-weight:900;
+  line-height:1.35;
+  white-space:nowrap;
+}
+.gift-badge.rose{background:rgba(244,63,94,.13);color:#ffc1cb;border-color:rgba(244,63,94,.26)}
+.gift-badge.lion{background:rgba(255,159,28,.13);color:#ffd28a;border-color:rgba(255,159,28,.28)}
+.gift-badge.whale{background:rgba(168,85,247,.13);color:#d8c1ff;border-color:rgba(168,85,247,.28)}
+.gift-feed-toggle{
+  width:100%;
+  margin-top:8px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:999px;
+  background:rgba(255,255,255,.045);
+  color:#ffe2a8;
+  padding:7px 10px;
+  font:inherit;
+  font-size:11.5px;
+  font-weight:900;
+  cursor:pointer;
+}
+.fund-name{
+  display:inline-block;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-weight:900;
+  letter-spacing:.01em;
+}
+.fund-name.team-fund{color:#ffbf75}
+.fund-name.birthday-fund{color:#ffc3d9}
+.fund-badge{
+  display:inline-flex;
+  align-items:center;
+  margin-left:6px;
+  padding:2px 7px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:900;
+  border:1px solid rgba(255,255,255,.12);
+  vertical-align:middle;
+}
+.fund-badge.team-fund{background:rgba(255,159,28,.11);color:#ffd28a;border-color:rgba(255,159,28,.24)}
+.fund-badge.birthday-fund{background:rgba(236,72,153,.11);color:#ffc3d9;border-color:rgba(236,72,153,.24)}
+.fund-row.team-fund-row{background:rgba(255,159,28,.025)!important}
+.fund-row.birthday-fund-row{background:rgba(236,72,153,.025)!important}
+#stat-grid{grid-template-columns:repeat(4,minmax(150px,1fr))}
 
 @keyframes giftPop{
   0%,100%{transform:scale(1) rotate(-3deg)}
@@ -1723,12 +1917,21 @@ nav.sidebar a.nav-link *{pointer-events:none}
   .birthday-balloon.b1{right:12px;bottom:18px;transform:scale(.82)}
   .birthday-balloon.b2{right:38px;top:16px;transform:scale(.68)}
   .birthday-gift-panel{padding:14px;margin-top:-4px;border-radius:18px}
+  .gift-compact-cta{padding:11px;align-items:center}
+  .gift-compact-sub{display:none}
+  .gift-compact-title{font-size:12.5px}
+  .gift-cta-btn{min-height:32px;padding:7px 10px!important}
   .gift-controls{grid-template-columns:1fr;align-items:stretch}
   .gift-select-grid{grid-template-columns:1fr}
-  .gift-presets{display:grid;grid-template-columns:1fr 1fr}
+  .gift-choice-grid{grid-template-columns:1fr 1fr 1fr;gap:7px}
+  .gift-choice-card{min-height:66px;padding:9px 8px}
+  .gift-choice-name{font-size:11.5px}
+  .gift-choice-price{font-size:11px}
   .gift-submit{width:100%;min-height:42px}
-  .gift-feed-row{align-items:flex-start;flex-direction:column}
+  .gift-feed-row{align-items:flex-start;flex-direction:column;padding:8px 9px}
   .gift-feed-meta{width:100%;justify-content:space-between}
+  #stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .fund-name{max-width:150px}
   .member-name-wrap{gap:5px;flex-wrap:wrap}
   .member-name-birthday{padding:4px 7px;gap:5px}
 }
@@ -1740,6 +1943,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
   .birthday-spark,
   .birthday-gift-panel::before,
   .gift-panel-title span:first-child,
+  .gift-choice-card,
   .member-name-birthday,
   .member-name-birthday::after{
     animation:none!important;
@@ -2153,6 +2357,15 @@ nav.sidebar a.nav-link *{pointer-events:none}
   </div>
 </div>
 
+<div class="ov" id="ov-birthday-gift">
+  <div class="modal">
+    <div class="sheet-handle"></div>
+    <button class="modal-close" onclick="closeOv('ov-birthday-gift')"><i data-lucide="x"></i></button>
+    <div class="mt"><i data-lucide="gift"></i>Gửi quà sinh nhật</div>
+    <div id="birthday-gift-modal-body"></div>
+  </div>
+</div>
+
 <div class="ov" id="ov-rec">
   <div class="modal">
     <div class="sheet-handle"></div>
@@ -2267,11 +2480,24 @@ const RK = 'clb_role_v1';
 let splitMode = 'split';
 let selCat = '🎾 Tennis';
 let recMode = 'fixed';
-let soundOn = localStorage.getItem('clb_sound') === 'on';
+const SOUND_KEY = 'clb_sound';
+let soundPref = localStorage.getItem(SOUND_KEY);
+let soundOn;
+if(soundPref===null){
+  soundOn=true;
+  localStorage.setItem(SOUND_KEY,'on');
+}else soundOn=soundPref==='on';
 const FUND_ID = '__fund_team__';
 const BIRTHDAY_FUND_ID = '__birthday_fund__';
-let giftAmount = 1000;
+const GIFT_CLAIM_WINDOW_MS = 30 * 1000;
+const BIRTHDAY_GIFTS = [
+  { id:'rose', name:'Bông hồng', amount:1000, icon:'🌹' },
+  { id:'lion', name:'Sư tử', amount:10000, icon:'🦁' },
+  { id:'whale', name:'Cá voi', amount:50000, icon:'🐋' }
+];
+let selectedBirthdayGiftId = 'rose';
 let giftPinContext = null;
+let giftFeedExpanded = false;
 
 // ═══════════════════════════════════════════════════════════════
 // UTILS
@@ -2334,7 +2560,7 @@ function formatBirthdayShort(birthday){
 }
 function renderMemberName(m){
   const name=escapeHTML((m&&m.name)||'?');
-  if(m&&m.isBirthdayFund) return `<span class="birthday-fund-label"><span>🎂</span><span>${name}</span></span>`;
+  if(m&&m.isFixed) return `<span class="fund-name ${m.isBirthdayFund?'birthday-fund':'team-fund'}">${name}</span>`;
   const birthday=m&&m.birthday;
   const b=parseBirthday(birthday);
   if(!b) return name;
@@ -2410,7 +2636,20 @@ function getBirthdayGiftTransactionsThisMonth(){
     .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
 }
 function canSelfClaimGift(t){
-  return !!(t&&t.type==='birthday_gift'&&t.status!=='cancelled'&&t.createdAt&&Date.now()-t.createdAt<=10000);
+  return !!(t&&t.type==='birthday_gift'&&t.status!=='cancelled'&&t.createdAt&&Date.now()-t.createdAt<=GIFT_CLAIM_WINDOW_MS);
+}
+function getBirthdayGiftById(id){ return BIRTHDAY_GIFTS.find(g=>g.id===id)||BIRTHDAY_GIFTS[0]; }
+function getSelectedBirthdayGift(){ return getBirthdayGiftById(selectedBirthdayGiftId); }
+function getGiftFromTxn(t){
+  const gift=t&&t.giftId?BIRTHDAY_GIFTS.find(g=>g.id===t.giftId):null;
+  return {
+    id:(t&&t.giftId)||gift?.id||'legacy',
+    name:(t&&t.giftName)||gift?.name||'quà sinh nhật',
+    amount:(t&&t.amount)||gift?.amount||0
+  };
+}
+function getGiftFeedLimit(){
+  return window.matchMedia&&window.matchMedia('(max-width:768px)').matches?5:8;
 }
 
 function toast(msg,type='ok',opts={}){
@@ -2442,7 +2681,7 @@ function playSound(type){
 }
 function toggleSound(){
   soundOn=!soundOn;
-  localStorage.setItem('clb_sound',soundOn?'on':'off');
+  localStorage.setItem(SOUND_KEY,soundOn?'on':'off');
   document.getElementById('sound-toggle')?.classList.toggle('on',soundOn);
   toast(soundOn?'🔊 Bật âm thanh':'🔇 Tắt âm thanh');
 }
@@ -2909,7 +3148,7 @@ function renderBirthdayBanner(){
     const bannerHTML=`
       <div class="birthday-banner today-mode">
         ${deco}
-        <div class="birthday-banner-head"><span class="birthday-banner-kicker">🎉</span><span>${title}</span></div>
+        <div class="birthday-banner-head"><span class="birthday-banner-kicker"><i data-lucide="sparkles"></i></span><span>${title}</span></div>
         <div class="birthday-banner-list">
           ${todayRows.map(x=>{
             const age=getBirthdayAge(x.m.birthday);
@@ -2917,7 +3156,7 @@ function renderBirthdayBanner(){
           }).join('')}
         </div>
       </div>`;
-    slot.innerHTML=bannerHTML+renderBirthdayGiftPanel();
+    slot.innerHTML=bannerHTML+renderBirthdayGiftCompactPanel();
     renderBirthdayGiftFeed();
     return;
   }
@@ -2925,7 +3164,7 @@ function renderBirthdayBanner(){
   const bannerHTML=`
     <div class="birthday-banner month-mode">
       ${deco}
-      <div class="birthday-banner-head"><span class="birthday-banner-kicker">🎂</span><span>Sinh nhật tháng này</span></div>
+      <div class="birthday-banner-head"><span class="birthday-banner-kicker"><i data-lucide="cake"></i></span><span>Sinh nhật tháng này</span></div>
       <div class="birthday-banner-list">
         ${rows.map(x=>{
           const age=getTurningAge(x.m.birthday);
@@ -2933,41 +3172,25 @@ function renderBirthdayBanner(){
         }).join('')}
       </div>
     </div>`;
-  slot.innerHTML=bannerHTML+renderBirthdayGiftPanel();
+  slot.innerHTML=bannerHTML+renderBirthdayGiftCompactPanel();
   renderBirthdayGiftFeed();
 }
 
-function renderBirthdayGiftPanel(){
+function renderBirthdayGiftCompactPanel(){
   const recipients=getBirthdayMembersThisMonth();
   const givers=getGiftableMembers();
   if(!recipients.length) return '';
   if(!givers.length){
-    return `<div class="birthday-gift-panel"><div class="gift-empty">Cần có thành viên thường để gửi quà sinh nhật.</div><div id="birthday-gift-feed" class="gift-feed"></div></div>`;
+    return `<div class="birthday-gift-panel compact"><div class="gift-empty">Cần có thành viên thường để gửi quà sinh nhật.</div><div id="birthday-gift-feed" class="gift-feed"></div></div>`;
   }
-  const oldTo=document.getElementById('gift-to')?.value;
-  const oldFrom=document.getElementById('gift-from')?.value;
-  const todayRecipient=recipients.find(m=>isBirthdayToday(m.birthday));
-  const toVal=oldTo&&recipients.some(m=>m.id===oldTo)?oldTo:(todayRecipient?.id||recipients[0].id);
-  const fromVal=oldFrom&&givers.some(m=>m.id===oldFrom)?oldFrom:givers[0].id;
   return `
-    <div class="birthday-gift-panel">
-      <div class="gift-panel-head">
-        <div class="gift-panel-title"><span>🎁</span><div>Gửi quà sinh nhật</div></div>
-        <div class="tm">Tiền trừ từ người tặng và cộng vào QUỸ SINH NHẬT</div>
-      </div>
-      <div class="gift-controls">
+    <div class="birthday-gift-panel compact">
+      <div class="gift-compact-cta">
         <div>
-          <label>Số tiền</label>
-          <div class="gift-presets">
-            <button type="button" class="gift-amount-btn ${giftAmount===1000?'on':''}" onclick="selectGiftAmount(1000)">1.000đ</button>
-            <button type="button" class="gift-amount-btn ${giftAmount===10000?'on':''}" onclick="selectGiftAmount(10000)">10.000đ</button>
-          </div>
+          <div class="gift-compact-title"><i data-lucide="gift"></i><span>Góp quà vào QUỸ SINH NHẬT</span></div>
+          <div class="gift-compact-sub">Chọn quà trong modal, xác nhận bằng PIN riêng.</div>
         </div>
-        <div class="gift-select-grid">
-          <div><label>Người nhận sinh nhật</label><select id="gift-to">${recipients.map(m=>`<option value="${escapeHTML(m.id)}" ${m.id===toVal?'selected':''}>${escapeHTML(m.name)} — ${formatBirthdayShort(m.birthday)}</option>`).join('')}</select></div>
-          <div><label>Người tặng</label><select id="gift-from">${givers.map(m=>`<option value="${escapeHTML(m.id)}" ${m.id===fromVal?'selected':''}>${escapeHTML(m.name)}</option>`).join('')}</select></div>
-        </div>
-        <button type="button" class="btn gift-submit" onclick="startBirthdayGift()"><i data-lucide="gift"></i> Gửi quà 🎁</button>
+        <button type="button" class="btn gift-submit gift-cta-btn" onclick="openBirthdayGiftModal()"><i data-lucide="send"></i> Gửi quà</button>
       </div>
       <div id="birthday-gift-feed" class="gift-feed"></div>
     </div>`;
@@ -2978,23 +3201,27 @@ function renderBirthdayGiftFeed(){
   if(!el) return;
   const txns=getBirthdayGiftTransactionsThisMonth();
   if(!txns.length){
-    el.innerHTML=`<div class="gift-feed-title">🎁 Quà sinh nhật tháng này</div><div class="gift-empty">Chưa ai gửi quà, mở màn đi nào 🎈</div>`;
+    el.innerHTML=`<div class="gift-feed-title">Quà sinh nhật tháng này</div><div class="gift-empty">Chưa ai gửi quà, mở màn đi nào.</div>`;
     return;
   }
-  const rows=txns.slice(0,8);
+  const limit=getGiftFeedLimit();
+  const rows=giftFeedExpanded?txns:txns.slice(0,limit);
   el.innerHTML=`
-    <div class="gift-feed-title">🎁 Quà sinh nhật tháng này</div>
+    <div class="gift-feed-title">Quà sinh nhật tháng này</div>
     <div class="gift-feed-list">
       ${rows.map(t=>{
         const giver=escapeHTML(getMemberName(t.fromId));
         const receiver=escapeHTML(getMemberName(t.toId));
-        const amount=fmt(t.amount||0);
+        const gift=getGiftFromTxn(t);
+        const giftName=escapeHTML(gift.name);
+        const amount=fmt(gift.amount||0);
+        const badge=`<span class="gift-badge ${escapeHTML(gift.id)}">${giftName}</span>`;
         const cancelled=t.status==='cancelled';
-        let text=`🎁 ${giver} đã tặng sinh nhật ${receiver} ${amount}`;
-        if(cancelled&&t.cancelledBy==='self') text=`↩️ ${giver} đã đòi lại quà sinh nhật ${receiver} ${amount}`;
-        if(cancelled&&t.cancelledBy==='admin') text=`↩️ Admin đã hoàn tiền quà sinh nhật của ${giver}`;
+        let text=`<span class="gift-feed-name">${giver}</span> đã tặng sinh nhật <span class="gift-feed-receiver">${receiver}</span> ${badge} · <span class="gift-feed-money">${amount}</span>`;
+        if(cancelled&&t.cancelledBy==='self') text=`<span class="gift-feed-name">${giver}</span> đã đòi lại ${badge} tặng <span class="gift-feed-receiver">${receiver}</span> · <span class="gift-feed-money">${amount}</span>`;
+        if(cancelled&&t.cancelledBy==='admin') text=`Admin đã hoàn tiền món ${badge} của <span class="gift-feed-name">${giver}</span>`;
         const elapsed=Date.now()-(t.createdAt||0);
-        const left=Math.max(0,Math.ceil((10000-elapsed)/1000));
+        const left=Math.max(0,Math.ceil((GIFT_CLAIM_WINDOW_MS-elapsed)/1000));
         const selfBtn=!cancelled&&canSelfClaimGift(t)?`<button type="button" class="gift-mini-btn" onclick="openClaimGiftModal('${t.id}')">Đòi lại · ${left}s</button>`:'';
         const adminBtn=!cancelled&&!canSelfClaimGift(t)&&isAdmin?`<button type="button" class="gift-mini-btn admin" onclick="adminRefundGift('${t.id}')">Hoàn tiền</button>`:'';
         const time=t.createdAt?new Date(t.createdAt).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}):'';
@@ -3004,7 +3231,12 @@ function renderBirthdayGiftFeed(){
         </div>`;
       }).join('')}
     </div>
-    ${txns.length>8?`<div class="gift-more">+${txns.length-8} món quà khác</div>`:''}`;
+    ${txns.length>limit?`<button type="button" class="gift-feed-toggle" onclick="toggleGiftFeedExpanded()">${giftFeedExpanded?'Rút gọn':`+${txns.length-limit} món quà khác`}</button>`:''}`;
+}
+
+function toggleGiftFeedExpanded(){
+  giftFeedExpanded=!giftFeedExpanded;
+  renderBirthdayGiftFeed();
 }
 
 function renderDash(){
@@ -3016,12 +3248,11 @@ function renderDash(){
   const birthdayFundBal=birthdayFund?(birthdayFund.balance||0):0;
   const totalDebt=getGiftableMembers().filter(m=>m.balance<0).reduce((s,m)=>s+m.balance,0);
   const debts=getGiftableMembers().filter(m=>m.balance<0).length;
-  const totalSpent=S.transactions.filter(t=>t.type==='session').reduce((s,t)=>s+t.amount,0);
 
   document.getElementById('stat-grid').innerHTML=`
     <div class="stat">
-      <div class="stat-head"><div class="sl">Quỹ Team</div><div class="stat-ic" style="color:var(--grn)"><i data-lucide="piggy-bank"></i></div></div>
-      <div class="sv" data-val="${fundBal}" style="color:${debtColor(fundBal)}">${fmt(fundBal)}</div>
+      <div class="stat-head"><div class="sl">Quỹ Team</div><div class="stat-ic" style="color:#ffbf75"><i data-lucide="badge-dollar-sign"></i></div></div>
+      <div class="sv" data-val="${fundBal}" style="color:#ffbf75">${fmt(fundBal)}</div>
     </div>
     <div class="stat">
       <div class="stat-head"><div class="sl">Quỹ sinh nhật</div><div class="stat-ic" style="color:#ffc3d9"><i data-lucide="gift"></i></div></div>
@@ -3034,10 +3265,6 @@ function renderDash(){
     <div class="stat">
       <div class="stat-head"><div class="sl">Đang nợ</div><div class="stat-ic" style="color:var(--red)"><i data-lucide="users"></i></div></div>
       <div class="sv" style="color:var(--red)">${debts} người</div>
-    </div>
-    <div class="stat">
-      <div class="stat-head"><div class="sl">Tổng đã chi</div><div class="stat-ic"><i data-lucide="receipt"></i></div></div>
-      <div class="sv" data-val="${totalSpent}">${fmt(totalSpent)}</div>
     </div>`;
 
   document.querySelectorAll('#stat-grid .sv[data-val]').forEach(el=>{
@@ -3048,16 +3275,17 @@ function renderDash(){
   document.getElementById('tbl-balance').innerHTML=getSortedMembers().length
     ? getSortedMembers().map(m=>{
         const bal=m.balance||0;
+        const fundKind=m.isBirthdayFund?'birthday-fund':'team-fund';
         const statusCell=m.isFixed
-          ? `<span class="bdg ${m.isBirthdayFund?'birthday-fund-mini':'dg'}">Quỹ</span>`
+          ? `<span class="fund-badge ${fundKind}">Quỹ</span>`
           : bal<0
             ? `<span class="bdg-debt wo" onclick="quickPayDash('${m.id}')">Trả nợ</span>`
             : bal===0
               ? '<span class="bdg" style="background:rgba(113,113,122,.15);color:var(--mut)">Hòa</span>'
               : '<span class="bdg dg">Đủ tiền</span>';
-        return `<tr ${m.isBirthdayFund?'class="birthday-fund-row"':''}>
-          <td><b ${m.isFixed&&!m.isBirthdayFund?'style="color:var(--grn)"':''}>${renderMemberName(m)}</b>${m.isFixed?`<span class="${m.isBirthdayFund?'birthday-fund-badge':'tm'}" style="margin-left:6px;font-size:10px">Quỹ</span>`:''}</td>
-          <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${debtColor(bal)}">${fmt(bal)}</td>
+        return `<tr ${m.isFixed?`class="fund-row ${fundKind}-row"`:''}>
+          <td><b>${renderMemberName(m)}</b>${m.isFixed?`<span class="fund-badge ${fundKind}">Quỹ</span>`:''}</td>
+          <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${m.isFixed?(m.isBirthdayFund?'#ffc3d9':'#ffbf75'):debtColor(bal)}">${fmt(bal)}</td>
           <td>${statusCell}</td>
         </tr>`;
       }).join('')
@@ -3091,7 +3319,7 @@ function quickPayDash(id){
 }
 
 function typeBadge(t){
-  if(t.type==='birthday_gift') return t.status==='cancelled'?'<span class="bdg do">↩️ Đòi lại</span>':'<span class="bdg birthday-fund-mini">🎂 Quà SN</span>';
+  if(t.type==='birthday_gift') return t.status==='cancelled'?'<span class="bdg do">Đòi lại</span>':'<span class="bdg birthday-fund-mini">Quà SN</span>';
   if(t.type==='topup') return t.amount>=0?'<span class="bdg dg">Nạp</span>':'<span class="bdg dr">Trừ</span>';
   const cat=t.category||'Buổi';
   let cls='dr';
@@ -3105,16 +3333,19 @@ function typeBadge(t){
 
 function renderMembersList(){
   document.getElementById('tbl-members').innerHTML=getSortedMembers().length
-    ? getSortedMembers().map(m=>`<tr ${m.isBirthdayFund?'class="birthday-fund-row"':m.isFixed?'style="background:rgba(34,197,94,.03)"':''}>
-        <td><b ${m.isFixed&&!m.isBirthdayFund?'style="color:var(--grn)"':''}>${renderMemberName(m)}</b>${m.isFixed?`<span class="${m.isBirthdayFund?'birthday-fund-badge':'tm'}" style="margin-left:6px;font-size:10px">Quỹ</span>`:''}</td>
-        <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${debtColor(m.balance||0)}">${fmt(m.balance)}</td>
+    ? getSortedMembers().map(m=>{
+      const fundKind=m.isBirthdayFund?'birthday-fund':'team-fund';
+      return `<tr ${m.isFixed?`class="fund-row ${fundKind}-row"`:''}>
+        <td><b>${renderMemberName(m)}</b>${m.isFixed?`<span class="fund-badge ${fundKind}">Quỹ</span>`:''}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${m.isFixed?(m.isBirthdayFund?'#ffc3d9':'#ffbf75'):debtColor(m.balance||0)}">${fmt(m.balance)}</td>
         <td class="ap hm">${fmt(m.totalIn||0)}</td>
         <td class="an hm">${fmt(m.totalOut||0)}</td>
         <td style="white-space:nowrap;text-align:right">
           ${!m.isFixed?`<button class="btn bg btn-sm wo" onclick="openEditMember('${m.id}')"><i data-lucide="pencil"></i></button>`:''}
           ${!m.isFixed?`<button class="btn bd btn-sm wo" onclick="delMember('${m.id}')" style="margin-left:4px"><i data-lucide="trash-2"></i></button>`:''}
         </td>
-      </tr>`).join('')
+      </tr>`;
+    }).join('')
     : '<tr><td colspan="5"><div class="empty"><i data-lucide="users"></i>Chưa có thành viên</div></td></tr>';
 }
 function renderTopupSel(){ const s=document.getElementById('topup-mem');const c=s.value;s.innerHTML=S.members.map(m=>`<option value="${m.id}">${escapeHTML(m.name)}</option>`).join('');if(c)s.value=c; }
@@ -3604,18 +3835,64 @@ async function resetMemberGiftPinFromEdit(){
   resetMemberGiftPin(id);
   fbSave(); render(); renderEditGiftPinStatus(getMemberById(id)); toast('Đã reset PIN');
 }
-function selectGiftAmount(amount){
-  giftAmount=amount;
-  document.querySelectorAll('.gift-amount-btn').forEach(b=>b.classList.toggle('on',parseInt(b.textContent.replace(/\D/g,''),10)===amount));
+function selectBirthdayGift(giftId){
+  selectedBirthdayGiftId=giftId;
+  renderBirthdayGiftModalBody();
+}
+function renderBirthdayGiftModalBody(){
+  const el=document.getElementById('birthday-gift-modal-body');
+  if(!el) return;
+  const recipients=getBirthdayMembersThisMonth();
+  const givers=getGiftableMembers();
+  if(!recipients.length){
+    el.innerHTML='<div class="gift-empty">Tháng này chưa có sinh nhật để gửi quà.</div>';
+    return;
+  }
+  if(!givers.length){
+    el.innerHTML='<div class="gift-empty">Cần có thành viên thường để gửi quà sinh nhật.</div>';
+    return;
+  }
+  const oldTo=document.getElementById('gift-modal-to')?.value;
+  const oldFrom=document.getElementById('gift-modal-from')?.value;
+  const todayRecipient=recipients.find(m=>isBirthdayToday(m.birthday));
+  const toVal=oldTo&&recipients.some(m=>m.id===oldTo)?oldTo:(todayRecipient?.id||recipients[0].id);
+  const fromVal=oldFrom&&givers.some(m=>m.id===oldFrom)?oldFrom:givers[0].id;
+  const selectedGift=getSelectedBirthdayGift();
+  el.innerHTML=`
+    <div class="gift-pin-modal-body">
+      <div class="gift-modal-note">Tiền sẽ trừ từ người tặng và cộng vào QUỸ SINH NHẬT.</div>
+      <div>
+        <label>Chọn quà</label>
+        <div class="gift-choice-grid">
+          ${BIRTHDAY_GIFTS.map(g=>`
+            <button type="button" class="gift-choice-card ${g.id===selectedBirthdayGiftId?'on':''}" onclick="selectBirthdayGift('${g.id}')">
+              <div class="gift-choice-name"><span class="gift-choice-icon">${escapeHTML(g.icon)}</span><span>${escapeHTML(g.name)}</span></div>
+              <div class="gift-choice-price">${fmt(g.amount)}</div>
+            </button>`).join('')}
+        </div>
+      </div>
+      <div class="gift-select-grid">
+        <div><label>Người nhận sinh nhật</label><select id="gift-modal-to">${recipients.map(m=>`<option value="${escapeHTML(m.id)}" ${m.id===toVal?'selected':''}>${escapeHTML(m.name)} — ${formatBirthdayShort(m.birthday)}</option>`).join('')}</select></div>
+        <div><label>Người tặng</label><select id="gift-modal-from">${givers.map(m=>`<option value="${escapeHTML(m.id)}" ${m.id===fromVal?'selected':''}>${escapeHTML(m.name)}</option>`).join('')}</select></div>
+      </div>
+      <div class="gift-modal-actions"><button type="button" class="btn gift-submit" onclick="startBirthdayGift()"><i data-lucide="gift"></i> Gửi ${escapeHTML(selectedGift.name)}</button></div>
+    </div>`;
+  refreshIcons();
+}
+function openBirthdayGiftModal(){
+  selectedBirthdayGiftId='rose';
+  renderBirthdayGiftModalBody();
+  document.getElementById('ov-birthday-gift').classList.add('open');
 }
 function startBirthdayGift(){
-  const fromId=document.getElementById('gift-from')?.value;
-  const toId=document.getElementById('gift-to')?.value;
-  const amount=giftAmount;
+  const fromId=document.getElementById('gift-modal-from')?.value;
+  const toId=document.getElementById('gift-modal-to')?.value;
+  const gift=getSelectedBirthdayGift();
+  const amount=gift.amount;
   const giver=getMemberById(fromId);
   const receiver=getMemberById(toId);
   if(!giver||!receiver) return toast('Chọn người tặng và người nhận sinh nhật','err');
-  const context={fromId,toId,amount};
+  const context={fromId,toId,giftId:gift.id,giftName:gift.name,amount};
   if(hasGiftPin(giver)) openEnterGiftPinModal(context);
   else openCreateGiftPinModal(context);
 }
@@ -3628,7 +3905,7 @@ function openCreateGiftPinModal(context){
     <div><label>PIN 4 số</label><input type="password" id="gift-pin" maxlength="4" inputmode="numeric" autocomplete="one-time-code"></div>
     <div><label>Nhập lại PIN 4 số</label><input type="password" id="gift-pin-confirm" maxlength="4" inputmode="numeric" autocomplete="one-time-code"></div>
     <div class="gift-pin-note">PIN chỉ dùng để xác nhận quà sinh nhật. Admin không xem được PIN, chỉ có thể reset nếu bạn quên.</div>`;
-  document.getElementById('gift-pin-submit').innerHTML='<i data-lucide="save"></i> Lưu PIN & Gửi quà 🎁';
+  document.getElementById('gift-pin-submit').innerHTML='<i data-lucide="save"></i> Lưu PIN & Gửi quà';
   document.getElementById('gift-pin-error').textContent='';
   document.getElementById('ov-gift-pin').classList.add('open');
   setTimeout(()=>document.getElementById('gift-pin')?.focus(),200);
@@ -3640,9 +3917,9 @@ function openEnterGiftPinModal(context){
   giftPinContext={mode:'send',...context};
   document.getElementById('gift-pin-title').innerHTML='<i data-lucide="gift"></i>Xác nhận gửi quà';
   document.getElementById('gift-pin-body').innerHTML=`
-    <div class="gift-pin-summary"><b>${escapeHTML(giver.name)}</b> sẽ tặng sinh nhật <b>${escapeHTML(receiver.name)}</b> <b>${fmt(context.amount)}</b>.<br>Tiền sẽ trừ vào số dư của <b>${escapeHTML(giver.name)}</b> và cộng vào <b>QUỸ SINH NHẬT</b>.</div>
+    <div class="gift-pin-summary"><b>${escapeHTML(giver.name)}</b> sẽ tặng sinh nhật <b>${escapeHTML(receiver.name)}</b> <b>${escapeHTML(context.giftName||'quà sinh nhật')}</b> · <b>${fmt(context.amount)}</b>.<br>Tiền sẽ trừ vào số dư của <b>${escapeHTML(giver.name)}</b> và cộng vào <b>QUỸ SINH NHẬT</b>.</div>
     <div><label>PIN 4 số</label><input type="password" id="gift-pin" maxlength="4" inputmode="numeric" autocomplete="one-time-code"></div>`;
-  document.getElementById('gift-pin-submit').innerHTML='<i data-lucide="check-circle-2"></i> Xác nhận gửi quà 🎁';
+  document.getElementById('gift-pin-submit').innerHTML='<i data-lucide="check-circle-2"></i> Xác nhận gửi quà';
   document.getElementById('gift-pin-error').textContent='';
   document.getElementById('ov-gift-pin').classList.add('open');
   setTimeout(()=>document.getElementById('gift-pin')?.focus(),200);
@@ -3651,12 +3928,13 @@ function openEnterGiftPinModal(context){
 function openClaimGiftModal(txnId){
   const t=S.transactions.find(x=>x.id===txnId);
   if(!t||t.status==='cancelled') return toast('Món quà này đã được xử lý','err');
-  if(!canSelfClaimGift(t)) return toast('Quá 10 giây rồi, nhờ admin hoàn tiền nha 😅','err');
+  if(!canSelfClaimGift(t)) return toast('Quá 30 giây rồi, nhờ admin hoàn tiền nha 😅','err');
   giftPinContext={mode:'claim',txnId};
   const giver=getMemberById(t.fromId);
+  const gift=getGiftFromTxn(t);
   document.getElementById('gift-pin-title').innerHTML='<i data-lucide="rotate-ccw"></i>Đòi lại quà sinh nhật';
   document.getElementById('gift-pin-body').innerHTML=`
-    <div class="gift-pin-summary"><b>${escapeHTML(getMemberName(t.fromId))}</b> muốn đòi lại quà sinh nhật <b>${fmt(t.amount||0)}</b>?</div>
+    <div class="gift-pin-summary"><b>${escapeHTML(getMemberName(t.fromId))}</b> muốn đòi lại <b>${escapeHTML(gift.name)}</b> · <b>${fmt(gift.amount||0)}</b>?</div>
     <div><label>PIN 4 số</label><input type="password" id="gift-pin" maxlength="4" inputmode="numeric" autocomplete="one-time-code"></div>`;
   document.getElementById('gift-pin-submit').innerHTML='<i data-lucide="rotate-ccw"></i> Đòi lại quà ↩️';
   document.getElementById('gift-pin-error').textContent='';
@@ -3689,7 +3967,7 @@ async function submitGiftPinModal(){
     }else if(giftPinContext.mode==='claim'){
       const t=S.transactions.find(x=>x.id===giftPinContext.txnId);
       if(!t||t.status==='cancelled'){toast('Món quà này đã được xử lý','err');closeOv('ov-gift-pin');return;}
-      if(!canSelfClaimGift(t)){toast('Quá 10 giây rồi, nhờ admin hoàn tiền nha 😅','err');closeOv('ov-gift-pin');return;}
+      if(!canSelfClaimGift(t)){toast('Quá 30 giây rồi, nhờ admin hoàn tiền nha 😅','err');closeOv('ov-gift-pin');return;}
       const okPin=await verifyMemberGiftPin(t.fromId,pin);
       if(!okPin){toast('Sai mã PIN rồi 😅','err');setGiftPinError('Sai mã PIN');return;}
       const ok=cancelBirthdayGift(t.id,'self');
@@ -3701,9 +3979,10 @@ async function submitGiftPinModal(){
     btn.disabled=false;
   }
 }
-async function performBirthdayGift({fromId,toId,amount}){
+async function performBirthdayGift({fromId,toId,giftId,giftName,amount}){
   ensureFundMember();
-  if(![1000,10000].includes(amount)) return toast('Chọn số tiền quà hợp lệ','err'),false;
+  const gift=BIRTHDAY_GIFTS.find(g=>g.id===giftId&&g.amount===amount);
+  if(!gift) return toast('Chọn quà sinh nhật hợp lệ','err'),false;
   const giver=getMemberById(fromId), receiver=getMemberById(toId), fund=getBirthdayFund();
   if(!giver||!receiver||!fund){toast('Không tìm thấy người tặng hoặc QUỸ SINH NHẬT','err');return false;}
   if(giver.isFixed||fromId===BIRTHDAY_FUND_ID||fromId===FUND_ID){toast('Quỹ không thể là người tặng','err');return false;}
@@ -3713,12 +3992,12 @@ async function performBirthdayGift({fromId,toId,amount}){
   fund.totalIn=(fund.totalIn||0)+amount;
   S.transactions.push({
     id:uid(),date:td(),type:'birthday_gift',
-    desc:`${giver.name} đã tặng sinh nhật ${receiver.name} ${fmt(amount)}`,
-    category:'🎂 Sinh nhật',amount,fromId,toId,fundId:BIRTHDAY_FUND_ID,
+    desc:`${giver.name} đã tặng sinh nhật ${receiver.name} ${gift.name} ${fmt(amount)}`,
+    category:'🎂 Sinh nhật',giftId:gift.id,giftName:gift.name,amount,fromId,toId,fundId:BIRTHDAY_FUND_ID,
     memberIds:[fromId,BIRTHDAY_FUND_ID],status:'active',createdAt:Date.now(),
     cancelledAt:null,cancelledBy:null
   });
-  fbSave(true); render(); toast(`${giver.name} đã gửi quà sinh nhật 🎁`);
+  fbSave(true); closeOv('ov-birthday-gift'); render(); toast(`${giver.name} đã gửi ${gift.name}`);
   fireConfetti(); haptic([18,20,30]);
   return true;
 }
