@@ -1209,11 +1209,540 @@ nav.sidebar a.nav-link{
   user-select:none;
 }
 nav.sidebar a.nav-link *{pointer-events:none}
+.form-hint{
+  color:var(--txt-3);
+  font-size:11px;
+  line-height:1.35;
+  margin-top:6px;
+}
+
+.birthday-banner{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:22px;
+  padding:18px 20px;
+  margin-bottom:20px;
+  background:
+    linear-gradient(120deg,rgba(255,159,28,.26),rgba(236,72,153,.20),rgba(168,85,247,.20),rgba(234,179,8,.18)),
+    rgba(16,16,18,.72);
+  background-size:220% 220%;
+  box-shadow:0 22px 54px rgba(0,0,0,.28),0 0 32px rgba(255,159,28,.10),inset 0 1px 0 rgba(255,255,255,.16);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  animation:bdayGradient 9s ease-in-out infinite;
+  contain:paint;
+}
+.birthday-banner::before{
+  content:'';
+  position:absolute;
+  inset:-2px -35%;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.24) 48%,transparent 62%);
+  transform:translateX(-45%);
+  animation:bdayShimmer 5.8s ease-in-out infinite;
+  z-index:-1;
+}
+.birthday-banner::after{
+  content:'';
+  position:absolute;
+  right:18px;
+  top:12px;
+  width:76px;
+  height:76px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.18),transparent 68%);
+  filter:blur(.2px);
+  opacity:.7;
+  z-index:-1;
+}
+.birthday-banner.today-mode{
+  border-color:rgba(255,214,102,.34);
+  background:
+    linear-gradient(120deg,rgba(255,159,28,.34),rgba(244,63,94,.25),rgba(168,85,247,.28),rgba(250,204,21,.24)),
+    rgba(18,16,18,.78);
+  box-shadow:0 24px 62px rgba(0,0,0,.34),0 0 38px rgba(255,159,28,.18),0 0 22px rgba(236,72,153,.12),inset 0 1px 0 rgba(255,255,255,.18);
+  animation:bdayGradient 7s ease-in-out infinite,bdayPulse 2.8s ease-in-out infinite;
+}
+.birthday-banner-head{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:0;
+  color:#fff9e8;
+  text-shadow:0 1px 14px rgba(0,0,0,.25);
+}
+.birthday-banner-kicker{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:36px;
+  height:36px;
+  border-radius:14px;
+  background:rgba(255,255,255,.16);
+  border:1px solid rgba(255,255,255,.20);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+  flex-shrink:0;
+}
+.birthday-banner-list{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:14px;
+}
+.birthday-banner-person{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  max-width:100%;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(0,0,0,.22);
+  border:1px solid rgba(255,255,255,.16);
+  color:#fff;
+  font-size:12.5px;
+  font-weight:800;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.birthday-banner-person span{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.birthday-banner-date{
+  color:#ffe6a3;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11.5px;
+}
+.birthday-deco{
+  position:absolute;
+  pointer-events:none;
+  z-index:1;
+}
+.birthday-balloon{
+  width:18px;
+  height:23px;
+  border-radius:50% 50% 45% 45%;
+  background:linear-gradient(145deg,#ff9f1c,#ec4899);
+  box-shadow:inset -4px -5px 8px rgba(0,0,0,.18),0 9px 18px rgba(0,0,0,.18);
+  animation:bdayFloat 4.8s ease-in-out infinite;
+}
+.birthday-balloon::after{
+  content:'';
+  position:absolute;
+  left:8px;
+  top:22px;
+  width:1px;
+  height:22px;
+  background:rgba(255,255,255,.30);
+}
+.birthday-balloon.b1{right:20px;bottom:14px}
+.birthday-balloon.b2{right:58px;top:18px;background:linear-gradient(145deg,#a855f7,#facc15);animation-delay:-1.3s;transform:scale(.82)}
+.birthday-spark{
+  width:7px;
+  height:7px;
+  border-radius:2px;
+  background:#fff0a8;
+  box-shadow:0 0 14px rgba(255,240,168,.85);
+  animation:bdaySpark 2.9s ease-in-out infinite;
+}
+.birthday-spark.s1{left:22px;bottom:16px}
+.birthday-spark.s2{right:112px;top:20px;background:#ffb4df;animation-delay:-.9s}
+.birthday-spark.s3{left:50%;top:13px;background:#d8b4fe;animation-delay:-1.7s}
+.birthday-confetti{
+  width:6px;
+  height:12px;
+  border-radius:2px;
+  background:#facc15;
+  transform:rotate(22deg);
+  opacity:.78;
+}
+.birthday-confetti.c1{right:92px;bottom:20px;background:#fb7185}
+.birthday-confetti.c2{left:34%;bottom:17px;background:#ff9f1c;transform:rotate(-18deg)}
+.birthday-confetti.c3{left:17%;top:18px;background:#a855f7;transform:rotate(38deg)}
+
+.member-name-wrap{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+  max-width:100%;
+}
+.member-name-wrap .member-name-text{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.member-name-birthday{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  max-width:100%;
+  padding:4px 8px 4px 7px;
+  border-radius:999px;
+  background:linear-gradient(115deg,rgba(255,159,28,.95),rgba(236,72,153,.88),rgba(168,85,247,.82));
+  background-size:180% 180%;
+  border:1px solid rgba(255,255,255,.32);
+  color:#fff;
+  box-shadow:0 8px 20px rgba(236,72,153,.18),0 0 0 1px rgba(255,255,255,.05) inset;
+  line-height:1.15;
+  animation:bdayGradient 4.8s ease-in-out infinite;
+}
+.member-name-birthday::after{
+  content:'';
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:#fff7ad;
+  box-shadow:0 0 10px #fff7ad;
+  animation:bdaySpark 2.1s ease-in-out infinite;
+  flex-shrink:0;
+}
+.member-party-icon{font-size:13px;line-height:1;flex-shrink:0}
+.member-bday-age{
+  flex-shrink:0;
+  padding:2px 5px;
+  border-radius:999px;
+  background:rgba(0,0,0,.22);
+  color:#fff8ce;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  font-weight:900;
+}
+.member-name-birthday-month{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  flex-shrink:0;
+  padding:2px 7px;
+  border-radius:999px;
+  border:1px solid rgba(255,159,28,.24);
+  background:rgba(255,159,28,.10);
+  color:#ffd28a;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;
+  font-weight:800;
+}
+.chip .member-name-wrap,
+.chip .member-name-birthday{max-width:100%}
+.lb-name .member-name-wrap,
+.doa-name .member-name-wrap{max-width:100%}
+
+.birthday-gift-panel{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:20px;
+  padding:16px;
+  margin:-8px 0 20px;
+  background:
+    linear-gradient(135deg,rgba(255,159,28,.13),rgba(236,72,153,.11),rgba(168,85,247,.12)),
+    rgba(255,255,255,.045);
+  box-shadow:0 16px 42px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.10);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.birthday-gift-panel::before{
+  content:'';
+  position:absolute;
+  inset:-2px -45%;
+  background:linear-gradient(100deg,transparent 38%,rgba(255,255,255,.12) 50%,transparent 62%);
+  animation:bdayShimmer 7s ease-in-out infinite;
+  z-index:-1;
+}
+.gift-panel-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.gift-panel-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#fff5d6;
+  font-weight:900;
+  font-size:14px;
+}
+.gift-panel-title span:first-child{
+  display:inline-flex;
+  width:28px;
+  height:28px;
+  align-items:center;
+  justify-content:center;
+  border-radius:11px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.16);
+  animation:giftPop 3.4s ease-in-out infinite;
+}
+.gift-controls{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:10px;
+  align-items:end;
+}
+.gift-presets{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+.gift-amount-btn{
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.22);
+  color:#fff1c7;
+  border-radius:999px;
+  padding:9px 12px;
+  font:inherit;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+  transition:all .2s var(--ease);
+}
+.gift-amount-btn.on,
+.gift-amount-btn:hover{
+  background:linear-gradient(135deg,rgba(255,159,28,.88),rgba(236,72,153,.72));
+  border-color:rgba(255,255,255,.30);
+  color:#fff;
+  box-shadow:0 10px 20px rgba(236,72,153,.14);
+}
+.gift-select-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.gift-select-grid label{color:#ffe8ad}
+.gift-submit{
+  min-height:40px;
+  background:linear-gradient(135deg,rgba(255,159,28,.88),rgba(236,72,153,.76),rgba(168,85,247,.70))!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.20)!important;
+  box-shadow:0 14px 30px rgba(236,72,153,.14)!important;
+}
+.gift-feed{
+  margin-top:14px;
+  border-top:1px solid rgba(255,255,255,.10);
+  padding-top:12px;
+}
+.gift-feed-title{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:#ffe8ad;
+  font-size:12px;
+  font-weight:900;
+  margin-bottom:9px;
+}
+.gift-feed-list{
+  display:grid;
+  gap:7px;
+}
+.gift-feed-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:14px;
+  padding:10px 11px;
+  background:rgba(0,0,0,.18);
+  color:#f9fafb;
+  font-size:12.5px;
+  line-height:1.4;
+}
+.gift-feed-row.cancelled{
+  opacity:.72;
+  background:rgba(255,255,255,.035);
+}
+.gift-feed-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.gift-feed-meta{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  flex-shrink:0;
+}
+.gift-feed-time{
+  color:#ffd28a;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;
+}
+.gift-mini-btn{
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:999px;
+  padding:6px 9px;
+  background:rgba(255,255,255,.08);
+  color:#fff4cf;
+  font:inherit;
+  font-size:11px;
+  font-weight:900;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.gift-mini-btn:hover{background:rgba(255,159,28,.18)}
+.gift-mini-btn.admin{color:#ffc3d9;border-color:rgba(236,72,153,.28)}
+.gift-empty{
+  padding:12px;
+  border-radius:14px;
+  background:rgba(0,0,0,.14);
+  border:1px dashed rgba(255,255,255,.14);
+  color:#ffe8ad;
+  font-size:12.5px;
+}
+.gift-more{
+  color:var(--txt-3);
+  font-size:11.5px;
+  margin-top:8px;
+  text-align:center;
+}
+.gift-pin-status{
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:14px;
+  padding:12px;
+  background:rgba(255,255,255,.04);
+}
+.gift-pin-status-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.gift-pin-state{
+  color:#ffe8ad;
+  font-size:12px;
+  font-weight:800;
+}
+.gift-pin-note{
+  margin-top:6px;
+  color:var(--txt-3);
+  font-size:11px;
+  line-height:1.45;
+}
+.birthday-fund-label{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  color:#ffe6f1!important;
+  padding:2px 8px;
+  border-radius:999px;
+  background:linear-gradient(135deg,rgba(255,159,28,.18),rgba(236,72,153,.16),rgba(168,85,247,.18));
+  border:1px solid rgba(255,255,255,.14);
+}
+.birthday-fund-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  margin-left:6px;
+  padding:2px 7px;
+  border-radius:999px;
+  background:rgba(236,72,153,.13);
+  border:1px solid rgba(236,72,153,.28);
+  color:#ffc3d9;
+  font-size:10px;
+  font-weight:900;
+}
+.birthday-fund-row{
+  background:linear-gradient(135deg,rgba(255,159,28,.045),rgba(236,72,153,.045),rgba(168,85,247,.04))!important;
+}
+.birthday-fund-mini{
+  background:rgba(236,72,153,.14)!important;
+  color:#ffc3d9!important;
+  border:1px solid rgba(236,72,153,.26);
+}
+.gift-pin-modal-body{
+  display:grid;
+  gap:12px;
+}
+.gift-pin-summary{
+  border:1px solid rgba(255,159,28,.18);
+  border-radius:14px;
+  background:rgba(255,159,28,.06);
+  padding:12px;
+  color:var(--txt-2);
+  font-size:12.5px;
+  line-height:1.6;
+}
+.gift-pin-summary b{color:#fff}
+.gift-pin-error{
+  min-height:16px;
+  color:var(--red);
+  font-size:12px;
+}
+
+@keyframes giftPop{
+  0%,100%{transform:scale(1) rotate(-3deg)}
+  50%{transform:scale(1.08) rotate(5deg)}
+}
+
+@keyframes bdayGradient{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+@keyframes bdayShimmer{
+  0%,62%{transform:translateX(-52%)}
+  100%{transform:translateX(72%)}
+}
+@keyframes bdayFloat{
+  0%,100%{transform:translateY(0) rotate(-3deg)}
+  50%{transform:translateY(-8px) rotate(4deg)}
+}
+@keyframes bdayPulse{
+  0%,100%{box-shadow:0 24px 62px rgba(0,0,0,.34),0 0 38px rgba(255,159,28,.18),0 0 22px rgba(236,72,153,.12),inset 0 1px 0 rgba(255,255,255,.18)}
+  50%{box-shadow:0 26px 68px rgba(0,0,0,.36),0 0 48px rgba(255,159,28,.25),0 0 30px rgba(236,72,153,.18),inset 0 1px 0 rgba(255,255,255,.20)}
+}
+@keyframes bdaySpark{
+  0%,100%{transform:scale(.75) rotate(0deg);opacity:.55}
+  50%{transform:scale(1.2) rotate(45deg);opacity:1}
+}
+
 @media(max-width:768px){
   nav.sidebar{z-index:650}
   nav.sidebar a.nav-link{
     min-width:0;
     will-change:transform;
+  }
+  .birthday-banner{
+    border-radius:18px;
+    padding:15px 14px;
+    margin-bottom:16px;
+  }
+  .birthday-banner-head{font-size:14px;line-height:1.3;padding-right:52px}
+  .birthday-banner-kicker{width:32px;height:32px;border-radius:12px}
+  .birthday-banner-list{display:grid;grid-template-columns:1fr;gap:7px}
+  .birthday-banner-person{width:100%;justify-content:space-between;padding:8px 10px}
+  .birthday-balloon.b1{right:12px;bottom:18px;transform:scale(.82)}
+  .birthday-balloon.b2{right:38px;top:16px;transform:scale(.68)}
+  .birthday-gift-panel{padding:14px;margin-top:-4px;border-radius:18px}
+  .gift-controls{grid-template-columns:1fr;align-items:stretch}
+  .gift-select-grid{grid-template-columns:1fr}
+  .gift-presets{display:grid;grid-template-columns:1fr 1fr}
+  .gift-submit{width:100%;min-height:42px}
+  .gift-feed-row{align-items:flex-start;flex-direction:column}
+  .gift-feed-meta{width:100%;justify-content:space-between}
+  .member-name-wrap{gap:5px;flex-wrap:wrap}
+  .member-name-birthday{padding:4px 7px;gap:5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .birthday-banner,
+  .birthday-banner::before,
+  .birthday-banner.today-mode,
+  .birthday-balloon,
+  .birthday-spark,
+  .birthday-gift-panel::before,
+  .gift-panel-title span:first-child,
+  .member-name-birthday,
+  .member-name-birthday::after{
+    animation:none!important;
   }
 }
 </style>
@@ -1304,6 +1833,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
     <div><h1>Tổng quan</h1><p>Trạng thái quỹ và công nợ</p></div>
     <button class="btn bg btn-sm hm" onclick="shareDashboardCard()"><i data-lucide="share-2"></i> Share</button>
   </div>
+  <div id="birthday-banner-slot"></div>
   <div class="sgrid" id="stat-grid"></div>
 
   <div class="card mb20">
@@ -1578,6 +2108,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
     <button class="modal-close" onclick="closeOv('ov-member')"><i data-lucide="x"></i></button>
     <div class="mt"><i data-lucide="user-plus"></i>Thêm thành viên</div>
     <div class="mb12"><label>Tên</label><input type="text" id="mem-name" placeholder="Nguyễn Văn A"></div>
+    <div class="mb12"><label>Ngày sinh nhật</label><input type="text" id="mem-birthday" placeholder="DD-MM-YYYY" maxlength="10"><div class="form-hint">VD: 26-05-1995</div></div>
     <div class="mb12">
       <label>Số dư ban đầu (×1000)</label>
       <div class="input-k">
@@ -1596,12 +2127,28 @@ nav.sidebar a.nav-link *{pointer-events:none}
   <div class="modal">
     <div class="sheet-handle"></div>
     <button class="modal-close" onclick="closeOv('ov-edit-member')"><i data-lucide="x"></i></button>
-    <div class="mt"><i data-lucide="pencil"></i>Sửa tên</div>
+    <div class="mt"><i data-lucide="pencil"></i>Sửa thành viên</div>
     <input type="hidden" id="edit-mem-id">
-    <div class="mb12"><label>Tên mới</label><input type="text" id="edit-mem-name" onkeydown="if(event.key==='Enter')saveEditMember()"></div>
+    <div class="mb12"><label>Tên</label><input type="text" id="edit-mem-name" onkeydown="if(event.key==='Enter')saveEditMember()"></div>
+    <div class="mb12"><label>Ngày sinh nhật</label><input type="text" id="edit-mem-birthday" placeholder="DD-MM-YYYY" maxlength="10" onkeydown="if(event.key==='Enter')saveEditMember()"><div class="form-hint">Để trống nếu chưa có. VD: 26-05-1995</div></div>
+    <div class="mb12" id="edit-gift-pin-status"></div>
     <div class="fl g8 mt12">
       <button class="btn bp" onclick="saveEditMember()" style="flex:1"><i data-lucide="save"></i> Lưu</button>
       <button class="btn bg" onclick="closeOv('ov-edit-member')">Hủy</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="ov-gift-pin">
+  <div class="modal">
+    <div class="sheet-handle"></div>
+    <button class="modal-close" onclick="closeOv('ov-gift-pin')"><i data-lucide="x"></i></button>
+    <div class="mt" id="gift-pin-title"><i data-lucide="gift"></i>Gửi quà sinh nhật</div>
+    <div class="gift-pin-modal-body" id="gift-pin-body"></div>
+    <div class="gift-pin-error" id="gift-pin-error"></div>
+    <div class="fl g8 mt12">
+      <button class="btn bp" id="gift-pin-submit" onclick="submitGiftPinModal()" style="flex:1"><i data-lucide="gift"></i> Gửi quà</button>
+      <button class="btn bg" onclick="closeOv('ov-gift-pin')">Hủy</button>
     </div>
   </div>
 </div>
@@ -1722,6 +2269,9 @@ let selCat = '🎾 Tennis';
 let recMode = 'fixed';
 let soundOn = localStorage.getItem('clb_sound') === 'on';
 const FUND_ID = '__fund_team__';
+const BIRTHDAY_FUND_ID = '__birthday_fund__';
+let giftAmount = 1000;
+let giftPinContext = null;
 
 // ═══════════════════════════════════════════════════════════════
 // UTILS
@@ -1733,6 +2283,135 @@ function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(
 function td(){ return new Date().toISOString().split('T')[0]; }
 function escapeHTML(s){return (s||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function refreshIcons(){ if(window.lucide && lucide.createIcons) lucide.createIcons(); }
+
+function parseBirthday(str){
+  if(!str) return null;
+  const raw=str.toString().trim();
+  const m=raw.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+  if(!m) return null;
+  const day=parseInt(m[1],10), month=parseInt(m[2],10), year=parseInt(m[3],10);
+  if(year<1||month<1||month>12||day<1) return null;
+  const d=new Date(year,month-1,day);
+  if(d.getFullYear()!==year||d.getMonth()!==month-1||d.getDate()!==day) return null;
+  return {day,month,year};
+}
+function getBirthdayAge(birthday){
+  const b=parseBirthday(birthday);
+  if(!b) return null;
+  const now=new Date();
+  let age=now.getFullYear()-b.year;
+  const hadBirthday=now.getMonth()+1>b.month||(now.getMonth()+1===b.month&&now.getDate()>=b.day);
+  if(!hadBirthday) age--;
+  return age>=0?age:null;
+}
+function getTurningAge(birthday){
+  const b=parseBirthday(birthday);
+  if(!b) return null;
+  const age=new Date().getFullYear()-b.year;
+  return age>=0?age:null;
+}
+function isBirthdayToday(birthday){
+  const b=parseBirthday(birthday);
+  if(!b) return false;
+  const now=new Date();
+  return b.day===now.getDate()&&b.month===now.getMonth()+1;
+}
+function isBirthdayThisMonth(birthday){
+  const b=parseBirthday(birthday);
+  return !!b&&b.month===new Date().getMonth()+1;
+}
+function daysUntilBirthdayThisYear(birthday){
+  const b=parseBirthday(birthday);
+  if(!b) return null;
+  const now=new Date();
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const target=new Date(now.getFullYear(),b.month-1,b.day);
+  return Math.round((target-today)/86400000);
+}
+function formatBirthdayShort(birthday){
+  const b=parseBirthday(birthday);
+  return b?`${String(b.day).padStart(2,'0')}/${String(b.month).padStart(2,'0')}`:'';
+}
+function renderMemberName(m){
+  const name=escapeHTML((m&&m.name)||'?');
+  if(m&&m.isBirthdayFund) return `<span class="birthday-fund-label"><span>🎂</span><span>${name}</span></span>`;
+  const birthday=m&&m.birthday;
+  const b=parseBirthday(birthday);
+  if(!b) return name;
+  if(isBirthdayToday(birthday)){
+    const age=getBirthdayAge(birthday);
+    return `<span class="member-name-birthday"><span class="member-party-icon">🥳</span><span class="member-name-text">${name}</span>${age!==null?`<span class="member-bday-age">${age}t</span>`:''}</span>`;
+  }
+  if(isBirthdayThisMonth(birthday)){
+    return `<span class="member-name-wrap"><span class="member-name-text">${name}</span><span class="member-name-birthday-month">🎂 ${formatBirthdayShort(birthday)}</span></span>`;
+  }
+  return name;
+}
+function stripPlainGiftPinFields(){
+  S.members=(S.members||[]).map(m=>{
+    if(!m) return m;
+    const {giftPin,pin,giftPinPlain,...safe}=m;
+    return safe;
+  });
+}
+function getCurrentYm(date=new Date()){
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`;
+}
+function getMemberById(id){ return S.members.find(m=>m.id===id); }
+function getMemberName(id){ return (getMemberById(id)||{}).name||'?'; }
+function hasGiftPin(member){ return !!(member&&member.giftPinHash); }
+function validateGiftPin(pin){ return /^\d{4}$/.test((pin||'').trim()); }
+async function sha256(text){
+  if(!window.crypto?.subtle||typeof TextEncoder==='undefined'){
+    toast('Trình duyệt không hỗ trợ bảo mật PIN','err');
+    throw new Error('Web Crypto unavailable');
+  }
+  const data=new TextEncoder().encode(text);
+  const hash=await crypto.subtle.digest('SHA-256',data);
+  const hex=[...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  return 'sha256:'+hex;
+}
+async function setMemberGiftPin(memberId,pin){
+  if(!validateGiftPin(pin)) throw new Error('invalid-pin');
+  const m=getMemberById(memberId);
+  if(!m) throw new Error('member-not-found');
+  m.giftPinHash=await sha256(memberId+':'+pin);
+  m.giftPinSetAt=Date.now();
+}
+async function verifyMemberGiftPin(memberId,pin){
+  if(!validateGiftPin(pin)) return false;
+  const m=getMemberById(memberId);
+  if(!hasGiftPin(m)) return false;
+  const hash=await sha256(memberId+':'+pin);
+  return hash===m.giftPinHash;
+}
+function resetMemberGiftPin(memberId){
+  const m=getMemberById(memberId);
+  if(!m) return false;
+  m.giftPinHash='';
+  m.giftPinSetAt=null;
+  return true;
+}
+function getBirthdayFund(){ return getMemberById(BIRTHDAY_FUND_ID); }
+function getGiftableMembers(){
+  return (S.members||[]).filter(m=>m&&!m.isFixed&&m.id!==FUND_ID&&m.id!==BIRTHDAY_FUND_ID);
+}
+function getBirthdayMembersThisMonth(){
+  return getGiftableMembers()
+    .filter(m=>parseBirthday(m.birthday)&&isBirthdayThisMonth(m.birthday))
+    .map(m=>({m,b:parseBirthday(m.birthday),days:daysUntilBirthdayThisYear(m.birthday)}))
+    .sort((a,b)=>a.days-b.days||a.b.day-b.b.day)
+    .map(x=>x.m);
+}
+function getBirthdayGiftTransactionsThisMonth(){
+  const ym=getCurrentYm();
+  return (S.transactions||[])
+    .filter(t=>t.type==='birthday_gift'&&((t.date||'').startsWith(ym)))
+    .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+}
+function canSelfClaimGift(t){
+  return !!(t&&t.type==='birthday_gift'&&t.status!=='cancelled'&&t.createdAt&&Date.now()-t.createdAt<=10000);
+}
 
 function toast(msg,type='ok',opts={}){
   const t=document.getElementById('toast');
@@ -1824,7 +2503,6 @@ function applyRoleUI(){
     if('disabled' in el) el.disabled=locked;
     el.title=locked?'Cần quyền Admin':'';
   });
-  refreshIcons();
 }
 
 let confirmResolver=null;
@@ -1846,9 +2524,10 @@ function resolveConfirm(v){
 // ═══════════════════════════════════════════════════════════════
 // FIREBASE
 // ═══════════════════════════════════════════════════════════════
-function fbSave(){
-  if(!isAdmin) return;
+function fbSave(force=false){
+  if(!isAdmin&&!force) return;
   syncDot('saving');
+  stripPlainGiftPinFields();
   const payload={members:S.members,transactions:S.transactions,recurring:S.recurring,updatedAt:Date.now()};
   localStorage.setItem('clb_cache',JSON.stringify(S));
   if(window._fbSet){
@@ -1867,6 +2546,7 @@ function startFB(){
     S.members=val.members||[];
     S.transactions=val.transactions||[];
     S.recurring=val.recurring||[];
+    stripPlainGiftPinFields();
     ensureFundMember();
     localStorage.setItem('clb_cache',JSON.stringify(S));
     render(); syncDot('synced',val.updatedAt);
@@ -1924,7 +2604,7 @@ function checkMonthSnapshot(){
 function buildSnapshot(ym){
   const sessions=S.transactions.filter(t=>t.type==='session'&&t.date.startsWith(ym));
   const topups=S.transactions.filter(t=>t.type==='topup'&&t.date.startsWith(ym));
-  const members=S.members.filter(m=>m.id!==FUND_ID);
+  const members=getGiftableMembers();
   const spending=members.map(m=>({
     id:m.id,name:m.name,
     spent:sessions.filter(t=>t.memberIds?.includes(m.id)).reduce((s,t)=>s+(t.perPerson||0),0),
@@ -2182,6 +2862,15 @@ function ensureFundMember(){
   if(!S.members.find(m=>m.id===FUND_ID))
     S.members.unshift({id:FUND_ID,name:'QUỸ TEAM',balance:0,totalIn:0,totalOut:0,order:-1,isFixed:true});
   else{const fm=S.members.find(m=>m.id===FUND_ID);fm.order=-1;fm.isFixed=true;}
+  const birthdayFund=S.members.find(m=>m.id===BIRTHDAY_FUND_ID);
+  if(!birthdayFund){
+    S.members.unshift({id:BIRTHDAY_FUND_ID,name:'QUỸ SINH NHẬT',balance:0,totalIn:0,totalOut:0,order:-2,isFixed:true,isBirthdayFund:true});
+  }else{
+    birthdayFund.name='QUỸ SINH NHẬT';
+    birthdayFund.order=-2;
+    birthdayFund.isFixed=true;
+    birthdayFund.isBirthdayFund=true;
+  }
 }
 function debtColor(bal){
   if(bal>0) return 'var(--grn)';
@@ -2190,18 +2879,153 @@ function debtColor(bal){
   return 'var(--red)';
 }
 
+function renderBirthdayBanner(){
+  const slot=document.getElementById('birthday-banner-slot');
+  if(!slot) return;
+  const rows=getGiftableMembers()
+    .filter(m=>parseBirthday(m.birthday)&&isBirthdayThisMonth(m.birthday))
+    .map(m=>({m,b:parseBirthday(m.birthday),days:daysUntilBirthdayThisYear(m.birthday)}))
+    .sort((a,b)=>a.days-b.days||a.b.day-b.b.day);
+  if(!rows.length){slot.innerHTML='';return;}
+
+  const todayRows=rows.filter(x=>isBirthdayToday(x.m.birthday));
+  const deco=`
+    <span class="birthday-deco birthday-balloon b1"></span>
+    <span class="birthday-deco birthday-balloon b2"></span>
+    <span class="birthday-deco birthday-spark s1"></span>
+    <span class="birthday-deco birthday-spark s2"></span>
+    <span class="birthday-deco birthday-spark s3"></span>
+    <span class="birthday-deco birthday-confetti c1"></span>
+    <span class="birthday-deco birthday-confetti c2"></span>
+    <span class="birthday-deco birthday-confetti c3"></span>`;
+
+  if(todayRows.length){
+    const first=todayRows[0];
+    const names=todayRows.map(x=>escapeHTML(x.m.name)).join(', ');
+    const firstAge=getBirthdayAge(first.m.birthday);
+    const title=todayRows.length===1
+      ? `Hôm nay sinh nhật ${escapeHTML(first.m.name)}${firstAge!==null?` — lên ${firstAge} tuổi!`:'!'}`
+      : `Hôm nay sinh nhật ${names}`;
+    const bannerHTML=`
+      <div class="birthday-banner today-mode">
+        ${deco}
+        <div class="birthday-banner-head"><span class="birthday-banner-kicker">🎉</span><span>${title}</span></div>
+        <div class="birthday-banner-list">
+          ${todayRows.map(x=>{
+            const age=getBirthdayAge(x.m.birthday);
+            return `<div class="birthday-banner-person"><span>${escapeHTML(x.m.name)}${age!==null?` lên ${age} tuổi`:''}</span><span class="birthday-banner-date">${formatBirthdayShort(x.m.birthday)}</span></div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    slot.innerHTML=bannerHTML+renderBirthdayGiftPanel();
+    renderBirthdayGiftFeed();
+    return;
+  }
+
+  const bannerHTML=`
+    <div class="birthday-banner month-mode">
+      ${deco}
+      <div class="birthday-banner-head"><span class="birthday-banner-kicker">🎂</span><span>Sinh nhật tháng này</span></div>
+      <div class="birthday-banner-list">
+        ${rows.map(x=>{
+          const age=getTurningAge(x.m.birthday);
+          return `<div class="birthday-banner-person"><span>${escapeHTML(x.m.name)}${age!==null?` lên ${age} tuổi`:''}</span><span class="birthday-banner-date">${formatBirthdayShort(x.m.birthday)}</span></div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  slot.innerHTML=bannerHTML+renderBirthdayGiftPanel();
+  renderBirthdayGiftFeed();
+}
+
+function renderBirthdayGiftPanel(){
+  const recipients=getBirthdayMembersThisMonth();
+  const givers=getGiftableMembers();
+  if(!recipients.length) return '';
+  if(!givers.length){
+    return `<div class="birthday-gift-panel"><div class="gift-empty">Cần có thành viên thường để gửi quà sinh nhật.</div><div id="birthday-gift-feed" class="gift-feed"></div></div>`;
+  }
+  const oldTo=document.getElementById('gift-to')?.value;
+  const oldFrom=document.getElementById('gift-from')?.value;
+  const todayRecipient=recipients.find(m=>isBirthdayToday(m.birthday));
+  const toVal=oldTo&&recipients.some(m=>m.id===oldTo)?oldTo:(todayRecipient?.id||recipients[0].id);
+  const fromVal=oldFrom&&givers.some(m=>m.id===oldFrom)?oldFrom:givers[0].id;
+  return `
+    <div class="birthday-gift-panel">
+      <div class="gift-panel-head">
+        <div class="gift-panel-title"><span>🎁</span><div>Gửi quà sinh nhật</div></div>
+        <div class="tm">Tiền trừ từ người tặng và cộng vào QUỸ SINH NHẬT</div>
+      </div>
+      <div class="gift-controls">
+        <div>
+          <label>Số tiền</label>
+          <div class="gift-presets">
+            <button type="button" class="gift-amount-btn ${giftAmount===1000?'on':''}" onclick="selectGiftAmount(1000)">1.000đ</button>
+            <button type="button" class="gift-amount-btn ${giftAmount===10000?'on':''}" onclick="selectGiftAmount(10000)">10.000đ</button>
+          </div>
+        </div>
+        <div class="gift-select-grid">
+          <div><label>Người nhận sinh nhật</label><select id="gift-to">${recipients.map(m=>`<option value="${escapeHTML(m.id)}" ${m.id===toVal?'selected':''}>${escapeHTML(m.name)} — ${formatBirthdayShort(m.birthday)}</option>`).join('')}</select></div>
+          <div><label>Người tặng</label><select id="gift-from">${givers.map(m=>`<option value="${escapeHTML(m.id)}" ${m.id===fromVal?'selected':''}>${escapeHTML(m.name)}</option>`).join('')}</select></div>
+        </div>
+        <button type="button" class="btn gift-submit" onclick="startBirthdayGift()"><i data-lucide="gift"></i> Gửi quà 🎁</button>
+      </div>
+      <div id="birthday-gift-feed" class="gift-feed"></div>
+    </div>`;
+}
+
+function renderBirthdayGiftFeed(){
+  const el=document.getElementById('birthday-gift-feed');
+  if(!el) return;
+  const txns=getBirthdayGiftTransactionsThisMonth();
+  if(!txns.length){
+    el.innerHTML=`<div class="gift-feed-title">🎁 Quà sinh nhật tháng này</div><div class="gift-empty">Chưa ai gửi quà, mở màn đi nào 🎈</div>`;
+    return;
+  }
+  const rows=txns.slice(0,8);
+  el.innerHTML=`
+    <div class="gift-feed-title">🎁 Quà sinh nhật tháng này</div>
+    <div class="gift-feed-list">
+      ${rows.map(t=>{
+        const giver=escapeHTML(getMemberName(t.fromId));
+        const receiver=escapeHTML(getMemberName(t.toId));
+        const amount=fmt(t.amount||0);
+        const cancelled=t.status==='cancelled';
+        let text=`🎁 ${giver} đã tặng sinh nhật ${receiver} ${amount}`;
+        if(cancelled&&t.cancelledBy==='self') text=`↩️ ${giver} đã đòi lại quà sinh nhật ${receiver} ${amount}`;
+        if(cancelled&&t.cancelledBy==='admin') text=`↩️ Admin đã hoàn tiền quà sinh nhật của ${giver}`;
+        const elapsed=Date.now()-(t.createdAt||0);
+        const left=Math.max(0,Math.ceil((10000-elapsed)/1000));
+        const selfBtn=!cancelled&&canSelfClaimGift(t)?`<button type="button" class="gift-mini-btn" onclick="openClaimGiftModal('${t.id}')">Đòi lại · ${left}s</button>`:'';
+        const adminBtn=!cancelled&&!canSelfClaimGift(t)&&isAdmin?`<button type="button" class="gift-mini-btn admin" onclick="adminRefundGift('${t.id}')">Hoàn tiền</button>`:'';
+        const time=t.createdAt?new Date(t.createdAt).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}):'';
+        return `<div class="gift-feed-row ${cancelled?'cancelled':'active'}">
+          <div class="gift-feed-text">${text}</div>
+          <div class="gift-feed-meta"><span class="gift-feed-time">${escapeHTML(time)}</span>${selfBtn}${adminBtn}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    ${txns.length>8?`<div class="gift-more">+${txns.length-8} món quà khác</div>`:''}`;
+}
+
 function renderDash(){
   ensureFundMember();
+  renderBirthdayBanner();
   const fund=S.members.find(m=>m.id===FUND_ID);
+  const birthdayFund=getBirthdayFund();
   const fundBal=fund?(fund.balance||0):0;
-  const totalDebt=S.members.filter(m=>m.id!==FUND_ID&&m.balance<0).reduce((s,m)=>s+m.balance,0);
-  const debts=S.members.filter(m=>m.id!==FUND_ID&&m.balance<0).length;
+  const birthdayFundBal=birthdayFund?(birthdayFund.balance||0):0;
+  const totalDebt=getGiftableMembers().filter(m=>m.balance<0).reduce((s,m)=>s+m.balance,0);
+  const debts=getGiftableMembers().filter(m=>m.balance<0).length;
   const totalSpent=S.transactions.filter(t=>t.type==='session').reduce((s,t)=>s+t.amount,0);
 
   document.getElementById('stat-grid').innerHTML=`
     <div class="stat">
       <div class="stat-head"><div class="sl">Quỹ Team</div><div class="stat-ic" style="color:var(--grn)"><i data-lucide="piggy-bank"></i></div></div>
       <div class="sv" data-val="${fundBal}" style="color:${debtColor(fundBal)}">${fmt(fundBal)}</div>
+    </div>
+    <div class="stat">
+      <div class="stat-head"><div class="sl">Quỹ sinh nhật</div><div class="stat-ic" style="color:#ffc3d9"><i data-lucide="gift"></i></div></div>
+      <div class="sv" data-val="${birthdayFundBal}" style="color:#ffc3d9">${fmt(birthdayFundBal)}</div>
     </div>
     <div class="stat">
       <div class="stat-head"><div class="sl">Tổng nợ</div><div class="stat-ic" style="color:var(--red)"><i data-lucide="trending-down"></i></div></div>
@@ -2225,14 +3049,14 @@ function renderDash(){
     ? getSortedMembers().map(m=>{
         const bal=m.balance||0;
         const statusCell=m.isFixed
-          ? '<span class="bdg dg">Quỹ</span>'
+          ? `<span class="bdg ${m.isBirthdayFund?'birthday-fund-mini':'dg'}">Quỹ</span>`
           : bal<0
             ? `<span class="bdg-debt wo" onclick="quickPayDash('${m.id}')">Trả nợ</span>`
             : bal===0
               ? '<span class="bdg" style="background:rgba(113,113,122,.15);color:var(--mut)">Hòa</span>'
               : '<span class="bdg dg">Đủ tiền</span>';
-        return `<tr>
-          <td><b ${m.isFixed?'style="color:var(--grn)"':''}>${escapeHTML(m.name)}</b>${m.isFixed?'<span class="tm" style="margin-left:6px;font-size:10px">Quỹ chung</span>':''}</td>
+        return `<tr ${m.isBirthdayFund?'class="birthday-fund-row"':''}>
+          <td><b ${m.isFixed&&!m.isBirthdayFund?'style="color:var(--grn)"':''}>${renderMemberName(m)}</b>${m.isFixed?`<span class="${m.isBirthdayFund?'birthday-fund-badge':'tm'}" style="margin-left:6px;font-size:10px">Quỹ</span>`:''}</td>
           <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${debtColor(bal)}">${fmt(bal)}</td>
           <td>${statusCell}</td>
         </tr>`;
@@ -2267,6 +3091,7 @@ function quickPayDash(id){
 }
 
 function typeBadge(t){
+  if(t.type==='birthday_gift') return t.status==='cancelled'?'<span class="bdg do">↩️ Đòi lại</span>':'<span class="bdg birthday-fund-mini">🎂 Quà SN</span>';
   if(t.type==='topup') return t.amount>=0?'<span class="bdg dg">Nạp</span>':'<span class="bdg dr">Trừ</span>';
   const cat=t.category||'Buổi';
   let cls='dr';
@@ -2280,8 +3105,8 @@ function typeBadge(t){
 
 function renderMembersList(){
   document.getElementById('tbl-members').innerHTML=getSortedMembers().length
-    ? getSortedMembers().map(m=>`<tr ${m.isFixed?'style="background:rgba(34,197,94,.03)"':''}>
-        <td><b ${m.isFixed?'style="color:var(--grn)"':''}>${escapeHTML(m.name)}</b>${m.isFixed?'<span class="tm" style="margin-left:6px;font-size:10px">Quỹ chung</span>':''}</td>
+    ? getSortedMembers().map(m=>`<tr ${m.isBirthdayFund?'class="birthday-fund-row"':m.isFixed?'style="background:rgba(34,197,94,.03)"':''}>
+        <td><b ${m.isFixed&&!m.isBirthdayFund?'style="color:var(--grn)"':''}>${renderMemberName(m)}</b>${m.isFixed?`<span class="${m.isBirthdayFund?'birthday-fund-badge':'tm'}" style="margin-left:6px;font-size:10px">Quỹ</span>`:''}</td>
         <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${debtColor(m.balance||0)}">${fmt(m.balance)}</td>
         <td class="ap hm">${fmt(m.totalIn||0)}</td>
         <td class="an hm">${fmt(m.totalOut||0)}</td>
@@ -2297,11 +3122,12 @@ function renderQMem(){ const s=document.getElementById('q-mem');if(!s)return;con
 
 function renderChips(){
   const g=document.getElementById('sess-chips'); if(!g) return;
-  g.innerHTML=S.members.length
-    ? getSortedMembers().map(m=>`<label class="chip" id="chip-${m.id}" onclick="toggleChip('${m.id}')"><input type="checkbox" id="ck-${m.id}"><span>${escapeHTML(m.name)}</span></label>`).join('')
+  const members=getGiftableMembers();
+  g.innerHTML=members.length
+    ? members.map(m=>`<label class="chip" id="chip-${m.id}" onclick="toggleChip('${m.id}')"><input type="checkbox" id="ck-${m.id}"><span>${renderMemberName(m)}</span></label>`).join('')
     : '<span class="tm">Chưa có thành viên</span>';
   const pb=document.getElementById('paid-by-sel'); if(!pb) return;
-  pb.innerHTML='<option value="">— Tôi tự trả —</option>'+S.members.map(m=>`<option value="${m.id}">${escapeHTML(m.name)}</option>`).join('');
+  pb.innerHTML='<option value="">— Tôi tự trả —</option>'+members.map(m=>`<option value="${m.id}">${escapeHTML(m.name)}</option>`).join('');
 }
 function toggleChip(id){
   const ck=document.getElementById('ck-'+id);
@@ -2310,14 +3136,14 @@ function toggleChip(id){
   calcPP(); updateSelCount(); haptic(4);
 }
 function selAll(v){
-  S.members.forEach(m=>{
+  getGiftableMembers().forEach(m=>{
     const ck=document.getElementById('ck-'+m.id);
     if(ck){ck.checked=v;document.getElementById('chip-'+m.id).classList.toggle('on',v);}
   });
   calcPP(); updateSelCount();
 }
 function updateSelCount(){
-  const n=S.members.filter(m=>document.getElementById('ck-'+m.id)?.checked).length;
+  const n=getGiftableMembers().filter(m=>document.getElementById('ck-'+m.id)?.checked).length;
   const el=document.getElementById('sel-count');
   if(el) el.textContent=n?`(${n} người)`:'';
 }
@@ -2336,7 +3162,7 @@ function setSplitMode(m){
 }
 function calcPP(){
   const amt=kVal('sess-amt');
-  const n=S.members.filter(m=>document.getElementById('ck-'+m.id)?.checked).length;
+  const n=getGiftableMembers().filter(m=>document.getElementById('ck-'+m.id)?.checked).length;
   const disp=document.getElementById('pp-display'),val=document.getElementById('pp-val');
   if(splitMode==='split'&&amt>0&&n>0){disp.style.display='block';val.textContent=fmt(Math.ceil(amt/n));}
   else if(splitMode==='fixed'&&amt>0){disp.style.display='block';val.textContent=fmt(amt)+' × '+n+' = '+fmt(amt*n);}
@@ -2380,7 +3206,7 @@ function applyRec(){ const id=document.getElementById('rec-pick').value;const r=
 function applyRecDirect(r){
   setSplitMode(r.mode);
   document.getElementById('sess-amt').value=r.amount;
-  S.members.forEach(m=>{
+  getGiftableMembers().forEach(m=>{
     const on=(r.defaultMembers||[]).includes(m.id);
     const ck=document.getElementById('ck-'+m.id);if(ck)ck.checked=on;
     const ch=document.getElementById('chip-'+m.id);if(ch)ch.classList.toggle('on',on);
@@ -2393,7 +3219,7 @@ function applyRecDirect(r){
 }
 function renderRecMemChips(){
   const g=document.getElementById('rec-chips'); if(!g) return;
-  g.innerHTML=S.members.map(m=>`<label class="chip" id="rchip-${m.id}" onclick="toggleRChip('${m.id}')"><input type="checkbox" id="rck-${m.id}"><span>${escapeHTML(m.name)}</span></label>`).join('');
+  g.innerHTML=getGiftableMembers().map(m=>`<label class="chip" id="rchip-${m.id}" onclick="toggleRChip('${m.id}')"><input type="checkbox" id="rck-${m.id}"><span>${renderMemberName(m)}</span></label>`).join('');
 }
 function toggleRChip(id){ const ck=document.getElementById('rck-'+id);ck.checked=!ck.checked;document.getElementById('rchip-'+id).classList.toggle('on',ck.checked); }
 
@@ -2438,10 +3264,11 @@ function renderLeaderboard(){
             let rowCls='';
             if(i===0) rowCls='top3 top1';
             else if(i<3) rowCls='top3';
+            const liveMember=S.members.find(x=>x.id===m.id)||m;
             return `
             <div class="lb-row ${rowCls}">
               <div class="lb-rank ${i<3?'r'+(i+1):''}">${i+1}</div>
-              <div class="lb-name">${escapeHTML(m.name)}</div>
+              <div class="lb-name">${renderMemberName(liveMember)}</div>
               <div class="lb-val">${valFn(m)}</div>
             </div>`;
           }).join('')}
@@ -2471,18 +3298,21 @@ function renderLeaderboard(){
           </div>
         </div>
         ${byDebt.length
-          ? byDebt.map((m,i)=>`
+          ? byDebt.map((m,i)=>{
+            const liveMember=S.members.find(x=>x.id===m.id)||m;
+            return `
             <div class="doa-row">
               <div class="doa-rank">${i+1}</div>
               <div class="doa-info">
-                <div class="doa-name">${escapeHTML(m.name)}</div>
+                <div class="doa-name">${renderMemberName(liveMember)}</div>
                 <div class="doa-status">đang bỏ trốn</div>
               </div>
               <div class="doa-bounty-wrap">
                 <div class="doa-bounty-label">Tiền thưởng</div>
                 <div class="doa-bounty">${fmt(Math.abs(m.liveBal))}</div>
               </div>
-            </div>`).join('')
+            </div>`;
+          }).join('')
           : `<div style="padding:20px 16px;display:flex;align-items:center;gap:10px;color:var(--grn);font-size:13px"><i data-lucide="shield-check" style="width:16px;height:16px"></i> Không có kẻ trốn nợ — sạch sẽ!</div>`}
       </div>
     </div>
@@ -2701,6 +3531,7 @@ async function exportPDF(){
 function openAddMember(){
   if(!requireRole('admin','Cần quyền Admin để thêm thành viên')) return;
   document.getElementById('mem-name').value='';
+  document.getElementById('mem-birthday').value='';
   document.getElementById('mem-bal').value='0';
   document.getElementById('ov-member').classList.add('open');
   setTimeout(()=>document.getElementById('mem-name').focus(),250);
@@ -2709,10 +3540,12 @@ function closeOv(id){ document.getElementById(id).classList.remove('open'); }
 function addMember(){
   if(!requireRole('admin')) return;
   const name=document.getElementById('mem-name').value.trim();
+  const birthday=document.getElementById('mem-birthday').value.trim();
   const bal=kVal('mem-bal');
   if(!name) return toast('Nhập tên thành viên','err');
+  if(birthday&&!parseBirthday(birthday)) return toast('Ngày sinh nhật phải đúng DD-MM-YYYY và là ngày hợp lệ','err');
   if(S.members.find(m=>m.name===name)) return toast('Tên đã tồn tại','err');
-  S.members.push({id:uid(),name,balance:bal,totalIn:bal>0?bal:0,totalOut:bal<0?-bal:0,order:S.members.length});
+  S.members.push({id:uid(),name,birthday,balance:bal,totalIn:bal>0?bal:0,totalOut:bal<0?-bal:0,order:S.members.length});
   fbSave(); closeOv('ov-member'); render(); toast('Đã thêm '+name);
 }
 async function delMember(id){
@@ -2727,6 +3560,8 @@ function openEditMember(id){
   const m=S.members.find(x=>x.id===id); if(!m) return;
   document.getElementById('edit-mem-id').value=id;
   document.getElementById('edit-mem-name').value=m.name;
+  document.getElementById('edit-mem-birthday').value=m.birthday||'';
+  renderEditGiftPinStatus(m);
   document.getElementById('ov-edit-member').classList.add('open');
   setTimeout(()=>document.getElementById('edit-mem-name').focus(),250);
 }
@@ -2734,11 +3569,183 @@ function saveEditMember(){
   if(!requireRole('admin')) return;
   const id=document.getElementById('edit-mem-id').value;
   const name=document.getElementById('edit-mem-name').value.trim();
-  if(!name) return toast('Nhập tên mới','err');
+  const birthday=document.getElementById('edit-mem-birthday').value.trim();
+  if(!name) return toast('Nhập tên thành viên','err');
+  if(birthday&&!parseBirthday(birthday)) return toast('Ngày sinh nhật phải đúng DD-MM-YYYY và là ngày hợp lệ','err');
   if(S.members.find(m=>m.name===name&&m.id!==id)) return toast('Tên đã tồn tại','err');
   const m=S.members.find(x=>x.id===id); if(!m) return;
   m.name=name;
+  m.birthday=birthday;
   fbSave(); closeOv('ov-edit-member'); render(); toast('Đã cập nhật');
+}
+
+function renderEditGiftPinStatus(m){
+  const el=document.getElementById('edit-gift-pin-status');
+  if(!el) return;
+  const set=hasGiftPin(m);
+  el.innerHTML=`
+    <div class="gift-pin-status">
+      <div class="gift-pin-status-row">
+        <div>
+          <div class="gift-pin-state">Mã PIN tặng quà: ${set?'Đã thiết lập':'Chưa thiết lập'}</div>
+          <div class="gift-pin-note">Admin không xem được PIN thật, chỉ có thể reset để member tự tạo lại.</div>
+        </div>
+        ${set?`<button type="button" class="btn bg btn-sm" onclick="resetMemberGiftPinFromEdit()"><i data-lucide="rotate-ccw"></i> Reset PIN</button>`:''}
+      </div>
+    </div>`;
+  refreshIcons();
+}
+async function resetMemberGiftPinFromEdit(){
+  if(!requireRole('admin')) return;
+  const id=document.getElementById('edit-mem-id').value;
+  const m=getMemberById(id); if(!m) return;
+  const ok=await confirmAction({title:'Reset PIN',message:`Reset PIN của ${m.name}? Member sẽ phải tạo PIN mới khi gửi quà.`,confirmText:'Reset PIN',danger:false});
+  if(!ok) return;
+  resetMemberGiftPin(id);
+  fbSave(); render(); renderEditGiftPinStatus(getMemberById(id)); toast('Đã reset PIN');
+}
+function selectGiftAmount(amount){
+  giftAmount=amount;
+  document.querySelectorAll('.gift-amount-btn').forEach(b=>b.classList.toggle('on',parseInt(b.textContent.replace(/\D/g,''),10)===amount));
+}
+function startBirthdayGift(){
+  const fromId=document.getElementById('gift-from')?.value;
+  const toId=document.getElementById('gift-to')?.value;
+  const amount=giftAmount;
+  const giver=getMemberById(fromId);
+  const receiver=getMemberById(toId);
+  if(!giver||!receiver) return toast('Chọn người tặng và người nhận sinh nhật','err');
+  const context={fromId,toId,amount};
+  if(hasGiftPin(giver)) openEnterGiftPinModal(context);
+  else openCreateGiftPinModal(context);
+}
+function openCreateGiftPinModal(context){
+  const giver=getMemberById(context.fromId); if(!giver) return;
+  giftPinContext={mode:'create',...context};
+  document.getElementById('gift-pin-title').innerHTML='<i data-lucide="shield-check"></i>Tạo mã PIN tặng quà';
+  document.getElementById('gift-pin-body').innerHTML=`
+    <div class="gift-pin-summary">Bạn đang tạo mã PIN cho: <b>${escapeHTML(giver.name)}</b></div>
+    <div><label>PIN 4 số</label><input type="password" id="gift-pin" maxlength="4" inputmode="numeric" autocomplete="one-time-code"></div>
+    <div><label>Nhập lại PIN 4 số</label><input type="password" id="gift-pin-confirm" maxlength="4" inputmode="numeric" autocomplete="one-time-code"></div>
+    <div class="gift-pin-note">PIN chỉ dùng để xác nhận quà sinh nhật. Admin không xem được PIN, chỉ có thể reset nếu bạn quên.</div>`;
+  document.getElementById('gift-pin-submit').innerHTML='<i data-lucide="save"></i> Lưu PIN & Gửi quà 🎁';
+  document.getElementById('gift-pin-error').textContent='';
+  document.getElementById('ov-gift-pin').classList.add('open');
+  setTimeout(()=>document.getElementById('gift-pin')?.focus(),200);
+  refreshIcons();
+}
+function openEnterGiftPinModal(context){
+  const giver=getMemberById(context.fromId), receiver=getMemberById(context.toId);
+  if(!giver||!receiver) return;
+  giftPinContext={mode:'send',...context};
+  document.getElementById('gift-pin-title').innerHTML='<i data-lucide="gift"></i>Xác nhận gửi quà';
+  document.getElementById('gift-pin-body').innerHTML=`
+    <div class="gift-pin-summary"><b>${escapeHTML(giver.name)}</b> sẽ tặng sinh nhật <b>${escapeHTML(receiver.name)}</b> <b>${fmt(context.amount)}</b>.<br>Tiền sẽ trừ vào số dư của <b>${escapeHTML(giver.name)}</b> và cộng vào <b>QUỸ SINH NHẬT</b>.</div>
+    <div><label>PIN 4 số</label><input type="password" id="gift-pin" maxlength="4" inputmode="numeric" autocomplete="one-time-code"></div>`;
+  document.getElementById('gift-pin-submit').innerHTML='<i data-lucide="check-circle-2"></i> Xác nhận gửi quà 🎁';
+  document.getElementById('gift-pin-error').textContent='';
+  document.getElementById('ov-gift-pin').classList.add('open');
+  setTimeout(()=>document.getElementById('gift-pin')?.focus(),200);
+  refreshIcons();
+}
+function openClaimGiftModal(txnId){
+  const t=S.transactions.find(x=>x.id===txnId);
+  if(!t||t.status==='cancelled') return toast('Món quà này đã được xử lý','err');
+  if(!canSelfClaimGift(t)) return toast('Quá 10 giây rồi, nhờ admin hoàn tiền nha 😅','err');
+  giftPinContext={mode:'claim',txnId};
+  const giver=getMemberById(t.fromId);
+  document.getElementById('gift-pin-title').innerHTML='<i data-lucide="rotate-ccw"></i>Đòi lại quà sinh nhật';
+  document.getElementById('gift-pin-body').innerHTML=`
+    <div class="gift-pin-summary"><b>${escapeHTML(getMemberName(t.fromId))}</b> muốn đòi lại quà sinh nhật <b>${fmt(t.amount||0)}</b>?</div>
+    <div><label>PIN 4 số</label><input type="password" id="gift-pin" maxlength="4" inputmode="numeric" autocomplete="one-time-code"></div>`;
+  document.getElementById('gift-pin-submit').innerHTML='<i data-lucide="rotate-ccw"></i> Đòi lại quà ↩️';
+  document.getElementById('gift-pin-error').textContent='';
+  document.getElementById('ov-gift-pin').classList.add('open');
+  setTimeout(()=>document.getElementById('gift-pin')?.focus(),200);
+  refreshIcons();
+}
+function setGiftPinError(msg){
+  const el=document.getElementById('gift-pin-error');
+  if(el) el.textContent=msg;
+}
+async function submitGiftPinModal(){
+  if(!giftPinContext) return;
+  const btn=document.getElementById('gift-pin-submit');
+  const pin=document.getElementById('gift-pin')?.value.trim()||'';
+  btn.disabled=true;
+  try{
+    if(!validateGiftPin(pin)){setGiftPinError('PIN phải gồm đúng 4 chữ số');return;}
+    if(giftPinContext.mode==='create'){
+      const pin2=document.getElementById('gift-pin-confirm')?.value.trim()||'';
+      if(pin!==pin2){setGiftPinError('PIN nhập lại chưa khớp');return;}
+      await setMemberGiftPin(giftPinContext.fromId,pin);
+      const ok=await performBirthdayGift(giftPinContext);
+      if(ok) closeOv('ov-gift-pin');
+    }else if(giftPinContext.mode==='send'){
+      const okPin=await verifyMemberGiftPin(giftPinContext.fromId,pin);
+      if(!okPin){toast('Sai mã PIN rồi 😅','err');setGiftPinError('Sai mã PIN');return;}
+      const ok=await performBirthdayGift(giftPinContext);
+      if(ok) closeOv('ov-gift-pin');
+    }else if(giftPinContext.mode==='claim'){
+      const t=S.transactions.find(x=>x.id===giftPinContext.txnId);
+      if(!t||t.status==='cancelled'){toast('Món quà này đã được xử lý','err');closeOv('ov-gift-pin');return;}
+      if(!canSelfClaimGift(t)){toast('Quá 10 giây rồi, nhờ admin hoàn tiền nha 😅','err');closeOv('ov-gift-pin');return;}
+      const okPin=await verifyMemberGiftPin(t.fromId,pin);
+      if(!okPin){toast('Sai mã PIN rồi 😅','err');setGiftPinError('Sai mã PIN');return;}
+      const ok=cancelBirthdayGift(t.id,'self');
+      if(ok){toast(`${getMemberName(t.fromId)} đã đòi lại quà sinh nhật 😆`);closeOv('ov-gift-pin');}
+    }
+  }catch(e){
+    if(e.message!=='invalid-pin') console.error(e);
+  }finally{
+    btn.disabled=false;
+  }
+}
+async function performBirthdayGift({fromId,toId,amount}){
+  ensureFundMember();
+  if(![1000,10000].includes(amount)) return toast('Chọn số tiền quà hợp lệ','err'),false;
+  const giver=getMemberById(fromId), receiver=getMemberById(toId), fund=getBirthdayFund();
+  if(!giver||!receiver||!fund){toast('Không tìm thấy người tặng hoặc QUỸ SINH NHẬT','err');return false;}
+  if(giver.isFixed||fromId===BIRTHDAY_FUND_ID||fromId===FUND_ID){toast('Quỹ không thể là người tặng','err');return false;}
+  giver.balance-=amount;
+  giver.totalOut=(giver.totalOut||0)+amount;
+  fund.balance=(fund.balance||0)+amount;
+  fund.totalIn=(fund.totalIn||0)+amount;
+  S.transactions.push({
+    id:uid(),date:td(),type:'birthday_gift',
+    desc:`${giver.name} đã tặng sinh nhật ${receiver.name} ${fmt(amount)}`,
+    category:'🎂 Sinh nhật',amount,fromId,toId,fundId:BIRTHDAY_FUND_ID,
+    memberIds:[fromId,BIRTHDAY_FUND_ID],status:'active',createdAt:Date.now(),
+    cancelledAt:null,cancelledBy:null
+  });
+  fbSave(true); render(); toast(`${giver.name} đã gửi quà sinh nhật 🎁`);
+  fireConfetti(); haptic([18,20,30]);
+  return true;
+}
+function cancelBirthdayGift(txnId,cancelledBy){
+  const t=S.transactions.find(x=>x.id===txnId);
+  if(!t||t.type!=='birthday_gift') return false;
+  if(t.status==='cancelled') return toast('Món quà này đã được xử lý','err'),false;
+  const giver=getMemberById(t.fromId), fund=getBirthdayFund();
+  if(!giver||!fund){toast('Không tìm thấy người tặng hoặc QUỸ SINH NHẬT','err');return false;}
+  const amount=t.amount||0;
+  giver.balance+=amount;
+  giver.totalOut=Math.max(0,(giver.totalOut||0)-amount);
+  fund.balance-=amount;
+  fund.totalIn=Math.max(0,(fund.totalIn||0)-amount);
+  t.status='cancelled';
+  t.cancelledAt=Date.now();
+  t.cancelledBy=cancelledBy;
+  fbSave(true); render();
+  return true;
+}
+async function adminRefundGift(txnId){
+  if(!requireRole('admin','Cần quyền Admin để hoàn tiền')) return;
+  const t=S.transactions.find(x=>x.id===txnId);
+  if(!t||t.status==='cancelled') return;
+  const ok=await confirmAction({title:'Hoàn tiền',message:'Hoàn tiền món quà này?',confirmText:'Hoàn tiền',danger:false});
+  if(!ok) return;
+  if(cancelBirthdayGift(txnId,'admin')) toast('Admin đã hoàn tiền quà sinh nhật');
 }
 function doTopup(sign){
   if(!requireRole('admin','Cần quyền Admin để nạp/trừ tiền')) return;
@@ -2782,7 +3789,7 @@ function saveSession(){
   const date=document.getElementById('sess-date').value;
   let desc=document.getElementById('sess-desc').value.trim()||selCat;
   const amt=kVal('sess-amt');
-  const mids=S.members.filter(m=>document.getElementById('ck-'+m.id)?.checked).map(m=>m.id);
+  const mids=getGiftableMembers().filter(m=>document.getElementById('ck-'+m.id)?.checked).map(m=>m.id);
   if(!date) return toast('Chọn ngày','err');
   if(!amt||amt<=0) return toast('Nhập số tiền','err');
   if(!mids.length) return toast('Chọn ít nhất 1 thành viên','err');
@@ -2808,14 +3815,21 @@ function resetSessionForm(){
   document.getElementById('sess-desc').value='';
   document.getElementById('sess-amt').value='';
   document.getElementById('pp-display').style.display='none';
-  S.members.forEach(m=>{
+  getGiftableMembers().forEach(m=>{
     const ck=document.getElementById('ck-'+m.id);if(ck)ck.checked=false;
     const ch=document.getElementById('chip-'+m.id);if(ch)ch.classList.remove('on');
   });
   updateSelCount();
 }
 function applyTransactionEffect(t){
-  if(t.type==='session'){
+  if(t.type==='birthday_gift'){
+    if(t.status==='cancelled') return;
+    const giver=getMemberById(t.fromId);
+    const fund=getBirthdayFund();
+    const amount=t.amount||0;
+    if(giver){giver.balance-=amount;giver.totalOut=(giver.totalOut||0)+amount;}
+    if(fund){fund.balance+=amount;fund.totalIn=(fund.totalIn||0)+amount;}
+  }else if(t.type==='session'){
     if(t.splitMode==='fund'&&t.paidBy){
       const payer=S.members.find(x=>x.id===t.paidBy);
       if(payer){payer.balance+=t.amount;payer.totalIn=(payer.totalIn||0)+t.amount;}
@@ -2832,7 +3846,14 @@ function applyTransactionEffect(t){
   }
 }
 function revertTransactionEffect(t){
-  if(t.type==='session'){
+  if(t.type==='birthday_gift'){
+    if(t.status==='cancelled') return;
+    const giver=getMemberById(t.fromId);
+    const fund=getBirthdayFund();
+    const amount=t.amount||0;
+    if(giver){giver.balance+=amount;giver.totalOut=Math.max(0,(giver.totalOut||0)-amount);}
+    if(fund){fund.balance-=amount;fund.totalIn=Math.max(0,(fund.totalIn||0)-amount);}
+  }else if(t.type==='session'){
     (t.memberIds||[]).forEach(mid=>{
       const m=S.members.find(x=>x.id===mid);
       if(m){m.balance+=t.perPerson||0;m.totalOut=Math.max(0,(m.totalOut||0)-(t.perPerson||0));}
@@ -2900,7 +3921,7 @@ function openAddRec(){
   document.getElementById('rec-cat').value='🎾 Tennis';
   document.querySelectorAll('#rec-cat-tags .qtag').forEach((t,i)=>t.classList.toggle('sel',i===2));
   setRecMode('fixed'); renderRecMemChips();
-  S.members.forEach(m=>{
+  getGiftableMembers().forEach(m=>{
     const ck=document.getElementById('rck-'+m.id);if(ck)ck.checked=false;
     const ch=document.getElementById('rchip-'+m.id);if(ch)ch.classList.remove('on');
   });
@@ -2921,7 +3942,7 @@ function editRec(id){
     t.classList.toggle('sel', r.category.includes(c.split(' ').slice(-1)[0]) || c===r.category);
   });
   setRecMode(r.mode); renderRecMemChips();
-  S.members.forEach(m=>{
+  getGiftableMembers().forEach(m=>{
     const on=(r.defaultMembers||[]).includes(m.id);
     const ck=document.getElementById('rck-'+m.id);if(ck)ck.checked=on;
     const ch=document.getElementById('rchip-'+m.id);if(ch)ch.classList.toggle('on',on);
@@ -2942,7 +3963,7 @@ function saveRec(){
   const amt=kVal('rec-amt');
   const cat=document.getElementById('rec-cat').value;
   const mode=document.getElementById('rec-mode').value;
-  const dms=S.members.filter(m=>document.getElementById('rck-'+m.id)?.checked).map(m=>m.id);
+  const dms=getGiftableMembers().filter(m=>document.getElementById('rck-'+m.id)?.checked).map(m=>m.id);
   if(!name) return toast('Nhập tên template','err');
   if(!amt||amt<=0) return toast('Nhập số tiền','err');
   const eid=document.getElementById('rec-edit-id').value;
@@ -2977,7 +3998,7 @@ function exportXL(){
   const ses=S.transactions.filter(t=>t.type==='session'&&t.date.startsWith(ym));
   const top=S.transactions.filter(t=>t.type==='topup'&&t.date.startsWith(ym));
   const wb=XLSX.utils.book_new();
-  const sm=getSortedMembers().filter(m=>m.id!==FUND_ID);
+  const sm=getGiftableMembers();
   const s1=[[`BÁO CÁO CLB C1K — ${lb}`],[`Xuất: ${new Date().toLocaleDateString('vi-VN')}`],[],['STT','Thành viên','Số buổi','Tổng chi','Đã nạp','Số dư','Trạng thái']];
   sm.forEach((m,i)=>{
     const ms=ses.filter(t=>t.memberIds.includes(m.id));
@@ -3080,8 +4101,8 @@ function showInstallGuide(){
 }
 
 function getSortedMembers(){
-  const fund=S.members.filter(m=>m.id===FUND_ID);
-  const rest=S.members.filter(m=>m.id!==FUND_ID).sort((a,b)=>{
+  const funds=S.members.filter(m=>m.isFixed||m.id===FUND_ID||m.id===BIRTHDAY_FUND_ID).sort((a,b)=>(a.order||0)-(b.order||0));
+  const rest=S.members.filter(m=>!m.isFixed&&m.id!==FUND_ID&&m.id!==BIRTHDAY_FUND_ID).sort((a,b)=>{
     const ab=a.balance||0,bb=b.balance||0;
     if(ab===0&&bb!==0) return 1;
     if(bb===0&&ab!==0) return -1;
@@ -3091,14 +4112,14 @@ function getSortedMembers(){
     if(ab<0&&bb<0) return ab-bb;
     return bb-ab;
   });
-  return [...fund,...rest];
+  return [...funds,...rest];
 }
 
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
 const cached=localStorage.getItem('clb_cache');
-if(cached) try{ S=JSON.parse(cached); if(!S.recurring) S.recurring=[]; }catch(e){}
+if(cached) try{ S=JSON.parse(cached); if(!S.recurring) S.recurring=[]; stripPlainGiftPinFields(); ensureFundMember(); }catch(e){}
 
 document.getElementById('sess-date').value=td();
 document.getElementById('q-date').value=td();
@@ -3115,6 +4136,7 @@ renderExpPrev();
 renderPdfPreview();
 refreshIcons();
 bindNavTaps();
+setInterval(renderBirthdayGiftFeed,1000);
 syncDot('connecting');
 window.addEventListener('offline',()=>syncDot('offline'));
 window.addEventListener('online',()=>{syncDot('connecting');setTimeout(()=>syncDot(lastSyncAt?'synced':'loading',lastSyncAt),600);});
