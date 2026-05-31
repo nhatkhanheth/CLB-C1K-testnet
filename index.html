@@ -110,6 +110,17 @@ body{
 .pin-settings-actions{display:flex;gap:8px;flex-wrap:wrap}
 .pin-input{text-align:center;font-family:'JetBrains Mono',monospace;font-size:18px;letter-spacing:.18em;font-weight:800}
 .pin-input::placeholder{letter-spacing:0;font-family:'Inter',sans-serif;font-size:13px;font-weight:500}
+.pin-unlock{text-align:center}
+.pin-dots{display:flex;justify-content:center;gap:11px;margin:10px 0 18px}
+.pin-dot{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--bord-3);background:transparent;transition:all .14s var(--ease)}
+.pin-dot.filled{background:var(--acc);border-color:var(--acc);box-shadow:0 0 10px var(--acc-glow)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,64px);gap:12px;justify-content:center;margin:8px auto 14px}
+.pin-key{width:64px;height:56px;border-radius:18px;border:1px solid var(--bord-2);background:rgba(255,255,255,.055);color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s var(--ease);user-select:none}
+.pin-key:hover{background:rgba(247,147,26,.14);border-color:rgba(247,147,26,.35);color:var(--acc)}
+.pin-key:active{transform:scale(.94);background:rgba(247,147,26,.22)}
+.pin-key.pin-ghost{background:transparent;border-color:transparent;color:var(--mut);font-family:'Inter',sans-serif;font-size:12px;font-weight:700}
+.pin-key.pin-ghost:hover{background:rgba(255,255,255,.04);color:var(--txt)}
+.pin-key svg{width:22px;height:22px}
 
 /* ─── LAYOUT ─── */
 .shell{display:flex;min-height:100vh;position:relative}
@@ -2159,13 +2170,29 @@ nav.sidebar a.nav-link *{pointer-events:none}
     </div>
 
     <div id="ltab-c-pin" style="display:none">
-      <label class="login-label">PIN mở khóa nhanh</label>
-      <div class="login-pw-wrap">
-        <input type="password" class="login-input pin-input" id="login-pin" placeholder="4–6 số" inputmode="numeric" maxlength="6" autocomplete="one-time-code" onkeydown="if(event.key==='Enter')loginWithQuickPin()">
-        <button type="button" class="login-pw-eye" onclick="togglePwVis('login-pin',this)"><i data-lucide="eye"></i></button>
+      <div class="pin-unlock">
+        <label class="login-label">PIN mở khóa nhanh</label>
+        <div class="pin-dots" id="pin-login-dots">
+          <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+          <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+        </div>
+        <input type="password" id="login-pin" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px" oninput="syncPinInputFromKeyboard()" onkeydown="handlePinLoginKey(event)">
+        <div class="pin-pad" aria-label="Nhập PIN nhanh">
+          <button type="button" class="pin-key" onclick="addPinDigit('1')">1</button>
+          <button type="button" class="pin-key" onclick="addPinDigit('2')">2</button>
+          <button type="button" class="pin-key" onclick="addPinDigit('3')">3</button>
+          <button type="button" class="pin-key" onclick="addPinDigit('4')">4</button>
+          <button type="button" class="pin-key" onclick="addPinDigit('5')">5</button>
+          <button type="button" class="pin-key" onclick="addPinDigit('6')">6</button>
+          <button type="button" class="pin-key" onclick="addPinDigit('7')">7</button>
+          <button type="button" class="pin-key" onclick="addPinDigit('8')">8</button>
+          <button type="button" class="pin-key" onclick="addPinDigit('9')">9</button>
+          <button type="button" class="pin-key pin-ghost" onclick="clearPinLoginBuffer()">Xóa</button>
+          <button type="button" class="pin-key" onclick="addPinDigit('0')">0</button>
+          <button type="button" class="pin-key pin-ghost" onclick="removePinDigit()" aria-label="Xóa số cuối"><i data-lucide="delete"></i></button>
+        </div>
       </div>
       <p class="pin-note">PIN chỉ dùng trên thiết bị này. Nếu quên PIN, hãy đăng nhập bằng mật khẩu Admin.</p>
-      <button class="login-btn" onclick="loginWithQuickPin()"><i data-lucide="unlock-keyhole"></i> Mở bằng PIN</button>
       <button class="login-btn login-btn-view" onclick="switchLoginTab('admin')"><i data-lucide="key-round"></i> Dùng mật khẩu Admin</button>
       <div class="login-err" id="pin-login-err"></div>
     </div>
@@ -2780,7 +2807,8 @@ const PIN_ROLE_KEY = 'clb_pin_role';
 const PIN_TRUST_KEY = 'clb_pin_device_trusted';
 const PIN_FAIL_KEY = 'clb_pin_fail_count';
 const PIN_LOCK_KEY = 'clb_pin_locked_until';
-const QUICK_PIN_KEYS = [PIN_ENABLED_KEY,PIN_HASH_KEY,PIN_SALT_KEY,PIN_ROLE_KEY,PIN_TRUST_KEY,PIN_FAIL_KEY,PIN_LOCK_KEY];
+const PIN_LEN_KEY = 'clb_pin_length';
+const QUICK_PIN_KEYS = [PIN_ENABLED_KEY,PIN_HASH_KEY,PIN_SALT_KEY,PIN_ROLE_KEY,PIN_TRUST_KEY,PIN_FAIL_KEY,PIN_LOCK_KEY,PIN_LEN_KEY];
 let splitMode = 'split';
 let selCat = '🎾 Tennis';
 let recMode = 'fixed';
@@ -2806,6 +2834,8 @@ let appliedRecurringContext = null;
 let tennisPlannerReady = false;
 let quickPinPasswordSessionTrusted = false;
 let quickPinPromptRole = 'admin';
+let pinLoginBuffer = '';
+let pinLoginBusy = false;
 
 // ═══════════════════════════════════════════════════════════════
 // UTILS
@@ -3034,7 +3064,6 @@ function isWeakPin(pin){
 }
 function validateQuickPinValue(pin){
   if(!/^\d{4,6}$/.test(pin||'')) return 'PIN phải gồm 4–6 số';
-  if(isWeakPin(pin)) return 'PIN quá dễ đoán, hãy chọn PIN khác';
   return '';
 }
 function markQuickPinDeviceTrusted(role=currentRole){
@@ -3068,6 +3097,10 @@ async function verifyQuickPinSecret(pin){
   const hash=await hashPin(pin,salt);
   return hash===localStorage.getItem(PIN_HASH_KEY);
 }
+function getSavedQuickPinLength(){
+  const n=parseInt(localStorage.getItem(PIN_LEN_KEY)||'0',10)||0;
+  return n>=4&&n<=6?n:0;
+}
 async function verifyQuickPin(pin){
   if(!hasQuickPin()) return {ok:false,msg:'Thiết bị này chưa bật PIN nhanh'};
   if(isQuickPinLocked()) return {ok:false,locked:true,msg:quickPinLockMessage()};
@@ -3095,6 +3128,7 @@ async function saveQuickPin(pin,role=currentRole){
   localStorage.setItem(PIN_SALT_KEY,salt);
   localStorage.setItem(PIN_ROLE_KEY,safeRole);
   localStorage.setItem(PIN_TRUST_KEY,'true');
+  localStorage.setItem(PIN_LEN_KEY,String(pin.length));
   clearQuickPinLock();
   refreshPinLoginUI();
   renderQuickPinSettings();
@@ -3110,6 +3144,59 @@ function refreshPinLoginUI(){
   if(tab) tab.style.display=has?'inline-flex':'none';
   if(tabs) tabs.classList.toggle('has-pin',has);
   if(!has&&document.getElementById('ltab-c-pin')?.style.display==='block') switchLoginTab('admin');
+}
+function renderPinLoginPad(){
+  const input=document.getElementById('login-pin');
+  if(input) input.value=pinLoginBuffer;
+  document.querySelectorAll('#pin-login-dots .pin-dot').forEach((dot,i)=>{
+    dot.classList.toggle('filled',i<pinLoginBuffer.length);
+  });
+}
+function clearPinLoginBuffer(){
+  pinLoginBuffer='';
+  renderPinLoginPad();
+  const err=document.getElementById('pin-login-err');
+  if(err&&!isQuickPinLocked()) err.textContent='';
+}
+function removePinDigit(){
+  if(pinLoginBusy) return;
+  pinLoginBuffer=pinLoginBuffer.slice(0,-1);
+  renderPinLoginPad();
+}
+function handlePinLoginKey(e){
+  if(e.key==='Backspace'){e.preventDefault();removePinDigit();return;}
+  if(e.key==='Enter'){e.preventDefault();loginWithQuickPin();return;}
+  if(/^\d$/.test(e.key)){e.preventDefault();addPinDigit(e.key);}
+}
+function syncPinInputFromKeyboard(){
+  const input=document.getElementById('login-pin');
+  pinLoginBuffer=(input?.value||'').replace(/\D/g,'').slice(0,6);
+  renderPinLoginPad();
+  schedulePinAutoUnlock();
+}
+function addPinDigit(digit){
+  if(pinLoginBusy||isQuickPinLocked()) return;
+  if(pinLoginBuffer.length>=6) return;
+  pinLoginBuffer=(pinLoginBuffer+digit).slice(0,6);
+  renderPinLoginPad();
+  haptic(3);
+  schedulePinAutoUnlock();
+}
+function schedulePinAutoUnlock(){
+  const savedLen=getSavedQuickPinLength();
+  const shouldTry=savedLen?pinLoginBuffer.length===savedLen:pinLoginBuffer.length>=4;
+  if(shouldTry) setTimeout(()=>autoUnlockQuickPin(),40);
+}
+async function autoUnlockQuickPin(){
+  if(pinLoginBusy||isQuickPinLocked()) return;
+  const savedLen=getSavedQuickPinLength();
+  if(savedLen&&pinLoginBuffer.length!==savedLen) return;
+  if(!savedLen&&pinLoginBuffer.length<4) return;
+  if(!savedLen&&pinLoginBuffer.length<6){
+    if(await verifyQuickPinSecret(pinLoginBuffer)) return loginWithQuickPin(true);
+    return;
+  }
+  return loginWithQuickPin(true);
 }
 function renderQuickPinSettings(){
   const status=document.getElementById('pin-settings-status');
@@ -3201,19 +3288,25 @@ function acceptQuickPinPrompt(){
 }
 function openPinLogin(){
   if(!hasQuickPin()) return;
+  clearPinLoginBuffer();
   switchLoginTab('pin');
 }
-async function loginWithQuickPin(){
+async function loginWithQuickPin(auto=false){
+  if(pinLoginBusy) return;
   const err=document.getElementById('pin-login-err');
-  const pin=(document.getElementById('login-pin')?.value||'').trim();
+  const pin=(pinLoginBuffer||document.getElementById('login-pin')?.value||'').trim();
   if(err) err.textContent='';
   if(!/^\d{4,6}$/.test(pin)){ if(err) err.textContent='Nhập PIN 4–6 số'; return; }
+  pinLoginBusy=true;
   const result=await verifyQuickPin(pin);
+  pinLoginBusy=false;
   if(!result.ok){
     if(err) err.textContent=result.msg||'Sai PIN';
     toast(result.locked?'Nhập sai PIN quá nhiều lần, vui lòng dùng mật khẩu':'Sai PIN','err');
     playSound('err');
     haptic([40,30,40]);
+    pinLoginBuffer='';
+    renderPinLoginPad();
     return;
   }
   const role=result.role==='superadmin'?'superadmin':'admin';
@@ -3221,6 +3314,7 @@ async function loginWithQuickPin(){
   localStorage.setItem(SK,'logged_in');
   localStorage.setItem(VK,'1');
   localStorage.setItem(RK,role);
+  pinLoginBuffer='';
   document.getElementById('login-pin').value='';
   closeLoginScreen();
   toast('Đã mở khóa bằng PIN');
@@ -3392,17 +3486,22 @@ function getMessengerExtraNotes(txn){
   });
   return notes.filter(Boolean);
 }
-function buildMessengerText(txn){
+function isTennisTransaction(txn){
+  const text=cleanMessengerPhrase(`${txn?.desc||''} ${txn?.category||''}`);
+  return text.includes('tennis');
+}
+function buildMessengerText(txn,opts={}){
   if(!txn||txn.type!=='session') return '';
   const amount=Number(txn.amount)||((Number(txn.perPerson)||0)*(txn.memberIds||[]).length);
   const memberNames=(txn.memberIds||[])
     .map(id=>formatMemberNameForMessenger(getMemberName(id)))
     .filter(Boolean);
+  const includeExtraNotes=opts.includeExtraNotes!==false;
   return [
     formatMessengerDescription(txn),
     formatCompactMoney(amount),
     ...memberNames,
-    ...getMessengerExtraNotes(txn)
+    ...(includeExtraNotes?getMessengerExtraNotes(txn):[])
   ].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
 }
 async function copyTextToClipboard(text,successMsg){
@@ -3446,7 +3545,7 @@ function buildMonthlyMessengerSummary(monthKey=getMessengerSummaryMonthKey()){
   const txns=(S.transactions||[])
     .filter(t=>t.type==='session'&&(t.date||'').startsWith(key))
     .sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.createdAt||0)-(b.createdAt||0));
-  const lines=txns.map(t=>t.messengerText||buildMessengerText(t)).filter(Boolean);
+  const lines=txns.map(t=>isTennisTransaction(t)?buildMessengerText(t,{includeExtraNotes:false}):(t.messengerText||buildMessengerText(t))).filter(Boolean);
   if(!lines.length) return '';
   const appLink=location.href.split('#')[0].split('?')[0];
   return [
@@ -3755,8 +3854,14 @@ function openLoginScreen(){
   document.getElementById('login-pin')&&(document.getElementById('login-pin').value='');
   document.getElementById('pin-login-err')&&(document.getElementById('pin-login-err').textContent='');
   refreshPinLoginUI();
-  switchLoginTab('admin');
-  setTimeout(()=>document.getElementById('login-pw').focus(),300);
+  if(hasQuickPin()){
+    clearPinLoginBuffer();
+    switchLoginTab('pin');
+    setTimeout(()=>document.getElementById('login-pin')?.focus({preventScroll:true}),160);
+  }else{
+    switchLoginTab('admin');
+    setTimeout(()=>document.getElementById('login-pw').focus(),300);
+  }
 }
 function closeLoginScreen(){
   document.getElementById('login-screen').classList.remove('show');
@@ -3862,8 +3967,9 @@ function switchLoginTab(t){
   if(sup) sup.style.display=t==='super'?'block':'none';
   if(pin) pin.style.display=t==='pin'?'block':'none';
   if(t==='pin'){
+    clearPinLoginBuffer();
     document.getElementById('pin-login-err').textContent=isQuickPinLocked()?quickPinLockMessage():'';
-    setTimeout(()=>document.getElementById('login-pin')?.focus(),120);
+    setTimeout(()=>document.getElementById('login-pin')?.focus({preventScroll:true}),120);
   }
   refreshIcons();
 }
