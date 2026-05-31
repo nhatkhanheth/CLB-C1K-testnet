@@ -89,6 +89,7 @@ body{
 .login-title{font-size:20px;font-weight:700;color:var(--txt);letter-spacing:-.01em}
 .login-sub{font-size:12.5px;color:var(--mut);margin-top:5px;text-align:center}
 .login-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg-2);padding:4px;border-radius:10px;margin-bottom:18px}
+.login-tabs.has-pin{grid-template-columns:repeat(3,1fr)}
 .login-tab{padding:9px 12px;border:none;background:transparent;color:var(--mut);font-size:12.5px;font-weight:600;cursor:pointer;border-radius:7px;transition:all .2s var(--ease);font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .login-tab svg{width:13px;height:13px}
 .login-tab.on{background:var(--acc-d);color:var(--acc);box-shadow:0 0 0 1px rgba(247,147,26,.2)}
@@ -104,6 +105,11 @@ body{
 .login-pw-wrap{position:relative}
 .login-pw-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--mut);cursor:pointer;padding:6px;display:flex;align-items:center}
 .login-pw-eye svg{width:15px;height:15px}
+.pin-note{font-size:11.5px;color:var(--mut);line-height:1.55;margin:8px 0 10px}
+.pin-status{font-size:12px;color:var(--txt-3);line-height:1.55;margin-bottom:10px}
+.pin-settings-actions{display:flex;gap:8px;flex-wrap:wrap}
+.pin-input{text-align:center;font-family:'JetBrains Mono',monospace;font-size:18px;letter-spacing:.18em;font-weight:800}
+.pin-input::placeholder{letter-spacing:0;font-family:'Inter',sans-serif;font-size:13px;font-weight:500}
 
 /* ─── LAYOUT ─── */
 .shell{display:flex;min-height:100vh;position:relative}
@@ -115,7 +121,7 @@ nav.sidebar{
   display:flex;flex-direction:column;padding:18px 0;
   position:fixed;top:0;left:0;z-index:100;
 }
-.logo{padding:0 18px 18px;border-bottom:1px solid var(--bord);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.logo{padding:0 18px 18px;border-bottom:1px solid var(--bord);margin-bottom:12px;display:flex;align-items:center;gap:10px;cursor:pointer}
 .logo .c1k-logo{width:36px;height:36px;border-radius:10px;flex-shrink:0}
 .logo-text{flex:1;min-width:0}
 .logo-t{font-size:14px;font-weight:700;color:var(--txt);letter-spacing:-.01em}
@@ -178,6 +184,16 @@ main{margin-left:230px;flex:1;padding:24px 28px;padding-top:62px;max-width:1180p
 .stat:hover{border-color:var(--bord-2)}
 .stat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .sl{font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.vault-kicker{
+  display:block;
+  font-size:9px;
+  line-height:1.1;
+  opacity:.42;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-weight:800;
+  margin-bottom:3px;
+}
 .stat-ic{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--surf-2);color:var(--txt-3)}
 .stat-ic svg{width:13px;height:13px;stroke-width:2.2}
 .sv{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;letter-spacing:-.01em;color:var(--txt)}
@@ -328,6 +344,71 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .rec-card:hover{border-color:var(--bord-2)}
 .rec-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;flex-wrap:wrap;color:var(--txt)}
 .rec-sub{font-size:11px;color:var(--mut);margin-top:3px}
+.rec-breakdown-sub{font-size:11px;color:var(--txt-3);line-height:1.5;margin-top:5px}
+.rec-cost-builder{
+  display:grid;
+  gap:10px;
+  border:1px solid rgba(247,147,26,.16);
+  background:rgba(247,147,26,.035);
+  border-radius:16px;
+  padding:12px;
+}
+.rec-extra-list{display:grid;gap:8px}
+.rec-extra-row{
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(110px,.8fr) 34px;
+  gap:8px;
+  align-items:end;
+}
+.rec-extra-row input{min-width:0}
+.rec-extra-remove{width:34px;height:34px;padding:0;border-radius:12px}
+.rec-add-extra-btn{justify-self:start}
+.rec-total-preview{
+  border:1px solid rgba(247,147,26,.24);
+  background:rgba(247,147,26,.09);
+  color:#ffd28a;
+  border-radius:14px;
+  padding:10px 12px;
+  font-size:12.5px;
+  font-weight:900;
+}
+.breakdown-list{
+  display:grid;
+  gap:8px;
+  margin:12px 0;
+}
+.breakdown-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  background:rgba(255,255,255,.035);
+  padding:9px 10px;
+}
+.breakdown-row.total{
+  border-color:rgba(247,147,26,.22);
+  background:rgba(247,147,26,.08);
+  color:#ffd28a;
+  font-weight:900;
+}
+.breakdown-amount{font-family:'JetBrains Mono',monospace;font-weight:900;white-space:nowrap}
+.hist-actions{display:flex;gap:6px;justify-content:flex-end;align-items:center}
+.admin-tool{display:none!important}
+body.role-viewer .admin-tool-block{display:none!important}
+body.role-admin .admin-tool,
+body.role-superadmin .admin-tool{display:inline-flex!important}
+.history-filter-grid .admin-tool{width:100%;min-height:38px}
+.hist-copy-btn{width:34px;height:34px;padding:0;border-radius:999px}
+.planner-card{border-color:rgba(247,147,26,.18);background:rgba(247,147,26,.035)}
+.planner-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.planner-days{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.planner-day{min-width:46px;padding:8px 10px;border-radius:999px;border:1.5px solid var(--bord);background:var(--bg-2);color:var(--txt-3);font-size:12px;font-weight:800;cursor:pointer;transition:all .2s var(--ease)}
+.planner-day:hover{border-color:var(--bord-2);color:var(--txt)}
+.planner-day.on{border-color:var(--acc);background:var(--acc-d);color:var(--acc)}
+.planner-preview{min-height:180px;resize:vertical;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;white-space:pre-wrap}
+.planner-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
 /* ─── LEADERBOARD ─── */
 .lb-section{margin-bottom:18px}
@@ -969,13 +1050,14 @@ nav.sidebar a.nav-link.active{
 
 .history-filter-grid{
   display:grid;
-  grid-template-columns:repeat(4,minmax(150px,1fr));
+  grid-template-columns:repeat(5,minmax(140px,1fr));
   gap:10px;
+  align-items:end;
 }
 .history-filter-grid select{width:100%!important}
 .history-list-card{overflow:visible}
 .hist-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.hist-table-wrap table{min-width:760px}
+.hist-table-wrap table{min-width:820px}
 .hist-delete-btn{width:34px;height:34px;padding:0;border-radius:999px}
 .hist-mobile-list{display:none}
 .hist-item{
@@ -1246,15 +1328,16 @@ nav.sidebar a.nav-link *{pointer-events:none}
 .birthday-banner::after{
   content:'';
   position:absolute;
-  right:18px;
-  top:12px;
-  width:76px;
-  height:76px;
+  right:28px;
+  bottom:10px;
+  width:64px;
+  height:64px;
   border-radius:50%;
   background:radial-gradient(circle,rgba(255,255,255,.18),transparent 68%);
   filter:blur(.2px);
-  opacity:.7;
-  z-index:-1;
+  opacity:.48;
+  z-index:1;
+  pointer-events:none;
 }
 .birthday-banner.today-mode{
   border-color:rgba(255,214,102,.34);
@@ -1278,7 +1361,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
 }
 .birthday-card-head{
   position:relative;
-  z-index:2;
+  z-index:3;
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -1286,11 +1369,13 @@ nav.sidebar a.nav-link *{pointer-events:none}
 }
 .birthday-card-head .birthday-banner-head{padding-right:0}
 .birthday-gift-cta{
+  position:relative;
+  z-index:4;
   min-height:36px;
-  border:1px solid rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.24);
   border-radius:999px;
   padding:8px 13px;
-  background:linear-gradient(135deg,rgba(255,159,28,.82),rgba(236,72,153,.70),rgba(168,85,247,.62));
+  background:linear-gradient(135deg,#f7931a,#e6537a,#b245e9);
   color:#fff;
   font:inherit;
   font-size:12px;
@@ -1301,7 +1386,8 @@ nav.sidebar a.nav-link *{pointer-events:none}
   gap:7px;
   cursor:pointer;
   white-space:nowrap;
-  box-shadow:0 12px 28px rgba(236,72,153,.14),inset 0 1px 0 rgba(255,255,255,.18);
+  text-shadow:0 1px 2px rgba(0,0,0,.42);
+  box-shadow:0 12px 28px rgba(217,70,239,.26),0 0 0 1px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.22);
 }
 .birthday-gift-cta svg{width:15px;height:15px}
 .birthday-gift-cta:disabled{
@@ -1381,8 +1467,8 @@ nav.sidebar a.nav-link *{pointer-events:none}
   height:22px;
   background:rgba(255,255,255,.30);
 }
-.birthday-balloon.b1{right:20px;bottom:14px}
-.birthday-balloon.b2{right:58px;top:18px;background:linear-gradient(145deg,#a855f7,#facc15);animation-delay:-1.3s;transform:scale(.82)}
+.birthday-balloon.b1{right:18px;bottom:14px}
+.birthday-balloon.b2{right:82px;top:auto;bottom:18px;background:linear-gradient(145deg,#a855f7,#facc15);animation-delay:-1.3s;transform:scale(.76)}
 .birthday-spark{
   width:7px;
   height:7px;
@@ -1898,26 +1984,43 @@ nav.sidebar a.nav-link *{pointer-events:none}
   cursor:pointer;
 }
 .fund-name{
-  display:inline-block;
+  display:inline-flex;
+  align-items:center;
   max-width:100%;
-  overflow:hidden;
+  overflow:visible;
   text-overflow:ellipsis;
   white-space:nowrap;
   font-weight:900;
   letter-spacing:.01em;
+  line-height:1.25;
+  padding-top:2px;
+  padding-bottom:2px;
+}
+.fund-label-wrap{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  max-width:100%;
+  vertical-align:middle;
+  line-height:1.25;
 }
 .fund-name.team-fund{color:#ffbf75}
 .fund-name.birthday-fund{color:#ffc3d9}
 .fund-badge{
   display:inline-flex;
   align-items:center;
-  margin-left:6px;
-  padding:2px 7px;
+  justify-content:center;
+  height:20px;
+  margin:0;
+  padding:0 8px;
   border-radius:999px;
-  font-size:10px;
-  font-weight:900;
+  font-size:10.5px;
+  font-weight:800;
+  line-height:1;
   border:1px solid rgba(255,255,255,.12);
   vertical-align:middle;
+  transform:none;
+  flex-shrink:0;
 }
 .fund-badge.team-fund{background:rgba(255,159,28,.11);color:#ffd28a;border-color:rgba(255,159,28,.24)}
 .fund-badge.birthday-fund{background:rgba(236,72,153,.11);color:#ffc3d9;border-color:rgba(236,72,153,.24)}
@@ -1969,8 +2072,8 @@ nav.sidebar a.nav-link *{pointer-events:none}
   .birthday-banner-kicker{width:32px;height:32px;border-radius:12px}
   .birthday-banner-list{display:grid;grid-template-columns:1fr;gap:7px}
   .birthday-banner-person{width:100%;justify-content:space-between;padding:8px 10px}
-  .birthday-balloon.b1{right:12px;bottom:18px;transform:scale(.82)}
-  .birthday-balloon.b2{right:38px;top:16px;transform:scale(.68)}
+  .birthday-balloon.b1{right:10px;bottom:16px;transform:scale(.70)}
+  .birthday-balloon.b2{right:66px;top:auto;bottom:18px;transform:scale(.58)}
   .birthday-gift-panel{padding:14px;margin-top:-4px;border-radius:18px}
   .gift-compact-cta{padding:11px;align-items:center}
   .gift-compact-sub{display:none}
@@ -1985,8 +2088,12 @@ nav.sidebar a.nav-link *{pointer-events:none}
   .gift-submit{width:100%;min-height:42px}
   .gift-feed-row{align-items:flex-start;flex-direction:column;padding:8px 9px}
   .gift-feed-meta{width:100%;justify-content:space-between}
+  .rec-extra-row{grid-template-columns:1fr 1fr 34px}
+  .rec-cost-builder{padding:10px}
   #stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .fund-label-wrap{gap:5px;flex-wrap:wrap}
   .fund-name{max-width:150px}
+  .fund-badge{height:19px;padding:0 7px;font-size:10px}
   .member-name-wrap{gap:5px;flex-wrap:wrap}
   .member-name-birthday{padding:4px 7px;gap:5px}
 }
@@ -2027,6 +2134,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
     <div class="login-tabs">
       <button class="login-tab on" id="ltab-admin" onclick="switchLoginTab('admin')"><i data-lucide="user-cog"></i> Admin</button>
       <button class="login-tab" id="ltab-super" onclick="switchLoginTab('super')"><i data-lucide="shield-check"></i> Super Admin</button>
+      <button class="login-tab" id="ltab-pin" onclick="openPinLogin()" style="display:none"><i data-lucide="lock-keyhole"></i> PIN</button>
     </div>
 
     <div id="ltab-c-admin">
@@ -2049,6 +2157,18 @@ nav.sidebar a.nav-link *{pointer-events:none}
       <button class="login-btn login-btn-view" onclick="continueAsViewer()"><i data-lucide="eye"></i> Xem không cần đăng nhập</button>
       <div class="login-err" id="super-err"></div>
     </div>
+
+    <div id="ltab-c-pin" style="display:none">
+      <label class="login-label">PIN mở khóa nhanh</label>
+      <div class="login-pw-wrap">
+        <input type="password" class="login-input pin-input" id="login-pin" placeholder="4–6 số" inputmode="numeric" maxlength="6" autocomplete="one-time-code" onkeydown="if(event.key==='Enter')loginWithQuickPin()">
+        <button type="button" class="login-pw-eye" onclick="togglePwVis('login-pin',this)"><i data-lucide="eye"></i></button>
+      </div>
+      <p class="pin-note">PIN chỉ dùng trên thiết bị này. Nếu quên PIN, hãy đăng nhập bằng mật khẩu Admin.</p>
+      <button class="login-btn" onclick="loginWithQuickPin()"><i data-lucide="unlock-keyhole"></i> Mở bằng PIN</button>
+      <button class="login-btn login-btn-view" onclick="switchLoginTab('admin')"><i data-lucide="key-round"></i> Dùng mật khẩu Admin</button>
+      <div class="login-err" id="pin-login-err"></div>
+    </div>
   </div>
 </div>
 
@@ -2056,12 +2176,13 @@ nav.sidebar a.nav-link *{pointer-events:none}
 <div id="abar" style="display:none">
   <span id="sync-dot"><span class="sync-led"></span><span id="sync-txt">Kết nối...</span></span>
   <span id="auth-badge"><i data-lucide="eye"></i> Chỉ xem</span>
+  <button class="btn bg btn-sm" id="btn-settings" onclick="openSettingsModal()" style="display:none" title="Cài đặt"><i data-lucide="settings"></i></button>
   <button class="btn bb btn-sm" id="btn-auth" onclick="openLoginScreen()"><i data-lucide="lock"></i> Đăng nhập</button>
 </div>
 
 <div class="shell" id="main-shell" style="display:none">
 <nav class="sidebar">
-  <div class="logo">
+  <div class="logo" onclick="go('dash')" title="Về Tổng quan" aria-label="Về Tổng quan">
     <div class="c1k-logo"><img src="./logo.png" alt="C1K" onerror="this.parentElement.classList.add('logo-fallback')"></div>
     <div class="logo-text"><div class="logo-t">CLB C1K</div><div class="logo-s">Quản lý chi tiêu</div></div>
   </div>
@@ -2170,11 +2291,12 @@ nav.sidebar a.nav-link *{pointer-events:none}
 
 <!-- RECORD -->
 <div class="page" id="page-record">
-  <div class="ph"><div><h1>Ghi chi tiêu</h1><p>Ghi buổi · Nạp nhanh · Định kỳ</p></div></div>
+  <div class="ph"><div><h1>Ghi chi tiêu</h1><p>Ghi buổi · Nạp nhanh · Định kỳ · Tennis</p></div></div>
   <div class="tabs">
     <div class="tab on" id="tab-session" onclick="switchRecTab('session')"><i data-lucide="utensils"></i> Ghi buổi</div>
     <div class="tab" id="tab-quick" onclick="switchRecTab('quick')"><i data-lucide="zap"></i> Nạp / Trả</div>
     <div class="tab" id="tab-recurring" onclick="switchRecTab('recurring')"><i data-lucide="refresh-cw"></i> Định kỳ</div>
+    <div class="tab admin-tool" id="tab-tennis" onclick="switchRecTab('tennis')"><i data-lucide="calendar-days"></i> Tennis</div>
     <div class="tab-indicator" id="rec-tab-ind"></div>
   </div>
   <div id="rec-session">
@@ -2204,7 +2326,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
       <div class="fg mb12">
         <div><label id="amt-label">Tổng tiền (VND)</label>
           <div class="input-k">
-            <input type="number" id="sess-amt" placeholder="500 = 500,000₫" step="1000" oninput="calcPP()">
+            <input type="number" id="sess-amt" placeholder="500 = 500,000₫" step="1000" oninput="markManualMoneyInput('sess-amt');calcPP()">
             <button type="button" onclick="applyK('sess-amt',calcPP)" class="btn-k">÷k</button>
           </div>
         </div>
@@ -2257,6 +2379,39 @@ nav.sidebar a.nav-link *{pointer-events:none}
     </div>
     <div class="card"><div id="rec-list"><div class="empty"><i data-lucide="inbox"></i>Chưa có template</div></div></div>
   </div>
+  <div id="rec-tennis" class="admin-tool-block" style="display:none">
+    <div class="card planner-card">
+      <div class="sec"><i data-lucide="calendar-days"></i> Tennis Month Planner</div>
+      <div class="planner-grid mb12">
+        <div><label>Tháng</label><select id="tennis-month" onchange="updateTennisPlannerPreview()"></select></div>
+        <div><label>Năm</label><input type="number" id="tennis-year" min="2020" max="2100" oninput="updateTennisPlannerPreview()"></div>
+      </div>
+      <div class="mb12">
+        <label>Ngày tennis trong tuần</label>
+        <div class="planner-days" id="tennis-days">
+          <button type="button" class="planner-day on" data-weekday="1" onclick="toggleTennisWeekday(this)">T2</button>
+          <button type="button" class="planner-day" data-weekday="2" onclick="toggleTennisWeekday(this)">T3</button>
+          <button type="button" class="planner-day" data-weekday="3" onclick="toggleTennisWeekday(this)">T4</button>
+          <button type="button" class="planner-day" data-weekday="4" onclick="toggleTennisWeekday(this)">T5</button>
+          <button type="button" class="planner-day" data-weekday="5" onclick="toggleTennisWeekday(this)">T6</button>
+          <button type="button" class="planner-day" data-weekday="6" onclick="toggleTennisWeekday(this)">T7</button>
+          <button type="button" class="planner-day" data-weekday="0" onclick="toggleTennisWeekday(this)">CN</button>
+        </div>
+      </div>
+      <div class="planner-grid mb12">
+        <div><label>Tiêu đề</label><input type="text" id="tennis-title" value="Tennis" oninput="updateTennisPlannerPreview()"></div>
+        <div><label>Loại trừ ngày nghỉ</label><textarea id="tennis-exclude" rows="1" placeholder="VD: 13/5, 2026-05-20" oninput="updateTennisPlannerPreview()"></textarea></div>
+      </div>
+      <div class="mb12">
+        <label class="chip on" style="width:max-content"><input type="checkbox" id="tennis-short" checked onchange="updateTennisPlannerPreview()"> Chỉ hiện tuần bắt đầu</label>
+      </div>
+      <div class="mb12"><label>Preview</label><textarea id="tennis-preview" class="planner-preview" readonly></textarea></div>
+      <div class="planner-actions">
+        <button class="btn bp" onclick="copyTennisPlannerText()"><i data-lucide="copy"></i> Copy lịch tennis</button>
+        <button class="btn bg" onclick="updateTennisPlannerPreview()"><i data-lucide="refresh-cw"></i> Tạo draft thông báo</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- LEADERBOARD -->
@@ -2287,6 +2442,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
       <select id="f-type" onchange="renderHistory()" style="width:auto"><option value="">Tất cả loại</option><option value="session">Buổi chi tiêu</option><option value="topup">Nạp/Trừ</option></select>
       <select id="f-person" onchange="renderHistory()" style="width:auto"><option value="">Tất cả thành viên</option></select>
       <select id="f-cat" onchange="renderHistory()" style="width:auto"><option value="">Tất cả danh mục</option></select>
+      <button class="btn bb btn-sm admin-tool" onclick="copyMonthlyMessengerSummary()"><i data-lucide="messages-square"></i> Copy Messenger tháng</button>
     </div>
     <div class="card history-list-card"><div id="tbl-history"></div></div>
     <div id="person-summary" style="display:none" class="card mt20"></div>
@@ -2334,25 +2490,10 @@ nav.sidebar a.nav-link *{pointer-events:none}
       <button class="btn bp wo" data-role-min="admin" onclick="exportPDF()"><i data-lucide="file-down"></i> Tải PDF</button>
       <div id="pdf-prev" class="mt12"></div>
     </div>
-    <div class="card mb20 super-only">
-      <div class="sec"><i data-lucide="key-round"></i> Đổi mật khẩu</div>
-      <div class="fg mb12">
-        <div><label>Mật khẩu mới</label><input type="password" id="new-pw" placeholder="Mật khẩu mới"></div>
-        <div><label>Mật khẩu cấp 2</label><input type="password" id="pw2" placeholder="Xác nhận"></div>
-      </div>
-      <button class="btn bg" onclick="changePw()"><i data-lucide="save"></i> Lưu</button>
-    </div>
     <div class="card super-only" style="border-color:rgba(239,68,68,.3);background:linear-gradient(135deg,rgba(239,68,68,.04),transparent)">
       <div class="sec" style="color:var(--red)"><i data-lucide="alert-octagon"></i> Vùng nguy hiểm</div>
       <p class="tm mb12">Xoá toàn bộ dữ liệu. Không thể hoàn tác.</p>
       <button class="btn bd" onclick="clearAll()"><i data-lucide="trash-2"></i> Xoá tất cả</button>
-    </div>
-    <div class="card mt20">
-      <div class="sec"><i data-lucide="settings-2"></i> Tuỳ chọn</div>
-      <div class="fl g12" style="flex-wrap:wrap">
-        <label class="chip" id="sound-toggle" onclick="toggleSound()"><i data-lucide="volume-2" style="width:13px;height:13px"></i> Âm thanh phản hồi</label>
-        <button class="btn bg btn-sm" onclick="showInstallGuide()"><i data-lucide="smartphone"></i> Cài app ra màn hình</button>
-      </div>
     </div>
   </div>
 </div>
@@ -2447,19 +2588,34 @@ nav.sidebar a.nav-link *{pointer-events:none}
       </div>
       <input type="hidden" id="rec-mode" value="fixed">
     </div>
-    <div class="fg mb12">
-      <div><label id="rec-amt-label">Số tiền mỗi người</label>
+    <div class="rec-cost-builder mb12">
+      <div>
+        <label id="rec-amt-label">Chi phí chính</label>
         <div class="input-k">
-          <input type="number" id="rec-amt" placeholder="50 = 50,000₫" step="1000">
-          <button type="button" onclick="applyK('rec-amt')" class="btn-k">÷k</button>
+          <input type="number" id="rec-base-amt" placeholder="300 = 300,000₫" step="1000" oninput="updateRecTotalPreview()">
+          <button type="button" onclick="applyK('rec-base-amt',updateRecTotalPreview)" class="btn-k">÷k</button>
         </div>
       </div>
-      <div><label>Thành viên mặc định</label><div class="chips mt8" id="rec-chips"></div></div>
+      <div class="rec-extra-list" id="rec-extra-list"></div>
+      <button type="button" class="btn bg btn-sm rec-add-extra-btn" onclick="addRecExtraRow()"><i data-lucide="plus"></i> Thêm chi phí</button>
+      <div class="rec-total-preview" id="rec-total-preview">Tổng template: 0₫</div>
+    </div>
+    <div class="mb12">
+      <label>Thành viên mặc định</label><div class="chips mt8" id="rec-chips"></div>
     </div>
     <div class="fl g8 mt12">
       <button class="btn bp" onclick="saveRec()" style="flex:1"><i data-lucide="save"></i> Lưu</button>
       <button class="btn bg" onclick="closeOv('ov-rec')">Hủy</button>
     </div>
+  </div>
+</div>
+
+<div class="ov" id="ov-breakdown">
+  <div class="modal">
+    <div class="sheet-handle"></div>
+    <button class="modal-close" onclick="closeOv('ov-breakdown')"><i data-lucide="x"></i></button>
+    <div class="mt"><i data-lucide="receipt-text"></i>Chi tiết chi phí</div>
+    <div id="breakdown-content"></div>
   </div>
 </div>
 
@@ -2485,6 +2641,90 @@ nav.sidebar a.nav-link *{pointer-events:none}
     <button class="modal-close" onclick="closeOv('ov-install')"><i data-lucide="x"></i></button>
     <div class="mt"><i data-lucide="smartphone"></i>Cài app ra màn hình</div>
     <div id="install-content"></div>
+  </div>
+</div>
+
+<div class="ov" id="ov-settings">
+  <div class="modal">
+    <div class="sheet-handle"></div>
+    <button class="modal-close" onclick="closeOv('ov-settings')"><i data-lucide="x"></i></button>
+    <div class="mt"><i data-lucide="settings"></i>Cài đặt</div>
+    <div class="card mb12" style="box-shadow:none">
+      <div class="sec"><i data-lucide="sliders-horizontal"></i> Tuỳ chọn</div>
+      <div class="fl g12" style="flex-wrap:wrap">
+        <label class="chip" id="sound-toggle" onclick="toggleSound()"><i data-lucide="volume-2" style="width:13px;height:13px"></i> Âm thanh phản hồi</label>
+        <button class="btn bg btn-sm" onclick="showInstallGuide()"><i data-lucide="smartphone"></i> Cài app ra màn hình</button>
+      </div>
+    </div>
+    <div class="card mb12" style="box-shadow:none">
+      <div class="sec"><i data-lucide="type"></i> Tên app</div>
+      <div class="fg mb12">
+        <div><label>Tên app</label><input type="text" id="settings-app-name" maxlength="24" placeholder="CLB C1K"></div>
+      </div>
+      <button class="btn bg" onclick="saveAppName()"><i data-lucide="save"></i> Lưu tên app</button>
+    </div>
+    <div class="card mb12 admin-tool-block" style="box-shadow:none">
+      <div class="sec"><i data-lucide="shield-check"></i> Tùy chọn bảo mật</div>
+      <p class="pin-status" id="pin-settings-status">PIN nhanh chưa được bật.</p>
+      <div class="pin-settings-actions" id="pin-settings-actions"></div>
+    </div>
+    <div class="card super-only" style="box-shadow:none">
+      <div class="sec"><i data-lucide="key-round"></i> Đổi mật khẩu</div>
+      <div class="fg mb12">
+        <div><label>Mật khẩu mới</label><input type="password" id="new-pw" placeholder="Mật khẩu mới"></div>
+        <div><label>Mật khẩu cấp 2</label><input type="password" id="pw2" placeholder="Xác nhận"></div>
+      </div>
+      <button class="btn bg" onclick="changePw()"><i data-lucide="save"></i> Lưu</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="ov-pin-prompt">
+  <div class="modal">
+    <div class="sheet-handle"></div>
+    <button class="modal-close" onclick="dismissQuickPinPrompt()"><i data-lucide="x"></i></button>
+    <div class="mt"><i data-lucide="lock-keyhole"></i>Tạo PIN nhanh?</div>
+    <p class="tm mb16">Tạo PIN nhanh để mở khóa Admin lần sau trên thiết bị này.</p>
+    <div class="fl g8">
+      <button class="btn bp" onclick="acceptQuickPinPrompt()" style="flex:1"><i data-lucide="plus"></i> Tạo PIN</button>
+      <button class="btn bg" onclick="dismissQuickPinPrompt()">Để sau</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="ov-quick-pin">
+  <div class="modal">
+    <div class="sheet-handle"></div>
+    <button class="modal-close" onclick="closeOv('ov-quick-pin')"><i data-lucide="x"></i></button>
+    <div class="mt" id="quick-pin-title"><i data-lucide="lock-keyhole"></i>Tạo PIN nhanh</div>
+    <p class="tm mb16">PIN chỉ dùng trên thiết bị này. Nếu quên PIN, hãy đăng nhập bằng mật khẩu Admin.</p>
+    <input type="hidden" id="quick-pin-mode" value="create">
+    <div class="mb12" id="quick-pin-verify-row" style="display:none">
+      <label>Mật khẩu Admin hoặc PIN cũ</label>
+      <div class="login-pw-wrap">
+        <input type="password" class="login-input" id="quick-pin-verify" placeholder="Xác nhận để đổi PIN" autocomplete="current-password">
+        <button type="button" class="login-pw-eye" onclick="togglePwVis('quick-pin-verify',this)"><i data-lucide="eye"></i></button>
+      </div>
+    </div>
+    <div class="mb12">
+      <label>PIN mới</label>
+      <div class="login-pw-wrap">
+        <input type="password" class="login-input pin-input" id="quick-pin-new" placeholder="4–6 số" inputmode="numeric" maxlength="6" autocomplete="new-password">
+        <button type="button" class="login-pw-eye" onclick="togglePwVis('quick-pin-new',this)"><i data-lucide="eye"></i></button>
+      </div>
+    </div>
+    <div class="mb12">
+      <label>Nhập lại PIN</label>
+      <div class="login-pw-wrap">
+        <input type="password" class="login-input pin-input" id="quick-pin-confirm" placeholder="Nhập lại PIN" inputmode="numeric" maxlength="6" autocomplete="new-password" onkeydown="if(event.key==='Enter')submitQuickPinModal()">
+        <button type="button" class="login-pw-eye" onclick="togglePwVis('quick-pin-confirm',this)"><i data-lucide="eye"></i></button>
+      </div>
+    </div>
+    <div class="login-err" id="quick-pin-err"></div>
+    <div class="fl g8 mt12">
+      <button class="btn bp" id="quick-pin-submit" onclick="submitQuickPinModal()" style="flex:1"><i data-lucide="save"></i> Lưu PIN</button>
+      <button class="btn bg" onclick="closeOv('ov-quick-pin')">Hủy</button>
+    </div>
   </div>
 </div>
 
@@ -2519,7 +2759,8 @@ nav.sidebar a.nav-link *{pointer-events:none}
 // ═══════════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════════
-let S = { members:[], transactions:[], recurring:[] };
+const DEFAULT_APP_NAME = 'CLB C1K';
+let S = { members:[], transactions:[], recurring:[], settings:{appName:DEFAULT_APP_NAME} };
 let snapshots = {};
 let isAdmin = false;
 let isViewer = false;
@@ -2532,6 +2773,14 @@ const PW2 = btoa('999999');
 const SK = 'clb_admin_persistent_v4';
 const VK = 'clb_viewer_continue';
 const RK = 'clb_role_v1';
+const PIN_ENABLED_KEY = 'clb_pin_enabled';
+const PIN_HASH_KEY = 'clb_pin_hash';
+const PIN_SALT_KEY = 'clb_pin_salt';
+const PIN_ROLE_KEY = 'clb_pin_role';
+const PIN_TRUST_KEY = 'clb_pin_device_trusted';
+const PIN_FAIL_KEY = 'clb_pin_fail_count';
+const PIN_LOCK_KEY = 'clb_pin_locked_until';
+const QUICK_PIN_KEYS = [PIN_ENABLED_KEY,PIN_HASH_KEY,PIN_SALT_KEY,PIN_ROLE_KEY,PIN_TRUST_KEY,PIN_FAIL_KEY,PIN_LOCK_KEY];
 let splitMode = 'split';
 let selCat = '🎾 Tennis';
 let recMode = 'fixed';
@@ -2546,24 +2795,106 @@ const FUND_ID = '__fund_team__';
 const BIRTHDAY_FUND_ID = '__birthday_fund__';
 const GIFT_CLAIM_WINDOW_MS = 30 * 1000;
 const BIRTHDAY_GIFTS = [
-  { id:'rose', name:'Bông hồng', amount:1000, icon:'🌹' },
+  { id:'rose', name:'Hoa hồng', amount:1000, icon:'🌹' },
   { id:'lion', name:'Sư tử', amount:10000, icon:'🦁' },
   { id:'whale', name:'Cá voi', amount:50000, icon:'🐋' }
 ];
 let selectedBirthdayGiftId = 'rose';
 let giftPinContext = null;
 let birthdayGiftFeedExpanded = false;
+let appliedRecurringContext = null;
+let tennisPlannerReady = false;
+let quickPinPasswordSessionTrusted = false;
+let quickPinPromptRole = 'admin';
 
 // ═══════════════════════════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════════════════════════
 function fmt(n){ return (n||0).toLocaleString('vi-VN')+'₫'; }
 function kVal(id){ return (parseFloat(document.getElementById(id).value)||0)*1000; }
-function applyK(id,cb){ const el=document.getElementById(id); el.value=(parseFloat(el.value)||0)/1000; if(cb)cb(); }
+function applyK(id,cb){ const el=document.getElementById(id); if(!el) return; el.value=(parseFloat(el.value)||0)/1000; markManualMoneyInput(id); if(cb)cb(); }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function td(){ return new Date().toISOString().split('T')[0]; }
 function escapeHTML(s){return (s||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function refreshIcons(){ if(window.lucide && lucide.createIcons) lucide.createIcons(); }
+function ensureSettings(){
+  if(!S.settings) S.settings={};
+  if(!S.settings.appName) S.settings.appName=DEFAULT_APP_NAME;
+}
+function getAppName(){
+  ensureSettings();
+  return S.settings.appName||DEFAULT_APP_NAME;
+}
+function renderAppName(){
+  const appName=getAppName();
+  document.querySelectorAll('.logo-t').forEach(el=>{el.textContent=appName;});
+  const splashName=document.querySelector('.splash-name');
+  if(splashName) splashName.textContent=appName;
+  const loginTitle=document.querySelector('.login-title');
+  if(loginTitle) loginTitle.textContent=appName;
+  document.title=appName+' — Quản lý chi tiêu';
+  const appleTitle=document.querySelector('meta[name="apple-mobile-web-app-title"]');
+  if(appleTitle) appleTitle.setAttribute('content',appName);
+}
+function getMemberDisplayLabel(m){
+  if(!m) return '';
+  if(m.id===FUND_ID) return 'Team';
+  if(typeof BIRTHDAY_FUND_ID!=='undefined'&&m.id===BIRTHDAY_FUND_ID) return 'Birthday';
+  return m.name||'';
+}
+function recurringTotal(baseAmount,extraItems){
+  return (Number(baseAmount)||0)+(extraItems||[]).reduce((s,x)=>s+(Number(x.amount)||0),0);
+}
+function normalizeRecurring(r){
+  const baseAmount=Number(r?.baseAmount??r?.amount??0)||0;
+  const extraItems=Array.isArray(r?.extraItems)?r.extraItems:[];
+  const cleanExtras=extraItems.map(x=>({
+    id:x.id||uid(),
+    note:(x.note||'').trim(),
+    amount:Number(x.amount||0)||0
+  })).filter(x=>x.amount>0||x.note);
+  const amount=recurringTotal(baseAmount,cleanExtras);
+  return {...(r||{}),baseAmount,extraItems:cleanExtras,amount};
+}
+function formatBreakdownText(breakdown){
+  if(!breakdown) return '';
+  const parts=[`Chi phí chính: ${fmt(breakdown.baseAmount||0)}`];
+  (breakdown.extraItems||[]).forEach(x=>parts.push(`${x.note||'Phụ phí'}: ${fmt(x.amount||0)}`));
+  return parts.join('; ');
+}
+function readSessionAmount(){
+  const el=document.getElementById('sess-amt');
+  const raw=parseFloat(el?.value)||0;
+  if(el?.dataset.vnd==='1') return raw;
+  return raw*1000;
+}
+function setSessionAmountFromVND(amount){
+  const el=document.getElementById('sess-amt');
+  if(!el) return;
+  el.value=Number(amount||0);
+  el.dataset.vnd='1';
+}
+function markManualMoneyInput(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  delete el.dataset.vnd;
+  if(id==='sess-amt'){
+    appliedRecurringContext=null;
+    const recPick=document.getElementById('rec-pick');
+    if(recPick) recPick.value='';
+  }
+}
+function makeRecurringBreakdown(r){
+  const n=normalizeRecurring(r);
+  return {
+    baseAmount:n.baseAmount,
+    extraItems:n.extraItems.map(x=>({id:x.id,note:x.note,amount:x.amount})),
+    totalAmount:n.amount
+  };
+}
+function hasBreakdown(t){
+  return !!(t&&t.breakdown&&((t.breakdown.baseAmount||0)>0||(t.breakdown.extraItems||[]).length));
+}
 
 function parseBirthday(str){
   if(!str) return null;
@@ -2614,7 +2945,7 @@ function formatBirthdayShort(birthday){
   return b?`${String(b.day).padStart(2,'0')}/${String(b.month).padStart(2,'0')}`:'';
 }
 function renderMemberName(m){
-  const name=escapeHTML((m&&m.name)||'?');
+  const name=escapeHTML(getMemberDisplayLabel(m)||'?');
   if(m&&m.isFixed) return `<span class="fund-name ${m.isBirthdayFund?'birthday-fund':'team-fund'}">${name}</span>`;
   const birthday=m&&m.birthday;
   const b=parseBirthday(birthday);
@@ -2628,6 +2959,13 @@ function renderMemberName(m){
   }
   return name;
 }
+function renderMemberLabel(m){
+  if(m&&m.isFixed){
+    const fundKind=m.isBirthdayFund?'birthday-fund':'team-fund';
+    return `<span class="fund-label-wrap">${renderMemberName(m)}<span class="fund-badge ${fundKind}">Quỹ</span></span>`;
+  }
+  return `<b>${renderMemberName(m)}</b>`;
+}
 function stripPlainGiftPinFields(){
   S.members=(S.members||[]).map(m=>{
     if(!m) return m;
@@ -2639,7 +2977,7 @@ function getCurrentYm(date=new Date()){
   return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`;
 }
 function getMemberById(id){ return S.members.find(m=>m.id===id); }
-function getMemberName(id){ return (getMemberById(id)||{}).name||'?'; }
+function getMemberName(id){ return getMemberDisplayLabel(getMemberById(id))||'?'; }
 function hasGiftPin(member){ return !!(member&&member.giftPinHash); }
 function validateGiftPin(pin){ return /^\d{4}$/.test((pin||'').trim()); }
 async function sha256(text){
@@ -2665,6 +3003,228 @@ async function verifyMemberGiftPin(memberId,pin){
   if(!hasGiftPin(m)) return false;
   const hash=await sha256(memberId+':'+pin);
   return hash===m.giftPinHash;
+}
+function hasQuickPin(){
+  return localStorage.getItem(PIN_ENABLED_KEY)==='true'
+    && !!localStorage.getItem(PIN_HASH_KEY)
+    && !!localStorage.getItem(PIN_SALT_KEY)
+    && !!localStorage.getItem(PIN_TRUST_KEY)
+    && ['admin','superadmin'].includes(localStorage.getItem(PIN_ROLE_KEY)||'');
+}
+function canSetupQuickPin(){
+  return hasRole('admin')&&(quickPinPasswordSessionTrusted||localStorage.getItem(PIN_TRUST_KEY)==='true');
+}
+function createSalt(){
+  const bytes=new Uint8Array(16);
+  if(window.crypto?.getRandomValues) crypto.getRandomValues(bytes);
+  else for(let i=0;i<bytes.length;i++) bytes[i]=Math.floor(Math.random()*256);
+  return [...bytes].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function hashPin(pin,salt){
+  return sha256(`${salt}:${pin}`);
+}
+function isWeakPin(pin){
+  const weak=new Set(['0000','1111','1234','123456','111111','222222','999999']);
+  if(weak.has(pin)) return true;
+  if(/^(\d)\1+$/.test(pin)) return true;
+  const digits=pin.split('').map(Number);
+  const asc=digits.every((d,i)=>i===0||d===digits[i-1]+1);
+  const desc=digits.every((d,i)=>i===0||d===digits[i-1]-1);
+  return asc||desc;
+}
+function validateQuickPinValue(pin){
+  if(!/^\d{4,6}$/.test(pin||'')) return 'PIN phải gồm 4–6 số';
+  if(isWeakPin(pin)) return 'PIN quá dễ đoán, hãy chọn PIN khác';
+  return '';
+}
+function markQuickPinDeviceTrusted(role=currentRole){
+  quickPinPasswordSessionTrusted=true;
+  localStorage.setItem(PIN_TRUST_KEY,'true');
+  if(['admin','superadmin'].includes(role)) localStorage.setItem(PIN_ROLE_KEY,role);
+}
+function clearQuickPinLock(){
+  localStorage.removeItem(PIN_FAIL_KEY);
+  localStorage.removeItem(PIN_LOCK_KEY);
+}
+function getQuickPinLockedUntil(){
+  return parseInt(localStorage.getItem(PIN_LOCK_KEY)||'0',10)||0;
+}
+function isQuickPinLocked(){
+  const until=getQuickPinLockedUntil();
+  if(!until) return false;
+  if(until<=Date.now()){
+    clearQuickPinLock();
+    return false;
+  }
+  return true;
+}
+function quickPinLockMessage(){
+  const left=Math.max(1,Math.ceil((getQuickPinLockedUntil()-Date.now())/60000));
+  return `PIN đang bị khóa tạm thời. Vui lòng dùng mật khẩu Admin hoặc thử lại sau ${left} phút.`;
+}
+async function verifyQuickPinSecret(pin){
+  if(!hasQuickPin()) return false;
+  const salt=localStorage.getItem(PIN_SALT_KEY);
+  const hash=await hashPin(pin,salt);
+  return hash===localStorage.getItem(PIN_HASH_KEY);
+}
+async function verifyQuickPin(pin){
+  if(!hasQuickPin()) return {ok:false,msg:'Thiết bị này chưa bật PIN nhanh'};
+  if(isQuickPinLocked()) return {ok:false,locked:true,msg:quickPinLockMessage()};
+  const ok=await verifyQuickPinSecret(pin);
+  if(ok){
+    clearQuickPinLock();
+    return {ok:true,role:localStorage.getItem(PIN_ROLE_KEY)||'admin'};
+  }
+  const fail=(parseInt(localStorage.getItem(PIN_FAIL_KEY)||'0',10)||0)+1;
+  if(fail>=5){
+    localStorage.setItem(PIN_FAIL_KEY,'5');
+    localStorage.setItem(PIN_LOCK_KEY,String(Date.now()+5*60*1000));
+    return {ok:false,locked:true,msg:'Nhập sai PIN quá nhiều lần, vui lòng dùng mật khẩu'};
+  }
+  localStorage.setItem(PIN_FAIL_KEY,String(fail));
+  return {ok:false,msg:`Sai PIN (${fail}/5)`};
+}
+async function saveQuickPin(pin,role=currentRole){
+  if(!canSetupQuickPin()) return false;
+  const safeRole=role==='superadmin'?'superadmin':'admin';
+  const salt=createSalt();
+  const hash=await hashPin(pin,salt);
+  localStorage.setItem(PIN_ENABLED_KEY,'true');
+  localStorage.setItem(PIN_HASH_KEY,hash);
+  localStorage.setItem(PIN_SALT_KEY,salt);
+  localStorage.setItem(PIN_ROLE_KEY,safeRole);
+  localStorage.setItem(PIN_TRUST_KEY,'true');
+  clearQuickPinLock();
+  refreshPinLoginUI();
+  renderQuickPinSettings();
+  return true;
+}
+function clearQuickPinData(){
+  QUICK_PIN_KEYS.forEach(k=>localStorage.removeItem(k));
+}
+function refreshPinLoginUI(){
+  const tab=document.getElementById('ltab-pin');
+  const tabs=document.querySelector('.login-tabs');
+  const has=hasQuickPin();
+  if(tab) tab.style.display=has?'inline-flex':'none';
+  if(tabs) tabs.classList.toggle('has-pin',has);
+  if(!has&&document.getElementById('ltab-c-pin')?.style.display==='block') switchLoginTab('admin');
+}
+function renderQuickPinSettings(){
+  const status=document.getElementById('pin-settings-status');
+  const actions=document.getElementById('pin-settings-actions');
+  if(!status||!actions) return;
+  if(!hasRole('admin')){
+    status.textContent='Viewer không thể dùng PIN Admin.';
+    actions.innerHTML='';
+    return;
+  }
+  if(hasQuickPin()){
+    const role=localStorage.getItem(PIN_ROLE_KEY)==='superadmin'?'Super Admin':'Admin';
+    const locked=isQuickPinLocked()?` · ${quickPinLockMessage()}`:'';
+    status.textContent=`PIN nhanh đang bật cho quyền ${role}${locked}`;
+    actions.innerHTML=`
+      <button class="btn bg btn-sm" onclick="changeQuickPin()"><i data-lucide="key-round"></i> Đổi PIN</button>
+      <button class="btn bd btn-sm" onclick="disableQuickPin()"><i data-lucide="lock-x"></i> Tắt PIN</button>`;
+  }else if(canSetupQuickPin()){
+    status.textContent='PIN nhanh chưa được bật trên thiết bị này.';
+    actions.innerHTML=`<button class="btn bg btn-sm" onclick="openSetPinModal('create')"><i data-lucide="lock-keyhole"></i> Tạo PIN nhanh</button>`;
+  }else{
+    status.textContent='Cần đăng nhập bằng mật khẩu Admin/Super Admin trước khi tạo PIN.';
+    actions.innerHTML=`<button class="btn bg btn-sm" disabled><i data-lucide="lock"></i> Tạo PIN nhanh</button>`;
+  }
+  refreshIcons();
+}
+function openSetPinModal(mode='create'){
+  if(!requireAdminTool('Cần quyền Admin để tạo PIN nhanh')) return;
+  if(mode==='create'&&!canSetupQuickPin()) return toast('Cần đăng nhập bằng mật khẩu Admin trước khi tạo PIN','err');
+  if(mode==='change'&&!hasQuickPin()) mode='create';
+  const modal=document.getElementById('ov-quick-pin');
+  document.getElementById('quick-pin-mode').value=mode;
+  document.getElementById('quick-pin-title').innerHTML=`<i data-lucide="lock-keyhole"></i>${mode==='change'?'Đổi PIN nhanh':'Tạo PIN nhanh'}`;
+  document.getElementById('quick-pin-submit').innerHTML=`<i data-lucide="save"></i> ${mode==='change'?'Đổi PIN':'Lưu PIN'}`;
+  document.getElementById('quick-pin-verify-row').style.display=mode==='change'?'block':'none';
+  ['quick-pin-verify','quick-pin-new','quick-pin-confirm'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.value='';el.type='password';}
+  });
+  document.getElementById('quick-pin-err').textContent='';
+  modal.classList.add('open');
+  setTimeout(()=>document.getElementById(mode==='change'?'quick-pin-verify':'quick-pin-new')?.focus(),200);
+  refreshIcons();
+}
+async function submitQuickPinModal(){
+  if(!requireAdminTool('Cần quyền Admin để tạo PIN nhanh')) return;
+  const mode=document.getElementById('quick-pin-mode').value||'create';
+  const err=document.getElementById('quick-pin-err');
+  const pin=(document.getElementById('quick-pin-new').value||'').trim();
+  const confirm=(document.getElementById('quick-pin-confirm').value||'').trim();
+  const validation=validateQuickPinValue(pin);
+  if(validation){err.textContent=validation;return;}
+  if(pin!==confirm){err.textContent='Hai lần nhập PIN không khớp';return;}
+  if(mode==='change'){
+    const verify=(document.getElementById('quick-pin-verify').value||'').trim();
+    if(!verify){err.textContent='Nhập mật khẩu Admin hoặc PIN cũ';return;}
+    const ok=btoa(verify)===PW1 || await verifyQuickPinSecret(verify);
+    if(!ok){err.textContent='Xác nhận không đúng';return;}
+  }
+  const saved=await saveQuickPin(pin,currentRole);
+  if(!saved){err.textContent='Cần đăng nhập bằng mật khẩu Admin trước khi tạo PIN';return;}
+  closeOv('ov-quick-pin');
+  toast(mode==='change'?'Đã đổi PIN':'Đã bật mở khóa nhanh bằng PIN');
+}
+function changeQuickPin(){
+  openSetPinModal('change');
+}
+async function disableQuickPin(){
+  if(!requireAdminTool('Cần quyền Admin để tắt PIN')) return;
+  const ok=await confirmAction({title:'Tắt PIN nhanh',message:'PIN mở khóa nhanh trên thiết bị này sẽ bị xóa. Muốn tạo lại sau khi logout, bạn cần đăng nhập bằng mật khẩu Admin.',confirmText:'Tắt PIN'});
+  if(!ok) return;
+  clearQuickPinData();
+  refreshPinLoginUI();
+  renderQuickPinSettings();
+  toast('Đã tắt mở khóa bằng PIN');
+}
+function promptQuickPinSetup(role=currentRole){
+  if(hasQuickPin()||!canSetupQuickPin()) return;
+  quickPinPromptRole=role==='superadmin'?'superadmin':'admin';
+  document.getElementById('ov-pin-prompt')?.classList.add('open');
+  refreshIcons();
+}
+function dismissQuickPinPrompt(){
+  document.getElementById('ov-pin-prompt')?.classList.remove('open');
+}
+function acceptQuickPinPrompt(){
+  dismissQuickPinPrompt();
+  openSetPinModal('create');
+}
+function openPinLogin(){
+  if(!hasQuickPin()) return;
+  switchLoginTab('pin');
+}
+async function loginWithQuickPin(){
+  const err=document.getElementById('pin-login-err');
+  const pin=(document.getElementById('login-pin')?.value||'').trim();
+  if(err) err.textContent='';
+  if(!/^\d{4,6}$/.test(pin)){ if(err) err.textContent='Nhập PIN 4–6 số'; return; }
+  const result=await verifyQuickPin(pin);
+  if(!result.ok){
+    if(err) err.textContent=result.msg||'Sai PIN';
+    toast(result.locked?'Nhập sai PIN quá nhiều lần, vui lòng dùng mật khẩu':'Sai PIN','err');
+    playSound('err');
+    haptic([40,30,40]);
+    return;
+  }
+  const role=result.role==='superadmin'?'superadmin':'admin';
+  setRole(role);
+  localStorage.setItem(SK,'logged_in');
+  localStorage.setItem(VK,'1');
+  localStorage.setItem(RK,role);
+  document.getElementById('login-pin').value='';
+  closeLoginScreen();
+  toast('Đã mở khóa bằng PIN');
+  haptic(20);
 }
 function resetMemberGiftPin(memberId){
   const m=getMemberById(memberId);
@@ -2734,10 +3294,33 @@ function playSound(type){
   }catch(e){}
 }
 function toggleSound(){
+  if(!isAdmin) return toast('Cần đăng nhập Admin để mở cài đặt','err');
   soundOn=!soundOn;
   localStorage.setItem(SOUND_KEY,soundOn?'on':'off');
   document.getElementById('sound-toggle')?.classList.toggle('on',soundOn);
   toast(soundOn?'🔊 Bật âm thanh':'🔇 Tắt âm thanh');
+}
+function openSettingsModal(){
+  if(!isAdmin) return toast('Cần đăng nhập Admin để mở cài đặt','err');
+  ensureSettings();
+  const nameInput=document.getElementById('settings-app-name');
+  if(nameInput) nameInput.value=getAppName();
+  document.getElementById('sound-toggle')?.classList.toggle('on',soundOn);
+  renderQuickPinSettings();
+  document.getElementById('ov-settings')?.classList.add('open');
+  refreshIcons();
+}
+function saveAppName(){
+  if(!isAdmin) return toast('Cần đăng nhập Admin để mở cài đặt','err');
+  const input=document.getElementById('settings-app-name');
+  const name=(input?.value||'').trim();
+  if(!name) return toast('Tên app không được trống','err');
+  if(name.length<2||name.length>24) return toast('Tên app cần từ 2–24 ký tự','err');
+  ensureSettings();
+  S.settings.appName=name;
+  fbSave();
+  renderAppName();
+  toast('Đã đổi tên app');
 }
 
 function haptic(ms=8){ if(navigator.vibrate) navigator.vibrate(ms); }
@@ -2759,6 +3342,247 @@ function requireRole(role,msg){
   if(hasRole(role)) return true;
   toast(msg || (role==='superadmin'?'Cần quyền Super Admin':'Cần quyền Admin'), 'err');
   return false;
+}
+function canUseAdminTools(){ return hasRole('admin'); }
+function requireAdminTool(msg='Cần quyền Admin để dùng tính năng này'){
+  return requireRole('admin',msg);
+}
+function formatCompactMoney(amount){
+  const n=Math.round((Number(amount)||0)/1000);
+  return String(n);
+}
+function normalizeVietnameseText(text){
+  return (text||'').toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .replace(/đ/g,'d')
+    .replace(/Đ/g,'D');
+}
+function cleanMessengerPhrase(text){
+  return normalizeVietnameseText(text)
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g,' ')
+    .replace(/-/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function formatMemberNameForMessenger(name){
+  return cleanMessengerPhrase(name).replace(/\s+/g,'');
+}
+function formatMessengerDescription(txn){
+  const raw=(txn?.desc||txn?.category||'chi phí').toString();
+  const desc=cleanMessengerPhrase(raw);
+  const cat=cleanMessengerPhrase(txn?.category||'');
+  if(cat && desc===cat){
+    if(cat.includes('tennis')) return 'tennis';
+    if(cat.includes('an uong')) return 'an';
+    if(cat.includes('ca phe')||cat.includes('cafe')) return 'cafe';
+    if(cat.includes('mua sam')) return 'mua sam';
+    if(cat.includes('khac')) return 'khac';
+  }
+  return desc||cat||'chi phi';
+}
+function getMessengerExtraNotes(txn){
+  const notes=[];
+  if(txn?.note) notes.push(cleanMessengerPhrase(txn.note));
+  (txn?.breakdown?.extraItems||[]).forEach(item=>{
+    const note=cleanMessengerPhrase(item.note||'phu phi');
+    const amount=Number(item.amount)||0;
+    notes.push([note,amount>0?formatCompactMoney(amount):''].filter(Boolean).join(' '));
+  });
+  return notes.filter(Boolean);
+}
+function buildMessengerText(txn){
+  if(!txn||txn.type!=='session') return '';
+  const amount=Number(txn.amount)||((Number(txn.perPerson)||0)*(txn.memberIds||[]).length);
+  const memberNames=(txn.memberIds||[])
+    .map(id=>formatMemberNameForMessenger(getMemberName(id)))
+    .filter(Boolean);
+  return [
+    formatMessengerDescription(txn),
+    formatCompactMoney(amount),
+    ...memberNames,
+    ...getMessengerExtraNotes(txn)
+  ].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+}
+async function copyTextToClipboard(text,successMsg){
+  const value=(text||'').toString();
+  if(!value.trim()) return false;
+  try{
+    await navigator.clipboard.writeText(value);
+  }catch(e){
+    const ta=document.createElement('textarea');
+    ta.value=value;
+    ta.setAttribute('readonly','');
+    ta.style.position='fixed';
+    ta.style.left='-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+  }
+  toast(successMsg);
+  return true;
+}
+async function copyMessengerText(txnId){
+  if(!requireAdminTool('Cần quyền Admin để copy thông báo Messenger')) return;
+  const txn=S.transactions.find(t=>t.id===txnId);
+  if(!txn||txn.type!=='session') return toast('Không tìm thấy giao dịch để copy','err');
+  const text=txn.messengerText||buildMessengerText(txn);
+  if(!text) return toast('Giao dịch này chưa có thông báo để copy','err');
+  if(!txn.messengerText){
+    txn.messengerText=text;
+    fbSave();
+  }
+  await copyTextToClipboard(text,'Đã copy thông báo Messenger');
+}
+function getMessengerSummaryMonthKey(){
+  return document.getElementById('f-month')?.value||getCurrentYm();
+}
+function buildMonthlyMessengerSummary(monthKey=getMessengerSummaryMonthKey()){
+  if(!requireAdminTool('Cần quyền Admin để copy tổng thông báo tháng')) return '';
+  const key=monthKey||getCurrentYm();
+  const [year,month]=key.split('-');
+  const txns=(S.transactions||[])
+    .filter(t=>t.type==='session'&&(t.date||'').startsWith(key))
+    .sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.createdAt||0)-(b.createdAt||0));
+  const lines=txns.map(t=>t.messengerText||buildMessengerText(t)).filter(Boolean);
+  if(!lines.length) return '';
+  const appLink=location.href.split('#')[0].split('?')[0];
+  return [
+    `Check chi tiêu tháng ${parseInt(month,10)}/${year}`,
+    '',
+    ...lines,
+    '',
+    'ae vào app check chi tiết, filter tên mình để kiểm tra:',
+    appLink
+  ].join('\n');
+}
+async function copyMonthlyMessengerSummary(){
+  if(!requireAdminTool('Cần quyền Admin để copy tổng thông báo tháng')) return;
+  const text=buildMonthlyMessengerSummary();
+  if(!text) return toast('Tháng này chưa có thông báo để copy','err');
+  await copyTextToClipboard(text,'Đã copy Messenger tháng');
+}
+function initTennisPlanner(){
+  if(!canUseAdminTools()) return;
+  const monthSel=document.getElementById('tennis-month');
+  const yearInput=document.getElementById('tennis-year');
+  if(!monthSel||!yearInput) return;
+  const now=new Date();
+  if(!monthSel.options.length){
+    monthSel.innerHTML=Array.from({length:12},(_,i)=>`<option value="${i+1}">Tháng ${i+1}</option>`).join('');
+  }
+  if(!monthSel.value) monthSel.value=String(now.getMonth()+1);
+  if(!yearInput.value) yearInput.value=String(now.getFullYear());
+  tennisPlannerReady=true;
+  updateTennisPlannerPreview();
+}
+function toggleTennisWeekday(btn){
+  if(!requireAdminTool('Cần quyền Admin để dùng Tennis Planner')) return;
+  btn.classList.toggle('on');
+  updateTennisPlannerPreview();
+}
+function getSelectedTennisWeekdays(){
+  return [...document.querySelectorAll('#tennis-days .planner-day.on')]
+    .map(btn=>parseInt(btn.dataset.weekday,10))
+    .filter(n=>!Number.isNaN(n));
+}
+function isoDate(year,month,day){
+  return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+}
+function parsePlannerExcludedDates(year,month){
+  const raw=document.getElementById('tennis-exclude')?.value||'';
+  const out=new Set();
+  raw.split(/[\s,;]+/).map(x=>x.trim()).filter(Boolean).forEach(token=>{
+    let m=token.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if(m){
+      const y=parseInt(m[1],10), mo=parseInt(m[2],10), d=parseInt(m[3],10);
+      if(y===year&&mo===month) out.add(isoDate(y,mo,d));
+      return;
+    }
+    m=token.match(/^(\d{1,2})\/(\d{1,2})$/);
+    if(m){
+      const d=parseInt(m[1],10), mo=parseInt(m[2],10);
+      if(mo===month) out.add(isoDate(year,mo,d));
+    }
+  });
+  return out;
+}
+function getWeekStartKey(date){
+  const d=new Date(date.getFullYear(),date.getMonth(),date.getDate());
+  const offset=(d.getDay()+6)%7;
+  d.setDate(d.getDate()-offset);
+  return isoDate(d.getFullYear(),d.getMonth()+1,d.getDate());
+}
+function getWeeksForMonth(year,month,selectedWeekdays){
+  const selected=new Set(selectedWeekdays||[]);
+  if(!selected.size) return [];
+  const excluded=parsePlannerExcludedDates(year,month);
+  const daysInMonth=new Date(year,month,0).getDate();
+  const weeks=[];
+  const byKey=new Map();
+  for(let day=1;day<=daysInMonth;day++){
+    const d=new Date(year,month-1,day);
+    if(!selected.has(d.getDay())) continue;
+    if(excluded.has(isoDate(year,month,day))) continue;
+    const key=getWeekStartKey(d);
+    if(!byKey.has(key)){
+      const item={key,anchor:new Date(d),days:[]};
+      byKey.set(key,item);
+      weeks.push(item);
+    }
+    byKey.get(key).days.push(new Date(d));
+  }
+  return weeks;
+}
+function weekdayLabel(day){
+  return ['CN','T2','T3','T4','T5','T6','T7'][day]||'';
+}
+function composeTennisPlannerText(){
+  const month=parseInt(document.getElementById('tennis-month')?.value||new Date().getMonth()+1,10);
+  const year=parseInt(document.getElementById('tennis-year')?.value||new Date().getFullYear(),10);
+  const title=(document.getElementById('tennis-title')?.value||'Tennis').trim()||'Tennis';
+  const selected=getSelectedTennisWeekdays();
+  if(!selected.length) return 'Chọn ít nhất một ngày tennis trong tuần.';
+  const weeks=getWeeksForMonth(year,month,selected);
+  const shortMode=document.getElementById('tennis-short')?.checked!==false;
+  document.getElementById('tennis-short')?.closest('.chip')?.classList.toggle('on',shortMode);
+  if(!weeks.length) return `${title}\n------\n\nKhông có lịch phù hợp.`;
+  if(shortMode){
+    return [
+      title,
+      '------',
+      '',
+      ...weeks.map(w=>`## Tuần ${w.anchor.getDate()}/${w.anchor.getMonth()+1}`)
+    ].join('\n\n');
+  }
+  return [
+    `${title} tháng ${month}`,
+    '--------------',
+    '',
+    ...weeks.map(w=>{
+      const labels=w.days.map(d=>weekdayLabel(d.getDay())).join(', ');
+      return `Tuần ${w.anchor.getDate()}/${w.anchor.getMonth()+1}: ${labels}`;
+    })
+  ].join('\n');
+}
+function buildTennisPlannerText(){
+  if(!requireAdminTool('Cần quyền Admin để dùng Tennis Planner')) return '';
+  return composeTennisPlannerText();
+}
+function updateTennisPlannerPreview(){
+  if(!canUseAdminTools()) return;
+  if(!tennisPlannerReady) initTennisPlanner();
+  const preview=document.getElementById('tennis-preview');
+  if(preview) preview.value=composeTennisPlannerText();
+  refreshIcons();
+}
+async function copyTennisPlannerText(){
+  if(!requireAdminTool('Cần quyền Admin để copy lịch tennis')) return;
+  const text=composeTennisPlannerText();
+  if(!text||text.startsWith('Chọn ')) return toast('Chọn ít nhất một ngày tennis trong tuần','err');
+  await copyTextToClipboard(text,'Đã copy lịch tennis');
 }
 function setRole(role){
   currentRole=role;
@@ -2783,6 +3607,13 @@ function applyRoleUI(){
     b.innerHTML=currentRole==='viewer'?'<i data-lucide="lock"></i> Đăng nhập':'<i data-lucide="log-out"></i> Đăng xuất';
     b.onclick=currentRole==='viewer'?openLoginScreen:doLogout;
   }
+  const settingsBtn=document.getElementById('btn-settings');
+  if(settingsBtn) settingsBtn.style.display=isAdmin?'inline-flex':'none';
+  if(!isAdmin) document.getElementById('ov-settings')?.classList.remove('open');
+  if(!isAdmin&&document.getElementById('tab-tennis')?.classList.contains('on')) switchRecTab('session');
+  if(isAdmin) initTennisPlanner();
+  refreshPinLoginUI();
+  renderQuickPinSettings();
   document.querySelectorAll('[data-role-min]').forEach(el=>{
     const need=el.dataset.roleMin;
     const locked=!hasRole(need);
@@ -2820,8 +3651,9 @@ function resolveConfirm(v){
 function fbSave(force=false){
   if(!isAdmin&&!force) return;
   syncDot('saving');
+  ensureSettings();
   stripPlainGiftPinFields();
-  const payload={members:S.members,transactions:S.transactions,recurring:S.recurring,updatedAt:Date.now()};
+  const payload={members:S.members,transactions:S.transactions,recurring:S.recurring,settings:S.settings,updatedAt:Date.now()};
   localStorage.setItem('clb_cache',JSON.stringify(S));
   if(window._fbSet){
     window._fbSet(payload)
@@ -2839,8 +3671,11 @@ function startFB(){
     S.members=val.members||[];
     S.transactions=val.transactions||[];
     S.recurring=val.recurring||[];
+    S.settings=val.settings||S.settings||{appName:DEFAULT_APP_NAME};
+    ensureSettings();
     stripPlainGiftPinFields();
     ensureFundMember();
+    renderAppName();
     localStorage.setItem('clb_cache',JSON.stringify(S));
     render(); syncDot('synced',val.updatedAt);
     checkMonthSnapshot();
@@ -2917,6 +3752,9 @@ function openLoginScreen(){
   document.getElementById('super-pw1')&&(document.getElementById('super-pw1').value='');
   document.getElementById('super-pw2')&&(document.getElementById('super-pw2').value='');
   document.getElementById('super-err')&&(document.getElementById('super-err').textContent='');
+  document.getElementById('login-pin')&&(document.getElementById('login-pin').value='');
+  document.getElementById('pin-login-err')&&(document.getElementById('pin-login-err').textContent='');
+  refreshPinLoginUI();
   switchLoginTab('admin');
   setTimeout(()=>document.getElementById('login-pw').focus(),300);
 }
@@ -3013,12 +3851,20 @@ function togglePwVis(id,btn){
 }
 
 function switchLoginTab(t){
+  if(t==='pin'&&!hasQuickPin()) t='admin';
   document.getElementById('ltab-admin')?.classList.toggle('on',t==='admin');
   document.getElementById('ltab-super')?.classList.toggle('on',t==='super');
+  document.getElementById('ltab-pin')?.classList.toggle('on',t==='pin');
   const admin=document.getElementById('ltab-c-admin');
   const sup=document.getElementById('ltab-c-super');
+  const pin=document.getElementById('ltab-c-pin');
   if(admin) admin.style.display=t==='admin'?'block':'none';
   if(sup) sup.style.display=t==='super'?'block':'none';
+  if(pin) pin.style.display=t==='pin'?'block':'none';
+  if(t==='pin'){
+    document.getElementById('pin-login-err').textContent=isQuickPinLocked()?quickPinLockMessage():'';
+    setTimeout(()=>document.getElementById('login-pin')?.focus(),120);
+  }
   refreshIcons();
 }
 function doLogin(role='admin'){
@@ -3027,11 +3873,14 @@ function doLogin(role='admin'){
   const p2=role==='superadmin'?document.getElementById('super-pw2').value:'';
   if(btoa(p1)===PW1 && (role!=='superadmin'||btoa(p2)===PW2)){
     setRole(role);
+    markQuickPinDeviceTrusted(role);
+    clearQuickPinLock();
     localStorage.setItem(SK,'logged_in');
     localStorage.setItem(VK,'1');
     localStorage.setItem(RK,role);
     closeLoginScreen();
     toast(role==='superadmin'?'Đã đăng nhập Super Admin':'Đã đăng nhập Admin');
+    setTimeout(()=>promptQuickPinSetup(role),350);
     haptic(20);
   }else{
     if(err) err.textContent=role==='superadmin'?'Sai mật khẩu Admin hoặc cấp 2!':'Sai mật khẩu!';
@@ -3041,6 +3890,7 @@ function doLogin(role='admin'){
 }
 function continueAsViewer(){
   setRole('viewer');
+  quickPinPasswordSessionTrusted=false;
   localStorage.setItem(VK,'1');
   localStorage.setItem(RK,'viewer');
   closeLoginScreen();
@@ -3048,6 +3898,7 @@ function continueAsViewer(){
 }
 function doLogout(){
   setRole('viewer');
+  quickPinPasswordSessionTrusted=false;
   localStorage.removeItem(SK);
   localStorage.removeItem(VK);
   localStorage.removeItem(RK);
@@ -3125,13 +3976,17 @@ function moveHistTabInd(){
   if(on&&ind){ind.style.left=on.offsetLeft+'px';ind.style.width=on.offsetWidth+'px';}
 }
 function switchRecTab(t){
-  ['session','quick','recurring'].forEach(x=>{
-    document.getElementById('rec-'+x).style.display=x===t?'block':'none';
-    document.getElementById('tab-'+x).classList.toggle('on',x===t);
+  if(t==='tennis'&&!requireAdminTool('Cần quyền Admin để dùng Tennis Planner')) t='session';
+  ['session','quick','recurring','tennis'].forEach(x=>{
+    const panel=document.getElementById('rec-'+x);
+    const tab=document.getElementById('tab-'+x);
+    if(panel) panel.style.display=x===t?'block':'none';
+    if(tab) tab.classList.toggle('on',x===t);
   });
   moveRecTabInd();
   if(t==='quick'){document.getElementById('q-date').value=td();renderQMem();}
   if(t==='recurring') renderRecList();
+  if(t==='tennis') initTennisPlanner();
 }
 function moveRecTabInd(){
   const on=document.querySelector('#page-record .tab.on');
@@ -3144,6 +3999,8 @@ function moveRecTabInd(){
 // ═══════════════════════════════════════════════════════════════
 function render(){
   ensureFundMember();
+  ensureSettings();
+  renderAppName();
   renderDash(); renderMembersList(); renderTopupSel();
   renderChips(); renderRecList(); renderRecPick(); renderQMem(); renderRecMemChips();
   fillLbMonths(); renderLeaderboard();
@@ -3153,14 +4010,14 @@ function render(){
 
 function ensureFundMember(){
   if(!S.members.find(m=>m.id===FUND_ID))
-    S.members.unshift({id:FUND_ID,name:'QUỸ TEAM',balance:0,totalIn:0,totalOut:0,order:-1,isFixed:true});
-  else{const fm=S.members.find(m=>m.id===FUND_ID);fm.order=-1;fm.isFixed=true;}
+    S.members.unshift({id:FUND_ID,name:'Team',balance:0,totalIn:0,totalOut:0,order:-2,isFixed:true});
+  else{const fm=S.members.find(m=>m.id===FUND_ID);fm.name='Team';fm.order=-2;fm.isFixed=true;fm.isBirthdayFund=false;}
   const birthdayFund=S.members.find(m=>m.id===BIRTHDAY_FUND_ID);
   if(!birthdayFund){
-    S.members.unshift({id:BIRTHDAY_FUND_ID,name:'QUỸ SINH NHẬT',balance:0,totalIn:0,totalOut:0,order:-2,isFixed:true,isBirthdayFund:true});
+    S.members.unshift({id:BIRTHDAY_FUND_ID,name:'Birthday',balance:0,totalIn:0,totalOut:0,order:-1,isFixed:true,isBirthdayFund:true});
   }else{
-    birthdayFund.name='QUỸ SINH NHẬT';
-    birthdayFund.order=-2;
+    birthdayFund.name='Birthday';
+    birthdayFund.order=-1;
     birthdayFund.isFixed=true;
     birthdayFund.isBirthdayFund=true;
   }
@@ -3286,11 +4143,11 @@ function renderDash(){
 
   document.getElementById('stat-grid').innerHTML=`
     <div class="stat">
-      <div class="stat-head"><div class="sl">Quỹ Team</div><div class="stat-ic" style="color:#ffbf75"><i data-lucide="badge-dollar-sign"></i></div></div>
+      <div class="stat-head"><div class="sl"><span class="vault-kicker">Vault</span>Team</div><div class="stat-ic" style="color:#ffbf75"><i data-lucide="badge-dollar-sign"></i></div></div>
       <div class="sv" data-val="${fundBal}" style="color:#ffbf75">${fmt(fundBal)}</div>
     </div>
     <div class="stat">
-      <div class="stat-head"><div class="sl">Quỹ sinh nhật</div><div class="stat-ic" style="color:#ffc3d9"><i data-lucide="gift"></i></div></div>
+      <div class="stat-head"><div class="sl"><span class="vault-kicker">Vault</span>Birthday</div><div class="stat-ic" style="color:#ffc3d9"><i data-lucide="gift"></i></div></div>
       <div class="sv" data-val="${birthdayFundBal}" style="color:#ffc3d9">${fmt(birthdayFundBal)}</div>
     </div>
     <div class="stat">
@@ -3319,7 +4176,7 @@ function renderDash(){
               ? '<span class="bdg" style="background:rgba(113,113,122,.15);color:var(--mut)">Hòa</span>'
               : '<span class="bdg dg">Đủ tiền</span>';
         return `<tr ${m.isFixed?`class="fund-row ${fundKind}-row"`:''}>
-          <td><b>${renderMemberName(m)}</b>${m.isFixed?`<span class="fund-badge ${fundKind}">Quỹ</span>`:''}</td>
+          <td>${renderMemberLabel(m)}</td>
           <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${m.isFixed?(m.isBirthdayFund?'#ffc3d9':'#ffbf75'):debtColor(bal)}">${fmt(bal)}</td>
           <td>${statusCell}</td>
         </tr>`;
@@ -3379,7 +4236,7 @@ function renderMembersList(){
     ? getSortedMembers().map(m=>{
       const fundKind=m.isBirthdayFund?'birthday-fund':'team-fund';
       return `<tr ${m.isFixed?`class="fund-row ${fundKind}-row"`:''}>
-        <td><b>${renderMemberName(m)}</b>${m.isFixed?`<span class="fund-badge ${fundKind}">Quỹ</span>`:''}</td>
+        <td>${renderMemberLabel(m)}</td>
         <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${m.isFixed?(m.isBirthdayFund?'#ffc3d9':'#ffbf75'):debtColor(m.balance||0)}">${fmt(m.balance)}</td>
         <td class="ap hm">${fmt(m.totalIn||0)}</td>
         <td class="an hm">${fmt(m.totalOut||0)}</td>
@@ -3391,8 +4248,8 @@ function renderMembersList(){
     }).join('')
     : '<tr><td colspan="5"><div class="empty"><i data-lucide="users"></i>Chưa có thành viên</div></td></tr>';
 }
-function renderTopupSel(){ const s=document.getElementById('topup-mem');const c=s.value;s.innerHTML=S.members.map(m=>`<option value="${m.id}">${escapeHTML(m.name)}</option>`).join('');if(c)s.value=c; }
-function renderQMem(){ const s=document.getElementById('q-mem');if(!s)return;const c=s.value;s.innerHTML=S.members.map(m=>`<option value="${m.id}">${escapeHTML(m.name)}</option>`).join('');if(c)s.value=c; }
+function renderTopupSel(){ const s=document.getElementById('topup-mem');const c=s.value;s.innerHTML=getSortedMembers().map(m=>`<option value="${m.id}">${escapeHTML(getMemberDisplayLabel(m))}</option>`).join('');if(c)s.value=c; }
+function renderQMem(){ const s=document.getElementById('q-mem');if(!s)return;const c=s.value;s.innerHTML=getSortedMembers().map(m=>`<option value="${m.id}">${escapeHTML(getMemberDisplayLabel(m))}</option>`).join('');if(c)s.value=c; }
 
 function renderChips(){
   const g=document.getElementById('sess-chips'); if(!g) return;
@@ -3401,7 +4258,7 @@ function renderChips(){
     ? members.map(m=>`<label class="chip" id="chip-${m.id}" onclick="toggleChip('${m.id}')"><input type="checkbox" id="ck-${m.id}"><span>${renderMemberName(m)}</span></label>`).join('')
     : '<span class="tm">Chưa có thành viên</span>';
   const pb=document.getElementById('paid-by-sel'); if(!pb) return;
-  pb.innerHTML='<option value="">— Tôi tự trả —</option>'+members.map(m=>`<option value="${m.id}">${escapeHTML(m.name)}</option>`).join('');
+  pb.innerHTML='<option value="">— Tôi tự trả —</option>'+members.map(m=>`<option value="${m.id}">${escapeHTML(getMemberDisplayLabel(m))}</option>`).join('');
 }
 function toggleChip(id){
   const ck=document.getElementById('ck-'+id);
@@ -3435,7 +4292,7 @@ function setSplitMode(m){
   calcPP();
 }
 function calcPP(){
-  const amt=kVal('sess-amt');
+  const amt=readSessionAmount();
   const n=getGiftableMembers().filter(m=>document.getElementById('ck-'+m.id)?.checked).length;
   const disp=document.getElementById('pp-display'),val=document.getElementById('pp-val');
   if(splitMode==='split'&&amt>0&&n>0){disp.style.display='block';val.textContent=fmt(Math.ceil(amt/n));}
@@ -3457,11 +4314,14 @@ function renderRecList(){
   const el=document.getElementById('rec-list'); if(!el) return;
   if(!S.recurring.length){el.innerHTML='<div class="empty"><i data-lucide="inbox"></i>Chưa có template</div>';refreshIcons();return;}
   el.innerHTML=S.recurring.map(r=>{
-    const mn=(r.defaultMembers||[]).map(id=>(S.members.find(x=>x.id===id)||{}).name||'?').join(', ');
+    const nr=normalizeRecurring(r);
+    const mn=(nr.defaultMembers||[]).map(id=>getMemberName(id)).join(', ');
+    const detail=nr.extraItems.length?`<div class="rec-breakdown-sub">Gồm: ${escapeHTML(formatBreakdownText({baseAmount:nr.baseAmount,extraItems:nr.extraItems}))}</div>`:'';
     return `<div class="rec-card">
       <div style="flex:1;min-width:0">
-        <div class="rec-title">${escapeHTML(r.name)} <span class="bdg dp">${escapeHTML(r.category)}</span></div>
-        <div class="rec-sub">${r.mode==='fixed'?'Mỗi người: '+fmt(r.amount):'Tổng: '+fmt(r.amount)} · ${escapeHTML(mn||'Không có mặc định')}</div>
+        <div class="rec-title">${escapeHTML(nr.name)} <span class="bdg dp">${escapeHTML(nr.category)}</span></div>
+        <div class="rec-sub">${nr.mode==='fixed'?'Mỗi người: '+fmt(nr.amount):'Tổng: '+fmt(nr.amount)} · ${escapeHTML(mn||'Không có mặc định')}</div>
+        ${detail}
       </div>
       <div class="fl g8">
         <button class="btn bg btn-sm wo" onclick="editRec('${r.id}')"><i data-lucide="pencil"></i></button>
@@ -3473,21 +4333,24 @@ function renderRecList(){
 }
 function renderRecPick(){
   const s=document.getElementById('rec-pick'); if(!s) return;
-  s.innerHTML='<option value="">— Chọn template —</option>'+S.recurring.map(r=>`<option value="${r.id}">${escapeHTML(r.name)} (${escapeHTML(r.category)})</option>`).join('');
+  s.innerHTML='<option value="">— Chọn template —</option>'+S.recurring.map(r=>{const nr=normalizeRecurring(r);return `<option value="${nr.id}">${escapeHTML(nr.name)} (${escapeHTML(nr.category)})</option>`;}).join('');
   document.getElementById('rec-pick-row').style.display=S.recurring.length?'block':'none';
 }
-function applyRec(){ const id=document.getElementById('rec-pick').value;const r=S.recurring.find(x=>x.id===id);if(!r)return;applyRecDirect(r); }
+function applyRec(){ const id=document.getElementById('rec-pick').value;if(!id){appliedRecurringContext=null;return;}const r=S.recurring.find(x=>x.id===id);if(!r)return;applyRecDirect(r); }
 function applyRecDirect(r){
-  setSplitMode(r.mode);
-  document.getElementById('sess-amt').value=r.amount;
+  const nr=normalizeRecurring(r);
+  setSplitMode(nr.mode);
+  setSessionAmountFromVND(nr.amount);
+  const breakdown=makeRecurringBreakdown(nr);
+  appliedRecurringContext={id:nr.id,breakdown};
   getGiftableMembers().forEach(m=>{
-    const on=(r.defaultMembers||[]).includes(m.id);
+    const on=(nr.defaultMembers||[]).includes(m.id);
     const ck=document.getElementById('ck-'+m.id);if(ck)ck.checked=on;
     const ch=document.getElementById('chip-'+m.id);if(ch)ch.classList.toggle('on',on);
   });
   calcPP(); updateSelCount();
   document.querySelectorAll('#cat-tags .qtag').forEach(t=>{
-    if(t.dataset.cat===r.category){t.classList.add('sel');selCat=r.category;}
+    if(t.dataset.cat===nr.category){t.classList.add('sel');selCat=nr.category;}
     else t.classList.remove('sel');
   });
 }
@@ -3496,6 +4359,48 @@ function renderRecMemChips(){
   g.innerHTML=getGiftableMembers().map(m=>`<label class="chip" id="rchip-${m.id}" onclick="toggleRChip('${m.id}')"><input type="checkbox" id="rck-${m.id}"><span>${renderMemberName(m)}</span></label>`).join('');
 }
 function toggleRChip(id){ const ck=document.getElementById('rck-'+id);ck.checked=!ck.checked;document.getElementById('rchip-'+id).classList.toggle('on',ck.checked); }
+function renderRecExtraRows(items=[]){
+  const list=document.getElementById('rec-extra-list');
+  if(!list) return;
+  list.innerHTML=(items||[]).map(item=>recExtraRowHTML(item)).join('');
+  updateRecTotalPreview();
+  refreshIcons();
+}
+function recExtraRowHTML(item={}){
+  const id=item.id||uid();
+  const amount=item.amount?item.amount/1000:'';
+  return `<div class="rec-extra-row" data-id="${id}">
+    <div><label>Ghi chú</label><input type="text" class="rec-extra-note" placeholder="Tiền tip" value="${escapeHTML(item.note||'')}" oninput="updateRecTotalPreview()"></div>
+    <div><label>Số tiền</label><div class="input-k"><input type="number" class="rec-extra-amount" placeholder="30" step="1000" value="${amount}" oninput="updateRecTotalPreview()"><button type="button" class="btn-k" onclick="const i=this.parentElement.querySelector('input');i.value=(parseFloat(i.value)||0)/1000;updateRecTotalPreview()">÷k</button></div></div>
+    <button type="button" class="btn bd rec-extra-remove" onclick="removeRecExtraRow('${id}')" title="Xóa"><i data-lucide="x"></i></button>
+  </div>`;
+}
+function addRecExtraRow(item={note:'',amount:0}){
+  const list=document.getElementById('rec-extra-list');
+  if(!list) return;
+  list.insertAdjacentHTML('beforeend',recExtraRowHTML({...item,id:item.id||uid()}));
+  updateRecTotalPreview();
+  refreshIcons();
+}
+function removeRecExtraRow(id){
+  document.querySelector(`#rec-extra-list .rec-extra-row[data-id="${id}"]`)?.remove();
+  updateRecTotalPreview();
+}
+function collectRecurringCosts(){
+  const baseAmount=kVal('rec-base-amt');
+  const extraItems=[...document.querySelectorAll('#rec-extra-list .rec-extra-row')].map(row=>({
+    id:row.dataset.id||uid(),
+    note:(row.querySelector('.rec-extra-note')?.value||'').trim(),
+    amount:(parseFloat(row.querySelector('.rec-extra-amount')?.value)||0)*1000
+  })).filter(x=>x.amount>0||x.note);
+  return {baseAmount,extraItems,totalAmount:recurringTotal(baseAmount,extraItems)};
+}
+function updateRecTotalPreview(){
+  const p=document.getElementById('rec-total-preview');
+  if(!p) return;
+  const data=collectRecurringCosts();
+  p.textContent=`Tổng template: ${fmt(data.totalAmount)}`;
+}
 
 // ── LEADERBOARD ──
 function fillLbMonths(){
@@ -3603,7 +4508,7 @@ function fillMonths(){
 }
 function fillPersonFilter(){
   const s=document.getElementById('f-person'); if(!s) return; const c=s.value;
-  s.innerHTML='<option value="">Tất cả thành viên</option>'+getSortedMembers().map(m=>`<option value="${m.id}" ${c===m.id?'selected':''}>${escapeHTML(m.name)}</option>`).join('');
+  s.innerHTML='<option value="">Tất cả thành viên</option>'+getSortedMembers().map(m=>`<option value="${m.id}" ${c===m.id?'selected':''}>${escapeHTML(getMemberDisplayLabel(m))}</option>`).join('');
 }
 function fillCatFilter(){
   const s=document.getElementById('f-cat'); if(!s) return; const c=s.value;
@@ -3626,8 +4531,10 @@ function renderHistory(){
   el.innerHTML=txns.length
     ? `<div class="hist-table-wrap"><table><thead><tr><th>Ngày</th><th>Mô tả</th><th>Danh mục</th><th>Số tiền</th><th>Mỗi người</th><th>Thành viên</th><th></th></tr></thead><tbody>
         ${txns.map(t=>{
-          const names=(t.memberIds||[]).map(id=>(S.members.find(x=>x.id===id)||{}).name||'?').join(', ');
+          const names=(t.memberIds||[]).map(id=>getMemberName(id)).join(', ');
           const desc=t.type==='birthday_gift'?renderBirthdayGiftDescription(t):escapeHTML(t.desc);
+          const copyBtn=t.type==='session'?`<button class="btn bb btn-sm admin-tool hist-copy-btn" onclick="copyMessengerText('${t.id}')" title="Copy thông báo Messenger"><i data-lucide="copy"></i></button>`:'';
+          const detailBtn=hasBreakdown(t)?`<button class="btn bg btn-sm" onclick="openBreakdownDetail('${t.id}')" title="Chi tiết">Chi tiết</button>`:'';
           return`<tr>
             <td class="tm" style="white-space:nowrap;font-family:'JetBrains Mono',monospace">${t.date}</td>
             <td>${desc}</td>
@@ -3635,21 +4542,23 @@ function renderHistory(){
             <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${t.type==='topup'&&t.amount>0?'var(--grn)':'var(--red)'}">${fmt(Math.abs(t.amount))}</td>
             <td class="az">${t.perPerson?fmt(t.perPerson):'—'}</td>
             <td class="tm">${escapeHTML(names||'—')}</td>
-            <td><button class="btn bd btn-sm wo hist-delete-btn" onclick="delTxn('${t.id}')" data-role-min="admin" title="Xóa giao dịch"><i data-lucide="x"></i></button></td>
+            <td><div class="hist-actions">${copyBtn}${detailBtn}<button class="btn bd btn-sm wo hist-delete-btn" onclick="delTxn('${t.id}')" data-role-min="admin" title="Xóa giao dịch"><i data-lucide="x"></i></button></div></td>
           </tr>`;
         }).join('')}</tbody></table></div>
         <div class="hist-mobile-list">
           ${txns.map(t=>{
-            const names=(t.memberIds||[]).map(id=>(S.members.find(x=>x.id===id)||{}).name||'?').join(', ');
+            const names=(t.memberIds||[]).map(id=>getMemberName(id)).join(', ');
             const amountColor=t.type==='topup'&&t.amount>0?'var(--grn)':'var(--red)';
             const desc=t.type==='birthday_gift'?renderBirthdayGiftDescription(t):escapeHTML(t.desc);
+            const copyBtn=t.type==='session'?`<button class="btn bb btn-sm admin-tool hist-copy-btn" onclick="copyMessengerText('${t.id}')" title="Copy thông báo Messenger"><i data-lucide="copy"></i></button>`:'';
+            const detailBtn=hasBreakdown(t)?`<button class="btn bg btn-sm" onclick="openBreakdownDetail('${t.id}')">Chi tiết</button>`:'';
             return `<div class="hist-item">
               <div class="hist-item-top">
                 <div>
                   <div class="hist-item-desc">${desc}</div>
                   <div class="hist-item-date">${t.date}</div>
                 </div>
-                <button class="btn bd btn-sm wo hist-delete-btn" onclick="delTxn('${t.id}')" data-role-min="admin" title="Xóa giao dịch"><i data-lucide="x"></i></button>
+                <div class="hist-actions">${copyBtn}${detailBtn}<button class="btn bd btn-sm wo hist-delete-btn" onclick="delTxn('${t.id}')" data-role-min="admin" title="Xóa giao dịch"><i data-lucide="x"></i></button></div>
               </div>
               <div class="hist-item-meta mt12">
                 <div>${typeBadge(t)}</div>
@@ -3668,7 +4577,7 @@ function renderHistory(){
       const spent=txns.filter(t=>t.type==='session').reduce((s,t)=>s+(t.perPerson||0),0);
       const paid=txns.filter(t=>t.type==='topup'&&t.amount>0).reduce((s,t)=>s+t.amount,0);
       ps.style.display='block';
-      ps.innerHTML=`<div class="sec"><i data-lucide="user"></i> Tóm tắt: ${escapeHTML(m.name)}</div>
+      ps.innerHTML=`<div class="sec"><i data-lucide="user"></i> Tóm tắt: ${escapeHTML(getMemberDisplayLabel(m))}</div>
         <div class="sgrid">
           <div class="stat"><div class="stat-head"><div class="sl">Số dư</div></div><div class="sv" style="color:${debtColor(m.balance)}">${fmt(m.balance)}</div></div>
           <div class="stat"><div class="stat-head"><div class="sl">Đã chi</div></div><div class="sv" style="color:var(--red)">${fmt(spent)}</div></div>
@@ -3678,6 +4587,25 @@ function renderHistory(){
     }
   } else ps.style.display='none';
   applyRoleUI();
+  refreshIcons();
+}
+function openBreakdownDetail(txnId){
+  const t=S.transactions.find(x=>x.id===txnId);
+  if(!t||!hasBreakdown(t)) return toast('Giao dịch này không có chi tiết chi phí','err');
+  const b=t.breakdown;
+  const extras=(b.extraItems||[]).map(x=>`
+    <div class="breakdown-row">
+      <span>${escapeHTML(x.note||'Phụ phí')}</span>
+      <span class="breakdown-amount">${fmt(x.amount||0)}</span>
+    </div>`).join('');
+  document.getElementById('breakdown-content').innerHTML=`
+    <div class="gift-pin-summary"><b>${escapeHTML(t.desc||'Chi phí')}</b><br><span class="tm">${escapeHTML(t.date||'')}</span></div>
+    <div class="breakdown-list">
+      <div class="breakdown-row"><span>Chi phí chính</span><span class="breakdown-amount">${fmt(b.baseAmount||0)}</span></div>
+      ${extras||'<div class="breakdown-row"><span>Không có phụ phí</span><span class="breakdown-amount">—</span></div>'}
+      <div class="breakdown-row total"><span>Tổng</span><span class="breakdown-amount">${fmt(b.totalAmount||t.amount||0)}</span></div>
+    </div>`;
+  document.getElementById('ov-breakdown').classList.add('open');
   refreshIcons();
 }
 function renderExpPrev(){
@@ -3698,7 +4626,7 @@ function renderExpPrev(){
 function buildPdfReportData(mo,yr){
   const ym=`${yr}-${String(mo).padStart(2,'0')}`;
   const fund=S.members.find(m=>m.id===FUND_ID);
-  const members=getSortedMembers().filter(m=>m.id!==FUND_ID);
+  const members=getGiftableMembers();
   const sessions=S.transactions.filter(t=>t.type==='session'&&t.date.startsWith(ym));
   const topups=S.transactions.filter(t=>t.type==='topup'&&t.date.startsWith(ym));
   const monthTxns=S.transactions.filter(t=>t.date.startsWith(ym)).sort((a,b)=>a.date.localeCompare(b.date));
@@ -3706,7 +4634,7 @@ function buildPdfReportData(mo,yr){
     const ms=sessions.filter(t=>(t.memberIds||[]).includes(m.id));
     const paid=topups.filter(t=>(t.memberIds||[]).includes(m.id)&&t.amount>0).reduce((s,t)=>s+t.amount,0);
     const spent=ms.reduce((s,t)=>s+(t.perPerson||0),0);
-    return {stt:i+1,name:m.name,count:ms.length,spent,paid,balance:m.balance||0,status:m.balance>0?'Đủ tiền':m.balance<0?'Đang nợ':'Hòa'};
+    return {stt:i+1,name:getMemberDisplayLabel(m),count:ms.length,spent,paid,balance:m.balance||0,status:m.balance>0?'Đủ tiền':m.balance<0?'Đang nợ':'Hòa'};
   });
   const totalDebt=members.filter(m=>(m.balance||0)<0).reduce((s,m)=>s+(m.balance||0),0);
   return {
@@ -3723,7 +4651,7 @@ function buildPdfReportData(mo,yr){
       type:t.category || (t.type==='topup'?(t.amount>=0?'Nạp':'Trừ'):'Buổi chi tiêu'),
       amount:t.amount,
       perPerson:t.perPerson||0,
-      names:(t.memberIds||[]).map(id=>(S.members.find(x=>x.id===id)||{}).name||'?').join(', ')
+      names:(t.memberIds||[]).map(id=>getMemberName(id)).join(', ')
     }))
   };
 }
@@ -3749,11 +4677,11 @@ function makePdfReportEl(d){
   el.className='pdf-report';
   el.innerHTML=`
     <div class="pdf-head">
-      <div class="pdf-brand"><div class="pdf-mark">C1K</div><div><h1>CLB C1K</h1><div class="pdf-muted">Báo cáo chi tiêu tháng ${String(d.mo).padStart(2,'0')}/${d.yr}</div></div></div>
+      <div class="pdf-brand"><div class="pdf-mark">C1K</div><div><h1>${escapeHTML(getAppName())}</h1><div class="pdf-muted">Báo cáo chi tiêu tháng ${String(d.mo).padStart(2,'0')}/${d.yr}</div></div></div>
       <div class="pdf-muted" style="text-align:right">Ngày xuất<br><b>${new Date().toLocaleDateString('vi-VN')}</b></div>
     </div>
     <div class="pdf-grid">
-      <div class="pdf-card"><div class="pdf-label">Quỹ team</div><div class="pdf-val">${fmt(d.fundBal)}</div></div>
+      <div class="pdf-card"><div class="pdf-label">Team Vault</div><div class="pdf-val">${fmt(d.fundBal)}</div></div>
       <div class="pdf-card"><div class="pdf-label">Tổng chi tháng</div><div class="pdf-val">${fmt(d.totalSpent)}</div></div>
       <div class="pdf-card"><div class="pdf-label">Tổng nạp tháng</div><div class="pdf-val">${fmt(d.totalTopup)}</div></div>
       <div class="pdf-card"><div class="pdf-label">Tổng nợ hiện tại</div><div class="pdf-val">${fmt(d.totalDebt)}</div></div>
@@ -3767,7 +4695,7 @@ function makePdfReportEl(d){
       <table><thead><tr><th>Ngày</th><th>Mô tả</th><th>Danh mục/Loại</th><th>Tổng tiền</th><th>Mỗi người</th><th>Thành viên liên quan</th></tr></thead>
       <tbody>${d.txns.length?d.txns.map(t=>`<tr><td>${t.date}</td><td>${escapeHTML(t.desc)}</td><td>${escapeHTML(t.type)}</td><td>${fmt(Math.abs(t.amount))}</td><td>${t.perPerson?fmt(t.perPerson):'—'}</td><td>${escapeHTML(t.names||'—')}</td></tr>`).join(''):`<tr><td colspan="6">Không có giao dịch trong tháng này</td></tr>`}</tbody></table>
     </div>
-    <div class="pdf-footer">Generated by CLB C1K</div>`;
+    <div class="pdf-footer">Generated by ${escapeHTML(getAppName())}</div>`;
   return el;
 }
 async function exportPDF(){
@@ -3907,7 +4835,7 @@ function renderBirthdayGiftModalBody(){
   const selectedGift=getSelectedBirthdayGift();
   el.innerHTML=`
     <div class="gift-pin-modal-body">
-      <div class="gift-modal-note">Tiền sẽ trừ từ người tặng và cộng vào QUỸ SINH NHẬT.</div>
+      <div class="gift-modal-note">Tiền sẽ trừ từ người tặng và cộng vào Birthday Vault.</div>
       <div>
         <label>Chọn quà</label>
         <div class="gift-choice-grid">
@@ -3951,7 +4879,10 @@ function openCreateGiftPinModal(context){
     <div class="gift-pin-summary">Bạn đang tạo mã PIN cho: <b>${escapeHTML(giver.name)}</b></div>
     <div><label>PIN 4 số</label><input type="password" id="gift-pin" maxlength="4" inputmode="numeric" autocomplete="one-time-code"></div>
     <div><label>Nhập lại PIN 4 số</label><input type="password" id="gift-pin-confirm" maxlength="4" inputmode="numeric" autocomplete="one-time-code"></div>
-    <div class="gift-pin-note">Ghi nhớ mã PIN này để gửi quà hoặc đòi lại quà sau này. Admin không xem được PIN, chỉ có thể reset nếu bạn quên.</div>`;
+    <div class="gift-pin-note">
+      <div>Ghi nhớ mã PIN cho các hoạt động khác sau này.</div>
+      <div>Admin không xem được PIN, chỉ có thể reset nếu bạn quên.</div>
+    </div>`;
   document.getElementById('gift-pin-submit').innerHTML='<i data-lucide="save"></i> Lưu PIN & Gửi quà';
   document.getElementById('gift-pin-error').textContent='';
   document.getElementById('ov-gift-pin').classList.add('open');
@@ -3964,7 +4895,7 @@ function openEnterGiftPinModal(context){
   giftPinContext={mode:'send',...context};
   document.getElementById('gift-pin-title').innerHTML='<i data-lucide="gift"></i>Xác nhận gửi quà';
   document.getElementById('gift-pin-body').innerHTML=`
-    <div class="gift-pin-summary"><b>${escapeHTML(giver.name)}</b> sẽ tặng sinh nhật <b>${escapeHTML(receiver.name)}</b> <b>${escapeHTML(context.giftName||'quà sinh nhật')}</b> · <b>${fmt(context.amount)}</b>.<br>Tiền sẽ trừ vào số dư của <b>${escapeHTML(giver.name)}</b> và cộng vào <b>QUỸ SINH NHẬT</b>.</div>
+    <div class="gift-pin-summary"><b>${escapeHTML(giver.name)}</b> sẽ tặng sinh nhật <b>${escapeHTML(receiver.name)}</b> <b>${escapeHTML(context.giftName||'quà sinh nhật')}</b> · <b>${fmt(context.amount)}</b>.<br>Tiền sẽ trừ vào số dư của <b>${escapeHTML(giver.name)}</b> và cộng vào <b>Birthday Vault</b>.</div>
     <div><label>PIN 4 số</label><input type="password" id="gift-pin" maxlength="4" inputmode="numeric" autocomplete="one-time-code"></div>`;
   document.getElementById('gift-pin-submit').innerHTML='<i data-lucide="check-circle-2"></i> Xác nhận gửi quà';
   document.getElementById('gift-pin-error').textContent='';
@@ -4031,7 +4962,7 @@ async function performBirthdayGift({fromId,toId,giftId,giftName,amount}){
   const gift=BIRTHDAY_GIFTS.find(g=>g.id===giftId&&g.amount===amount);
   if(!gift) return toast('Chọn quà sinh nhật hợp lệ','err'),false;
   const giver=getMemberById(fromId), receiver=getMemberById(toId), fund=getBirthdayFund();
-  if(!giver||!receiver||!fund){toast('Không tìm thấy người tặng hoặc QUỸ SINH NHẬT','err');return false;}
+  if(!giver||!receiver||!fund){toast('Không tìm thấy người tặng hoặc Birthday Vault','err');return false;}
   if(giver.isFixed||fromId===BIRTHDAY_FUND_ID||fromId===FUND_ID){toast('Quỹ không thể là người tặng','err');return false;}
   giver.balance-=amount;
   giver.totalOut=(giver.totalOut||0)+amount;
@@ -4053,7 +4984,7 @@ function cancelBirthdayGift(txnId,cancelledBy){
   if(!t||t.type!=='birthday_gift') return false;
   if(t.status==='cancelled') return toast('Món quà này đã được xử lý','err'),false;
   const giver=getMemberById(t.fromId), fund=getBirthdayFund();
-  if(!giver||!fund){toast('Không tìm thấy người tặng hoặc QUỸ SINH NHẬT','err');return false;}
+  if(!giver||!fund){toast('Không tìm thấy người tặng hoặc Birthday Vault','err');return false;}
   const amount=t.amount||0;
   giver.balance+=amount;
   giver.totalOut=Math.max(0,(giver.totalOut||0)-amount);
@@ -4114,32 +5045,45 @@ function saveSession(){
   if(!requireRole('admin','Cần quyền Admin để ghi chi tiêu')) return;
   const date=document.getElementById('sess-date').value;
   let desc=document.getElementById('sess-desc').value.trim()||selCat;
-  const amt=kVal('sess-amt');
+  const amt=readSessionAmount();
   const mids=getGiftableMembers().filter(m=>document.getElementById('ck-'+m.id)?.checked).map(m=>m.id);
   if(!date) return toast('Chọn ngày','err');
   if(!amt||amt<=0) return toast('Nhập số tiền','err');
   if(!mids.length) return toast('Chọn ít nhất 1 thành viên','err');
   let perPerson,totalAmt;
+  const recPayload=appliedRecurringContext?{
+    recurringId:appliedRecurringContext.id,
+    ...(appliedRecurringContext.breakdown?.extraItems?.length?{breakdown:JSON.parse(JSON.stringify(appliedRecurringContext.breakdown))}:{})
+  }:{};
   if(splitMode==='split'){perPerson=Math.ceil(amt/mids.length);totalAmt=amt;}
   else if(splitMode==='fixed'){perPerson=amt;totalAmt=amt*mids.length;}
   else{
     const paidBy=document.getElementById('paid-by-sel').value;
     totalAmt=amt; perPerson=Math.ceil(amt/mids.length);
     if(paidBy){const payer=S.members.find(x=>x.id===paidBy);if(payer){payer.balance+=amt;payer.totalIn=(payer.totalIn||0)+amt;}}
-    S.transactions.push({id:uid(),date,type:'session',desc,category:selCat,amount:totalAmt,memberIds:mids,perPerson,splitMode,paidBy:paidBy||null});
+    const txn={id:uid(),date,type:'session',desc,category:selCat,amount:totalAmt,memberIds:mids,perPerson,splitMode,paidBy:paidBy||null,createdAt:Date.now(),...recPayload};
+    txn.messengerText=buildMessengerText(txn);
+    S.transactions.push(txn);
     mids.forEach(id=>{const m=S.members.find(x=>x.id===id);if(m){m.balance-=perPerson;m.totalOut=(m.totalOut||0)+perPerson;}});
     fbSave(); render(); resetSessionForm();
-    toast(`✅ ${mids.length} người × ${fmt(perPerson)} = ${fmt(totalAmt)}`);
+    toast(`✅ ${mids.length} người × ${fmt(perPerson)} = ${fmt(totalAmt)}`,'ok',{duration:8000,actionText:'Copy thông báo',onAction:()=>copyMessengerText(txn.id)});
     return;
   }
   mids.forEach(id=>{const m=S.members.find(x=>x.id===id);if(m){m.balance-=perPerson;m.totalOut=(m.totalOut||0)+perPerson;}});
-  S.transactions.push({id:uid(),date,type:'session',desc,category:selCat,amount:totalAmt,memberIds:mids,perPerson,splitMode,paidBy:null});
+  const txn={id:uid(),date,type:'session',desc,category:selCat,amount:totalAmt,memberIds:mids,perPerson,splitMode,paidBy:null,createdAt:Date.now(),...recPayload};
+  txn.messengerText=buildMessengerText(txn);
+  S.transactions.push(txn);
   fbSave(); render(); resetSessionForm();
-  toast(`✅ ${mids.length} người × ${fmt(perPerson)} = ${fmt(totalAmt)}`);
+  toast(`✅ ${mids.length} người × ${fmt(perPerson)} = ${fmt(totalAmt)}`,'ok',{duration:8000,actionText:'Copy thông báo',onAction:()=>copyMessengerText(txn.id)});
 }
 function resetSessionForm(){
   document.getElementById('sess-desc').value='';
-  document.getElementById('sess-amt').value='';
+  const amtEl=document.getElementById('sess-amt');
+  amtEl.value='';
+  delete amtEl.dataset.vnd;
+  appliedRecurringContext=null;
+  const recPick=document.getElementById('rec-pick');
+  if(recPick) recPick.value='';
   document.getElementById('pp-display').style.display='none';
   getGiftableMembers().forEach(m=>{
     const ck=document.getElementById('ck-'+m.id);if(ck)ck.checked=false;
@@ -4176,7 +5120,7 @@ function revertBirthdayGiftActive(t){
   const giver=getMemberById(t.fromId);
   const fund=getBirthdayFund();
   const amount=t.amount||0;
-  if(!giver||!fund){toast('Không tìm thấy người tặng hoặc QUỸ SINH NHẬT','err');return false;}
+  if(!giver||!fund){toast('Không tìm thấy người tặng hoặc Birthday Vault','err');return false;}
   giver.balance+=amount;
   giver.totalOut=Math.max(0,(giver.totalOut||0)-amount);
   fund.balance-=amount;
@@ -4233,7 +5177,7 @@ async function delTxn(id){
     const active=(t.status||'active')==='active';
     const ok=await confirmAction({
       title:'Xóa giao dịch quà sinh nhật',
-      message:active?'Giao dịch đang có hiệu lực sẽ được đảo số dư: người tặng nhận lại tiền và QUỸ SINH NHẬT bị trừ tương ứng.':'Giao dịch đã được đòi lại/hoàn tiền trước đó nên chỉ xóa record khỏi lịch sử, không đảo số dư thêm lần nữa.',
+      message:active?'Giao dịch đang có hiệu lực sẽ được đảo số dư: người tặng nhận lại tiền và Birthday Vault bị trừ tương ứng.':'Giao dịch đã được đòi lại/hoàn tiền trước đó nên chỉ xóa record khỏi lịch sử, không đảo số dư thêm lần nữa.',
       confirmText:'Xóa giao dịch'
     });
     if(!ok) return;
@@ -4274,7 +5218,7 @@ function confirmClearAll(){
   const err=document.getElementById('clear-err');
   if(btoa(p1)!==PW1){err.textContent='❌ Sai mật khẩu Admin!';return;}
   if(btoa(p2)!==PW2){err.textContent='❌ Sai mật khẩu cấp 2!';return;}
-  S={members:[],transactions:[],recurring:[]};
+  S={members:[],transactions:[],recurring:[],settings:{appName:DEFAULT_APP_NAME}};
   fbSave(); render(); closeOv('ov-clearall'); toast('Đã xoá toàn bộ','err');
 }
 
@@ -4283,10 +5227,11 @@ function openAddRec(){
   document.getElementById('rec-edit-id').value='';
   document.getElementById('rec-modal-title').innerHTML='<i data-lucide="refresh-cw"></i>Thêm chi phí định kỳ';
   document.getElementById('rec-name').value='';
-  document.getElementById('rec-amt').value='';
+  document.getElementById('rec-base-amt').value='';
   document.getElementById('rec-cat').value='🎾 Tennis';
   document.querySelectorAll('#rec-cat-tags .qtag').forEach((t,i)=>t.classList.toggle('sel',i===2));
-  setRecMode('fixed'); renderRecMemChips();
+  renderRecExtraRows([]);
+  setRecMode('split'); renderRecMemChips();
   getGiftableMembers().forEach(m=>{
     const ck=document.getElementById('rck-'+m.id);if(ck)ck.checked=false;
     const ch=document.getElementById('rchip-'+m.id);if(ch)ch.classList.remove('on');
@@ -4298,18 +5243,20 @@ function openAddRec(){
 function editRec(id){
   if(!requireRole('admin')) return;
   const r=S.recurring.find(x=>x.id===id); if(!r) return;
+  const nr=normalizeRecurring(r);
   document.getElementById('rec-edit-id').value=id;
   document.getElementById('rec-modal-title').innerHTML='<i data-lucide="pencil"></i>Sửa chi phí định kỳ';
-  document.getElementById('rec-name').value=r.name;
-  document.getElementById('rec-amt').value=r.amount;
-  document.getElementById('rec-cat').value=r.category;
+  document.getElementById('rec-name').value=nr.name;
+  document.getElementById('rec-base-amt').value=nr.baseAmount?nr.baseAmount/1000:'';
+  document.getElementById('rec-cat').value=nr.category;
   document.querySelectorAll('#rec-cat-tags .qtag').forEach(t=>{
     const c=t.textContent.trim();
-    t.classList.toggle('sel', r.category.includes(c.split(' ').slice(-1)[0]) || c===r.category);
+    t.classList.toggle('sel', nr.category.includes(c.split(' ').slice(-1)[0]) || c===nr.category);
   });
-  setRecMode(r.mode); renderRecMemChips();
+  renderRecExtraRows(nr.extraItems);
+  setRecMode(nr.mode); renderRecMemChips();
   getGiftableMembers().forEach(m=>{
-    const on=(r.defaultMembers||[]).includes(m.id);
+    const on=(nr.defaultMembers||[]).includes(m.id);
     const ck=document.getElementById('rck-'+m.id);if(ck)ck.checked=on;
     const ch=document.getElementById('rchip-'+m.id);if(ch)ch.classList.toggle('on',on);
   });
@@ -4320,21 +5267,23 @@ function setRecMode(m){
   recMode=m; document.getElementById('rec-mode').value=m;
   document.getElementById('rm-split').className=m==='split'?'btn bp':'btn bg';
   document.getElementById('rm-fixed').className=m==='fixed'?'btn bp':'btn bg';
-  document.getElementById('rec-amt-label').textContent=m==='fixed'?'Số tiền mỗi người':'Tổng tiền';
+  document.getElementById('rec-amt-label').textContent='Chi phí chính';
   refreshIcons();
 }
 function saveRec(){
   if(!requireRole('admin')) return;
   const name=document.getElementById('rec-name').value.trim();
-  const amt=kVal('rec-amt');
+  const costs=collectRecurringCosts();
+  const amt=costs.totalAmount;
   const cat=document.getElementById('rec-cat').value;
   const mode=document.getElementById('rec-mode').value;
   const dms=getGiftableMembers().filter(m=>document.getElementById('rck-'+m.id)?.checked).map(m=>m.id);
   if(!name) return toast('Nhập tên template','err');
   if(!amt||amt<=0) return toast('Nhập số tiền','err');
   const eid=document.getElementById('rec-edit-id').value;
-  if(eid){const r=S.recurring.find(x=>x.id===eid);if(r){r.name=name;r.amount=amt;r.category=cat;r.mode=mode;r.defaultMembers=dms;}}
-  else S.recurring.push({id:uid(),name,category:cat,mode,amount:amt,defaultMembers:dms});
+  const payload={name,category:cat,mode,amount:amt,baseAmount:costs.baseAmount,extraItems:costs.extraItems,defaultMembers:dms};
+  if(eid){const r=S.recurring.find(x=>x.id===eid);if(r) Object.assign(r,payload);}
+  else S.recurring.push({id:uid(),...payload});
   fbSave(); closeOv('ov-rec'); renderRecList(); renderRecPick(); toast('Đã lưu: '+name);
 }
 async function delRec(id){
@@ -4365,20 +5314,20 @@ function exportXL(){
   const top=S.transactions.filter(t=>t.type==='topup'&&t.date.startsWith(ym));
   const wb=XLSX.utils.book_new();
   const sm=getGiftableMembers();
-  const s1=[[`BÁO CÁO CLB C1K — ${lb}`],[`Xuất: ${new Date().toLocaleDateString('vi-VN')}`],[],['STT','Thành viên','Số buổi','Tổng chi','Đã nạp','Số dư','Trạng thái']];
+  const s1=[[`BÁO CÁO ${getAppName()} — ${lb}`],[`Xuất: ${new Date().toLocaleDateString('vi-VN')}`],[],['STT','Thành viên','Số buổi','Tổng chi','Đã nạp','Số dư','Trạng thái']];
   sm.forEach((m,i)=>{
     const ms=ses.filter(t=>t.memberIds.includes(m.id));
-    s1.push([i+1,m.name,ms.length,ms.reduce((s,t)=>s+(t.perPerson||0),0),top.filter(t=>t.memberIds.includes(m.id)&&t.amount>0).reduce((s,t)=>s+t.amount,0),m.balance,m.balance>0?'Đủ tiền':m.balance<0?'Đang nợ':'Hòa']);
+    s1.push([i+1,getMemberDisplayLabel(m),ms.length,ms.reduce((s,t)=>s+(t.perPerson||0),0),top.filter(t=>t.memberIds.includes(m.id)&&t.amount>0).reduce((s,t)=>s+t.amount,0),m.balance,m.balance>0?'Đủ tiền':m.balance<0?'Đang nợ':'Hòa']);
   });
   const ws1=XLSX.utils.aoa_to_sheet(s1);
   ws1['!cols']=[{wch:6},{wch:20},{wch:10},{wch:16},{wch:14},{wch:18},{wch:12}];
   XLSX.utils.book_append_sheet(wb,ws1,'Tổng hợp');
-  const s2=[[`CHI TIẾT BUỔI — ${lb}`],[],['Ngày','Mô tả','Danh mục','Kiểu','Tổng tiền','Số người','Mỗi người',...sm.map(m=>m.name)]];
-  ses.forEach(t=>s2.push([t.date,t.desc,t.category||'',t.splitMode||'split',t.amount,t.memberIds.length,t.perPerson,...sm.map(m=>t.memberIds.includes(m.id)?t.perPerson:'-')]));
+  const s2=[[`CHI TIẾT BUỔI — ${lb}`],[],['Ngày','Mô tả','Danh mục','Kiểu','Tổng tiền','Số người','Mỗi người','Chi tiết chi phí',...sm.map(m=>getMemberDisplayLabel(m))]];
+  ses.forEach(t=>s2.push([t.date,t.desc,t.category||'',t.splitMode||'split',t.amount,t.memberIds.length,t.perPerson,formatBreakdownText(t.breakdown)||'—',...sm.map(m=>t.memberIds.includes(m.id)?t.perPerson:'-')]));
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(s2),'Chi tiết buổi');
   const s3=[[`NẠP / TRỪ — ${lb}`],[],['Ngày','Thành viên','Số tiền','Loại','Ghi chú']];
   top.sort((a,b)=>a.date.localeCompare(b.date)).forEach(t=>{
-    const names=(t.memberIds||[]).map(id=>(S.members.find(x=>x.id===id)||{}).name||'?').join(', ');
+    const names=(t.memberIds||[]).map(id=>getMemberName(id)).join(', ');
     s3.push([t.date,names,t.amount,t.amount>=0?'Nạp':'Trừ',t.desc]);
   });
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(s3),'Nạp & Trừ');
@@ -4431,6 +5380,7 @@ function fireConfetti(){
 }
 
 function showInstallGuide(){
+  if(!isAdmin) return toast('Cần đăng nhập Admin để mở cài đặt','err');
   const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
   const isAndroid=/android/i.test(navigator.userAgent);
   let html='';
@@ -4466,26 +5416,31 @@ function showInstallGuide(){
   refreshIcons();
 }
 
+function memberBalanceSortLogicOld(a,b){
+  const ab=a.balance||0,bb=b.balance||0;
+  if(ab===0&&bb!==0) return 1;
+  if(bb===0&&ab!==0) return -1;
+  if(ab===0&&bb===0) return 0;
+  if(ab<0&&bb>=0) return -1;
+  if(bb<0&&ab>=0) return 1;
+  if(ab<0&&bb<0) return ab-bb;
+  return bb-ab;
+}
 function getSortedMembers(){
-  const funds=S.members.filter(m=>m.isFixed||m.id===FUND_ID||m.id===BIRTHDAY_FUND_ID).sort((a,b)=>(a.order||0)-(b.order||0));
-  const rest=S.members.filter(m=>!m.isFixed&&m.id!==FUND_ID&&m.id!==BIRTHDAY_FUND_ID).sort((a,b)=>{
-    const ab=a.balance||0,bb=b.balance||0;
-    if(ab===0&&bb!==0) return 1;
-    if(bb===0&&ab!==0) return -1;
-    if(ab===0&&bb===0) return 0;
-    if(ab<0&&bb>=0) return -1;
-    if(bb<0&&ab>=0) return 1;
-    if(ab<0&&bb<0) return ab-bb;
-    return bb-ab;
-  });
-  return [...funds,...rest];
+  const teamFund=S.members.filter(m=>m.id===FUND_ID);
+  const birthdayFund=S.members.filter(m=>m.id===BIRTHDAY_FUND_ID);
+  const rest=S.members
+    .filter(m=>m.id!==FUND_ID&&m.id!==BIRTHDAY_FUND_ID)
+    .sort(memberBalanceSortLogicOld);
+  return [...teamFund,...birthdayFund,...rest];
 }
 
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
 const cached=localStorage.getItem('clb_cache');
-if(cached) try{ S=JSON.parse(cached); if(!S.recurring) S.recurring=[]; stripPlainGiftPinFields(); ensureFundMember(); }catch(e){}
+if(cached) try{ S=JSON.parse(cached); if(!S.recurring) S.recurring=[]; ensureSettings(); stripPlainGiftPinFields(); ensureFundMember(); renderAppName(); }catch(e){}
+else { ensureSettings(); renderAppName(); }
 
 document.getElementById('sess-date').value=td();
 document.getElementById('q-date').value=td();
