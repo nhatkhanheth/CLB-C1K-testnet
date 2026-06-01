@@ -135,6 +135,21 @@ body{
 #pin-unlock-guard .c1k-logo{width:64px;height:64px;border-radius:16px;animation:splashPulse 1s var(--ease) infinite}
 #pin-unlock-guard .splash-bar{width:96px;margin-top:0}
 .pin-unlock-title{font-size:13px;font-weight:800;color:var(--txt);letter-spacing:.01em}
+#app-loading{
+  position:fixed;inset:0;z-index:9500;display:none;align-items:center;justify-content:center;
+  background:rgba(10,10,11,.82);backdrop-filter:blur(18px) saturate(145%);
+  -webkit-backdrop-filter:blur(18px) saturate(145%);padding:24px;
+}
+#app-loading.show{display:flex;animation:fadeIn .22s var(--ease)}
+.app-loading-card{
+  width:min(360px,92vw);border:1px solid var(--bord-2);border-radius:24px;
+  background:rgba(20,20,22,.84);box-shadow:var(--sh-lg);padding:28px 24px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:13px;
+}
+.app-loading-card .c1k-logo{width:72px;height:72px;border-radius:18px;animation:splashPulse 1.2s var(--ease) infinite}
+.app-loading-title{font-size:16px;font-weight:900;color:var(--txt)}
+.app-loading-sub{font-size:12.5px;color:var(--txt-3);line-height:1.5}
+#app-loading.maintenance .app-loading-title{color:#ffb8b8}
 @keyframes splashPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 @keyframes splashFade{to{opacity:1}}
 @keyframes splashLoad{0%{transform:translateX(-100%)}100%{transform:translateX(500%)}}
@@ -1043,7 +1058,8 @@ tr:hover td{background:rgba(255,255,255,.035)}
 .sync-led.synced,
 .sync-led.ok{background:var(--grn);box-shadow:0 0 0 4px rgba(34,197,94,.10)}
 .sync-led.offline,
-.sync-led.error{background:var(--red);box-shadow:0 0 0 4px rgba(239,68,68,.10)}
+.sync-led.error,
+.sync-led.maintenance{background:var(--red);box-shadow:0 0 0 4px rgba(239,68,68,.10)}
 @keyframes statusPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.58;transform:scale(.82)}}
 
 .btn,
@@ -1083,6 +1099,24 @@ tr:hover td{background:rgba(255,255,255,.035)}
   box-shadow:none;
 }
 .bdg-debt:hover{background:rgba(239,68,68,.24);box-shadow:0 8px 18px rgba(239,68,68,.16)}
+.status-cell{text-align:center!important}
+.status-badge{justify-content:center;min-width:70px}
+body.ro .bdg-debt{
+  pointer-events:auto;
+  opacity:1;
+  animation:debtPayHint 1.8s var(--ease) infinite;
+}
+@keyframes debtPayHint{
+  0%,100%{transform:translateY(0);box-shadow:0 0 0 rgba(239,68,68,0)}
+  45%{transform:translateY(-2px);box-shadow:0 10px 22px rgba(239,68,68,.20)}
+}
+.payqr-card{text-align:center}
+.payqr-amount{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:900;color:var(--red);margin:8px 0 2px}
+.payqr-name{font-size:14px;font-weight:800;color:var(--txt)}
+.payqr-box{background:#fff;border-radius:18px;padding:12px;display:inline-block;margin:14px auto 10px;box-shadow:0 14px 36px rgba(0,0,0,.35)}
+.payqr-box img{width:min(260px,72vw);height:min(260px,72vw);display:block;border-radius:10px}
+.payqr-bank{background:rgba(247,147,26,.06);border:1px solid rgba(247,147,26,.18);border-radius:14px;padding:12px;margin-top:8px;text-align:left;font-size:12px;color:var(--txt-2)}
+.payqr-bank b{color:var(--txt)}
 nav.sidebar a.nav-link.active{
   background:linear-gradient(135deg,rgba(247,147,26,.82),rgba(169,86,9,.76));
   box-shadow:0 12px 26px rgba(247,147,26,.14),inset 0 1px 0 rgba(255,255,255,.14);
@@ -1177,7 +1211,8 @@ body.ro .wo{pointer-events:none}
 .pdf-report .pdf-muted{color:#6b7280;font-size:12px}
 .pdf-report .pdf-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:18px;margin-bottom:20px}
 .pdf-report .pdf-brand{display:flex;gap:12px;align-items:center}
-.pdf-report .pdf-mark{width:42px;height:42px;border-radius:14px;background:#111;color:#f7931a;display:flex;align-items:center;justify-content:center;font-weight:900}
+.pdf-report .pdf-mark{width:42px;height:42px;border-radius:14px;background:#111;color:#f7931a;display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden}
+.pdf-report .pdf-mark img{width:100%;height:100%;object-fit:cover;display:block}
 .pdf-report .pdf-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0}
 .pdf-report .pdf-card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:12px}
 .pdf-report .pdf-label{font-size:9px;color:#6b7280;text-transform:uppercase;font-weight:800;letter-spacing:.06em}
@@ -2199,6 +2234,18 @@ nav.sidebar a.nav-link *{pointer-events:none}
   .members-table td:nth-child(2){width:35%}
   .members-table th:nth-child(5),
   .members-table td:nth-child(5){width:23%;text-align:right;padding-right:20px}
+  .members-table .hm{display:none!important}
+  .members-table th:nth-child(1),
+  .members-table td:nth-child(1){width:46%;padding-left:16px}
+  .members-table th:nth-child(2),
+  .members-table td:nth-child(2){width:36%;text-align:left}
+  .members-table th:nth-child(5),
+  .members-table td:nth-child(5){width:18%;padding-right:12px}
+  .members-table .member-actions{display:table-cell!important;text-align:right!important}
+  .members-table .btn-sm{width:34px;height:34px;min-height:34px;padding:0;border-radius:12px}
+  .members-table .btn-sm svg{width:14px;height:14px}
+  .balance-table .status-cell{text-align:center!important}
+  .balance-table .bdg-debt{min-width:88px;justify-content:center}
 }
 @media(prefers-reduced-motion:reduce){
   .birthday-banner,
@@ -2230,6 +2277,15 @@ nav.sidebar a.nav-link *{pointer-events:none}
   <div class="c1k-logo"><img src="./logo.png" alt="C1K" onerror="this.parentElement.classList.add('logo-fallback')"></div>
   <div class="pin-unlock-title">Đang mở khóa</div>
   <div class="splash-bar"></div>
+</div>
+
+<div id="app-loading" aria-hidden="true">
+  <div class="app-loading-card">
+    <div class="c1k-logo"><img src="./logo.png" alt="C1K" onerror="this.parentElement.classList.add('logo-fallback')"></div>
+    <div class="app-loading-title" id="app-loading-title">Đang đồng bộ</div>
+    <div class="app-loading-sub" id="app-loading-sub">Đang xác thực và tải dữ liệu mới nhất...</div>
+    <div class="splash-bar"></div>
+  </div>
 </div>
 
 <!-- LOGIN SCREEN -->
@@ -2865,6 +2921,27 @@ nav.sidebar a.nav-link *{pointer-events:none}
   </div>
 </div>
 
+<div class="ov" id="ov-payqr">
+  <div class="modal payqr-card">
+    <div class="sheet-handle"></div>
+    <button class="modal-close" onclick="closeOv('ov-payqr')"><i data-lucide="x"></i></button>
+    <div class="mt" style="justify-content:center"><i data-lucide="qr-code"></i>QR trả nợ</div>
+    <div class="payqr-name" id="payqr-name">Thành viên</div>
+    <div class="payqr-amount" id="payqr-amount">0đ</div>
+    <div class="payqr-box"><img id="payqr-img" src="" alt="QR chuyển khoản"></div>
+    <div class="payqr-bank">
+      <div>Ngân hàng: <b>Vietcombank</b></div>
+      <div>Số tài khoản: <b>9933659414</b></div>
+      <div>Chủ tài khoản: <b>NGUYEN NHAT KHANH</b></div>
+      <div>Nội dung: <b id="payqr-note">Tra no CLB C1K</b></div>
+    </div>
+    <div class="fl g8 mt16">
+      <button class="btn bb" style="flex:1" onclick="copyPayQrAmount()"><i data-lucide="copy"></i> Copy số tiền</button>
+      <button class="btn bg" onclick="closeOv('ov-payqr')">Đóng</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <!-- iOS Install Banner -->
@@ -2916,6 +2993,9 @@ if(soundPref===null){
 }else soundOn=soundPref==='on';
 const FUND_ID = '__fund_team__';
 const BIRTHDAY_FUND_ID = '__birthday_fund__';
+const PAY_BANK_CODE = 'VCB';
+const PAY_ACCOUNT_NO = '9933659414';
+const PAY_ACCOUNT_NAME = 'NGUYEN NHAT KHANH';
 const GIFT_CLAIM_WINDOW_MS = 30 * 1000;
 const BIRTHDAY_GIFTS = [
   { id:'rose', name:'Hoa hồng', amount:1000, icon:'🌹' },
@@ -2932,6 +3012,9 @@ let quickPinPromptRole = 'admin';
 let pinLoginBuffer = '';
 let pinLoginBusy = false;
 let fbStarted = false;
+let fbFirstDataLoaded = false;
+let fbMaintenanceTimer = null;
+let currentPayQrAmount = 0;
 
 // ═══════════════════════════════════════════════════════════════
 // UTILS
@@ -2943,6 +3026,21 @@ function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(
 function td(){ return new Date().toISOString().split('T')[0]; }
 function escapeHTML(s){return (s||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function refreshIcons(){ if(window.lucide && lucide.createIcons) lucide.createIcons(); }
+function showAppLoading(title='Đang đồng bộ',sub='Đang xác thực và tải dữ liệu mới nhất...',maintenance=false){
+  const el=document.getElementById('app-loading');
+  if(!el) return;
+  el.classList.toggle('maintenance',!!maintenance);
+  const t=document.getElementById('app-loading-title');
+  const s=document.getElementById('app-loading-sub');
+  if(t) t.textContent=title;
+  if(s) s.textContent=sub;
+  el.classList.add('show');
+}
+function hideAppLoading(){
+  const el=document.getElementById('app-loading');
+  if(!el) return;
+  el.classList.remove('show','maintenance');
+}
 function ensureSettings(){
   if(!S.settings) S.settings={};
   if(!S.settings.appName) S.settings.appName=DEFAULT_APP_NAME;
@@ -3926,7 +4024,7 @@ function fbSave(force=false){
   if(window._fbSet){
     window._fbSet(payload)
       .then(()=>syncDot('saved',payload.updatedAt))
-      .catch(e=>{console.error(e);syncDot('error');toast(firebaseUserMessage(e,'Lỗi đồng bộ Firebase. Dữ liệu đã lưu tạm trên máy.'),'err',{duration:6500});});
+      .catch(e=>{console.error(e);syncDot('maintenance');toast('Firebase đang bảo trì hoặc từ chối ghi. Dữ liệu đã lưu tạm trên máy.','err',{duration:6500});});
   }else{
     syncDot('saved',payload.updatedAt);
   }
@@ -3934,19 +4032,29 @@ function fbSave(force=false){
 function startFB(){
   if(!window._fbListen) return;
   if(window._fbCurrentUser && !window._fbCurrentUser()) return;
-  if(fbStarted) return;
+  if(fbStarted){
+    if(fbFirstDataLoaded) hideAppLoading();
+    return;
+  }
   fbStarted=true;
+  fbFirstDataLoaded=false;
   syncDot('loading');
-  let fbErrorShown=false;
-  const onFbError=e=>{
+  if(fbMaintenanceTimer) clearTimeout(fbMaintenanceTimer);
+  fbMaintenanceTimer=setTimeout(()=>{
+    if(fbFirstDataLoaded) return;
+    syncDot('maintenance');
+    showAppLoading('Đang bảo trì','Dữ liệu tải quá lâu hoặc Firebase đang từ chối kết nối. Thử lại sau ít phút.',true);
+  },8000);
+  const onMainError=e=>{
     console.error(e);
-    syncDot('error');
-    if(!fbErrorShown){
-      fbErrorShown=true;
-      toast(firebaseUserMessage(e,'Không thể tải dữ liệu Firebase. Dữ liệu chỉ đang lưu tạm trên máy.'),'err',{duration:7500});
-    }
+  };
+  const onSecondaryError=e=>{
+    console.warn('Firebase secondary listener:',e);
   };
   window._fbListen(val=>{
+    fbFirstDataLoaded=true;
+    if(fbMaintenanceTimer){clearTimeout(fbMaintenanceTimer);fbMaintenanceTimer=null;}
+    hideAppLoading();
     if(!val){syncDot('synced');return;}
     S.members=val.members||[];
     S.transactions=val.transactions||[];
@@ -3959,8 +4067,8 @@ function startFB(){
     localStorage.setItem('clb_cache',JSON.stringify(S));
     render(); syncDot('synced',val.updatedAt);
     checkMonthSnapshot();
-  }, onFbError);
-  window._fbListenSnaps && window._fbListenSnaps(val=>{ snapshots=val||{}; renderLeaderboard(); }, onFbError);
+  }, onMainError);
+  window._fbListenSnaps && window._fbListenSnaps(val=>{ snapshots=val||{}; renderLeaderboard(); }, onSecondaryError);
 }
 function syncDot(st,ts){
   const led=document.querySelector('.sync-led');
@@ -3989,11 +4097,12 @@ function syncDot(st,ts){
   }else if(st==='saving') msg='Đang lưu...';
   else if(st==='loading') msg='Đang tải dữ liệu...';
   else if(st==='offline') msg='Mất kết nối';
+  else if(st==='maintenance') msg='Đang bảo trì';
   else if(st==='error') msg='Lỗi đồng bộ';
   else msg='Đang kết nối...';
   if(txt) txt.textContent=msg;
   if(pill) pill.title=lastSyncAt?`Cập nhật cuối: ${new Date(lastSyncAt).toLocaleString('vi-VN')}`:msg;
-  if(nav) nav.textContent=st==='synced'?'Online':(st==='offline'||st==='error'?'Offline':'Syncing');
+  if(nav) nav.textContent=st==='synced'?'Online':(st==='offline'||st==='error'||st==='maintenance'?'Offline':'Syncing');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -4172,6 +4281,7 @@ async function doLogin(role='admin'){
   if(!p1){ if(err) err.textContent='Nhập mật khẩu Admin'; return; }
   if(role==='superadmin'&&!p2){ if(err) err.textContent='Nhập mật khẩu cấp 2'; return; }
   try{
+    showAppLoading(role==='superadmin'?'Đang vào Super Admin':'Đang vào Admin','Đang xác thực và đồng bộ dữ liệu...');
     if(window._fbSignOut) await window._fbSignOut().catch(()=>{});
     if(!window._fbSignInAdmin) throw new Error('firebase-not-ready');
     await window._fbSignInAdmin(p1);
@@ -4195,6 +4305,7 @@ async function doLogin(role='admin'){
     haptic(20);
   }catch(e){
     console.error(e);
+    hideAppLoading();
     if(role==='superadmin'&&window._fbSignOut) await window._fbSignOut().catch(()=>{});
     if(err) err.textContent=firebaseUserMessage(e,role==='superadmin'?'Sai mật khẩu Admin hoặc mật khẩu cấp 2.':'Sai mật khẩu Admin hoặc email Firebase Auth chưa đúng.');
     document.getElementById(role==='superadmin'?'super-pw1':'login-pw').value='';
@@ -4204,6 +4315,7 @@ async function doLogin(role='admin'){
 }
 async function continueAsViewer(){
   try{
+    showAppLoading('Đang vào chế độ xem','Đang xác thực Viewer và đồng bộ dữ liệu...');
     if(window._fbSignOut) await window._fbSignOut().catch(()=>{});
     if(!window._fbSignInViewer) throw new Error('firebase-not-ready');
     await window._fbSignInViewer();
@@ -4216,6 +4328,7 @@ async function continueAsViewer(){
     toast('Bạn đang xem ở chế độ Viewer');
   }catch(e){
     console.error(e);
+    hideAppLoading();
     toast(firebaseUserMessage(e,'Không thể kết nối chế độ Viewer. Kiểm tra Firebase Authentication.'),'err');
   }
 }
@@ -4502,16 +4615,16 @@ function renderDash(){
         const bal=m.balance||0;
         const fundKind=m.isBirthdayFund?'birthday-fund':'team-fund';
         const statusCell=m.isFixed
-          ? `<span class="fund-badge ${fundKind}">Quỹ</span>`
+          ? `<span class="fund-badge status-badge ${fundKind}">Quỹ</span>`
           : bal<0
-            ? `<span class="bdg-debt wo" onclick="quickPayDash('${m.id}')">Trả nợ</span>`
+            ? `<span class="bdg-debt" onclick="handleDebtAction('${m.id}')">Trả nợ</span>`
             : bal===0
-              ? '<span class="bdg" style="background:rgba(113,113,122,.15);color:var(--mut)">Hòa</span>'
-              : '<span class="bdg dg">Đủ tiền</span>';
+              ? '<span class="bdg status-badge" style="background:rgba(113,113,122,.15);color:var(--mut)">Hòa</span>'
+              : '<span class="bdg dg status-badge">Đủ tiền</span>';
         return `<tr ${m.isFixed?`class="fund-row ${fundKind}-row"`:''}>
           <td>${renderMemberLabel(m)}</td>
           <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${m.isFixed?(m.isBirthdayFund?'#ffc3d9':'#ffbf75'):debtColor(bal)}">${fmt(bal)}</td>
-          <td>${statusCell}</td>
+          <td class="status-cell">${statusCell}</td>
         </tr>`;
       }).join('')
     : '<tr><td colspan="3"><div class="empty"><i data-lucide="users"></i>Chưa có thành viên</div></td></tr>';
@@ -4533,6 +4646,36 @@ function renderDash(){
   refreshIcons();
 }
 
+function buildVietQrUrl(amount,note='Tra no CLB C1K'){
+  const params=new URLSearchParams({
+    amount:String(Math.max(0,Math.round(Number(amount)||0))),
+    addInfo:note,
+    accountName:PAY_ACCOUNT_NAME
+  });
+  return `https://img.vietqr.io/image/${PAY_BANK_CODE}-${PAY_ACCOUNT_NO}-compact2.png?${params.toString()}`;
+}
+function handleDebtAction(id){
+  if(hasRole('admin')) return quickPayDash(id);
+  return openDebtQr(id);
+}
+function openDebtQr(id){
+  const m=S.members.find(x=>x.id===id); if(!m) return;
+  const bal=m.balance||0;
+  if(bal>=0) return toast('Thành viên này không còn nợ','err');
+  const amount=Math.abs(Math.round(bal));
+  const note=`${m.name} tra no CLB C1K`;
+  currentPayQrAmount=amount;
+  document.getElementById('payqr-name').textContent=m.name;
+  document.getElementById('payqr-amount').textContent=fmt(amount);
+  document.getElementById('payqr-note').textContent=note;
+  document.getElementById('payqr-img').src=buildVietQrUrl(amount,note);
+  document.getElementById('ov-payqr').classList.add('open');
+  refreshIcons();
+}
+async function copyPayQrAmount(){
+  if(!currentPayQrAmount) return;
+  await copyTextToClipboard(String(currentPayQrAmount),'Đã copy số tiền');
+}
 function quickPayDash(id){
   if(!requireRole('admin','Cần quyền Admin để ghi trả nợ')) return;
   const m=S.members.find(x=>x.id===id); if(!m) return;
@@ -4573,7 +4716,7 @@ function renderMembersList(){
         <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${m.isFixed?(m.isBirthdayFund?'#ffc3d9':'#ffbf75'):debtColor(m.balance||0)}">${fmt(m.balance)}</td>
         <td class="ap hm">${fmt(m.totalIn||0)}</td>
         <td class="an hm">${fmt(m.totalOut||0)}</td>
-        <td style="white-space:nowrap;text-align:right">
+        <td class="member-actions" style="white-space:nowrap;text-align:right">
           ${!m.isFixed?`<button class="btn bg btn-sm wo" onclick="openEditMember('${m.id}')"><i data-lucide="pencil"></i></button>`:''}
           ${!m.isFixed?`<button class="btn bd btn-sm wo" onclick="delMember('${m.id}')" style="margin-left:4px"><i data-lucide="trash-2"></i></button>`:''}
         </td>
@@ -5023,7 +5166,7 @@ function makePdfReportEl(d){
   el.className='pdf-report';
   el.innerHTML=`
     <div class="pdf-head">
-      <div class="pdf-brand"><div class="pdf-mark">C1K</div><div><h1>${escapeHTML(getAppName())}</h1><div class="pdf-muted">Báo cáo chi tiêu tháng ${String(d.mo).padStart(2,'0')}/${d.yr}</div></div></div>
+      <div class="pdf-brand"><div class="pdf-mark"><img src="./logo.png" alt="C1K" onerror="this.parentElement.textContent='C1K'"></div><div><h1>${escapeHTML(getAppName())}</h1><div class="pdf-muted">Báo cáo chi tiêu tháng ${String(d.mo).padStart(2,'0')}/${d.yr}</div></div></div>
       <div class="pdf-muted" style="text-align:right">Ngày xuất<br><b>${new Date().toLocaleDateString('vi-VN')}</b></div>
     </div>
     <div class="pdf-grid">
@@ -5824,10 +5967,12 @@ function initStartupWithUser(user){
   if(adminLogged&&user&&!user.isAnonymous){
     const storedRole=localStorage.getItem(RK);
     setRole(storedRole==='superadmin'?'superadmin':'admin');
+    showAppLoading('Đang khôi phục phiên Admin','Đang đồng bộ dữ liệu mới nhất...');
     closeLoginScreen();
     startFB();
   }else if(viewerOk&&user){
     setRole('viewer');
+    showAppLoading('Đang vào chế độ xem','Đang đồng bộ dữ liệu mới nhất...');
     closeLoginScreen();
     startFB();
   }else{
@@ -5835,6 +5980,7 @@ function initStartupWithUser(user){
     localStorage.removeItem(VK);
     localStorage.removeItem(RK);
     setRole('viewer');
+    hideAppLoading();
     openLoginScreen();
   }
 }
