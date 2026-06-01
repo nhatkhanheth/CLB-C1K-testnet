@@ -18,6 +18,16 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import {
+    getAuth,
+    setPersistence,
+    browserLocalPersistence,
+    onAuthStateChanged,
+    signInAnonymously,
+    signInWithEmailAndPassword,
+    signOut,
+    updatePassword
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   const cfg = {
     apiKey:"AIzaSyDBIV4zaXogNGNunaK9c8wrRk9S9kVYVY0",
     authDomain:"clb-c1k.firebaseapp.com",
@@ -27,13 +37,32 @@
     messagingSenderId:"553963981005",
     appId:"1:553963981005:web:5297ab8a0ad029a75c8184"
   };
-  const db = getDatabase(initializeApp(cfg));
+  const ADMIN_AUTH_EMAIL = "PASTE_ADMIN_EMAIL_HERE";
+  const app = initializeApp(cfg);
+  const db = getDatabase(app);
+  const auth = getAuth(app);
+  await setPersistence(auth, browserLocalPersistence);
+  const configuredAdminEmail = () => localStorage.getItem('clb_admin_auth_email') || ADMIN_AUTH_EMAIL;
+  const requireAdminEmail = () => {
+    const email = configuredAdminEmail();
+    if(!email || email.includes('PASTE_')) throw new Error('admin-auth-email-not-configured');
+    return email;
+  };
+  window._fbCurrentUser = () => auth.currentUser;
+  window._fbOnAuthState = cb => onAuthStateChanged(auth, cb);
+  window._fbSignInAdmin = password => signInWithEmailAndPassword(auth, requireAdminEmail(), password);
+  window._fbSignInViewer = () => signInAnonymously(auth);
+  window._fbSignOut = () => signOut(auth);
+  window._fbUpdateAdminPassword = async newPassword => {
+    if(!auth.currentUser || auth.currentUser.isAnonymous) throw new Error('not-admin');
+    await updatePassword(auth.currentUser, newPassword);
+  };
   window._fbSet     = d  => set(ref(db,'clb_c1k'), d);
-  window._fbSetPw   = h  => set(ref(db,'clb_c1k_pw'), {h});
+  window._fbSetPw   = () => Promise.resolve();
   window._fbSetSnap = (key, data) => set(ref(db,'clb_c1k_snapshots/'+key), data);
-  window._fbListen      = cb => onValue(ref(db,'clb_c1k'),           s=>cb(s.val()));
-  window._fbListenPw    = cb => onValue(ref(db,'clb_c1k_pw'),        s=>cb(s.val()));
-  window._fbListenSnaps = cb => onValue(ref(db,'clb_c1k_snapshots'), s=>cb(s.val()));
+  window._fbListen      = (cb, errCb) => onValue(ref(db,'clb_c1k'),           s=>cb(s.val()), e=>errCb&&errCb(e));
+  window._fbListenPw    = () => {};
+  window._fbListenSnaps = (cb, errCb) => onValue(ref(db,'clb_c1k_snapshots'), s=>cb(s.val()), e=>errCb&&errCb(e));
   document.dispatchEvent(new Event('firebase-ready'));
 </script>
 <style>
@@ -2848,6 +2877,7 @@ let quickPinPasswordSessionTrusted = false;
 let quickPinPromptRole = 'admin';
 let pinLoginBuffer = '';
 let pinLoginBusy = false;
+let fbStarted = false;
 
 // ═══════════════════════════════════════════════════════════════
 // UTILS
@@ -3333,6 +3363,14 @@ async function loginWithQuickPin(auto=false){
     return;
   }
   const role=result.role==='superadmin'?'superadmin':'admin';
+  const fbUser=window._fbCurrentUser&&window._fbCurrentUser();
+  if(!fbUser||fbUser.isAnonymous){
+    if(err) err.textContent='Phiên Firebase Admin đã hết. Vui lòng đăng nhập mật khẩu Admin.';
+    toast('Cần đăng nhập mật khẩu Admin lại để kết nối Firebase','err');
+    clearPinLoginBuffer();
+    switchLoginTab('admin');
+    return;
+  }
   setRole(role);
   localStorage.setItem(SK,'logged_in');
   localStorage.setItem(VK,'1');
@@ -3341,6 +3379,7 @@ async function loginWithQuickPin(auto=false){
   document.getElementById('login-pin').value='';
   showPinUnlockGuard(750);
   closeLoginScreen();
+  startFB();
   toast('Đã mở khóa bằng PIN');
   haptic(20);
 }
@@ -3771,6 +3810,19 @@ function resolveConfirm(v){
 // ═══════════════════════════════════════════════════════════════
 // FIREBASE
 // ═══════════════════════════════════════════════════════════════
+function firebaseUserMessage(error, fallback='Không thể kết nối Firebase. Dữ liệu chỉ đang lưu tạm trên máy.'){
+  const code=(error&&error.code||'').toString().toLowerCase();
+  const msg=(error&&error.message||'').toString().toLowerCase();
+  if(msg.includes('admin-auth-email-not-configured')) return 'Chưa cấu hình ADMIN_AUTH_EMAIL trong index.html.';
+  if(code.includes('auth/invalid-credential')||code.includes('auth/wrong-password')||code.includes('auth/user-not-found')) return 'Sai mật khẩu Admin hoặc email Firebase Auth chưa đúng.';
+  if(code.includes('auth/admin-restricted-operation')) return 'Firebase Authentication chưa bật Anonymous hoặc Email/Password.';
+  if(code.includes('auth/unauthorized-domain')) return 'Domain hiện tại chưa được cho phép trong Firebase Auth. Hãy thêm domain hosting hoặc chạy qua localhost/HTTPS.';
+  if(code.includes('permission-denied')||msg.includes('permission_denied')||msg.includes('permission denied')){
+    return 'Firebase từ chối quyền đọc/ghi. Kiểm tra Realtime Database Rules hoặc thêm Firebase Auth.';
+  }
+  if(msg.includes('network')||msg.includes('failed to fetch')) return 'Không kết nối được Firebase. Kiểm tra mạng hoặc trình duyệt có chặn request không.';
+  return fallback;
+}
 function fbSave(force=false){
   if(!isAdmin&&!force) return;
   syncDot('saving');
@@ -3781,14 +3833,26 @@ function fbSave(force=false){
   if(window._fbSet){
     window._fbSet(payload)
       .then(()=>syncDot('saved',payload.updatedAt))
-      .catch(e=>{console.error(e);syncDot('error');toast('Lỗi đồng bộ Firebase. Dữ liệu đã lưu tạm trên máy.','err',{duration:5200});});
+      .catch(e=>{console.error(e);syncDot('error');toast(firebaseUserMessage(e,'Lỗi đồng bộ Firebase. Dữ liệu đã lưu tạm trên máy.'),'err',{duration:6500});});
   }else{
     syncDot('saved',payload.updatedAt);
   }
 }
 function startFB(){
   if(!window._fbListen) return;
+  if(window._fbCurrentUser && !window._fbCurrentUser()) return;
+  if(fbStarted) return;
+  fbStarted=true;
   syncDot('loading');
+  let fbErrorShown=false;
+  const onFbError=e=>{
+    console.error(e);
+    syncDot('error');
+    if(!fbErrorShown){
+      fbErrorShown=true;
+      toast(firebaseUserMessage(e,'Không thể tải dữ liệu Firebase. Dữ liệu chỉ đang lưu tạm trên máy.'),'err',{duration:7500});
+    }
+  };
   window._fbListen(val=>{
     if(!val){syncDot('synced');return;}
     S.members=val.members||[];
@@ -3802,9 +3866,9 @@ function startFB(){
     localStorage.setItem('clb_cache',JSON.stringify(S));
     render(); syncDot('synced',val.updatedAt);
     checkMonthSnapshot();
-  });
-  window._fbListenPw && window._fbListenPw(val=>{ if(val&&val.h) PW1=val.h; });
-  window._fbListenSnaps && window._fbListenSnaps(val=>{ snapshots=val||{}; renderLeaderboard(); });
+  }, onFbError);
+  window._fbListenPw && window._fbListenPw(val=>{ if(val&&val.h) PW1=val.h; }, onFbError);
+  window._fbListenSnaps && window._fbListenSnaps(val=>{ snapshots=val||{}; renderLeaderboard(); }, onFbError);
 }
 function syncDot(st,ts){
   const led=document.querySelector('.sync-led');
@@ -3997,11 +4061,22 @@ function switchLoginTab(t){
   }
   refreshIcons();
 }
-function doLogin(role='admin'){
+async function doLogin(role='admin'){
   const err=document.getElementById(role==='superadmin'?'super-err':'login-err');
   const p1=role==='superadmin'?document.getElementById('super-pw1').value:document.getElementById('login-pw').value;
   const p2=role==='superadmin'?document.getElementById('super-pw2').value:'';
-  if(btoa(p1)===PW1 && (role!=='superadmin'||btoa(p2)===PW2)){
+  if(err) err.textContent='';
+  if(!p1){ if(err) err.textContent='Nhập mật khẩu Admin'; return; }
+  if(role==='superadmin'&&btoa(p2)!==PW2){
+    if(err) err.textContent='Sai mật khẩu cấp 2!';
+    playSound('err');
+    haptic([40,30,40]);
+    return;
+  }
+  try{
+    if(window._fbSignOut) await window._fbSignOut().catch(()=>{});
+    if(!window._fbSignInAdmin) throw new Error('firebase-not-ready');
+    await window._fbSignInAdmin(p1);
     setRole(role);
     markQuickPinDeviceTrusted(role);
     clearQuickPinLock();
@@ -4009,22 +4084,37 @@ function doLogin(role='admin'){
     localStorage.setItem(VK,'1');
     localStorage.setItem(RK,role);
     closeLoginScreen();
+    startFB();
+    document.getElementById('login-pw').value='';
+    document.getElementById('super-pw1')&&(document.getElementById('super-pw1').value='');
+    document.getElementById('super-pw2')&&(document.getElementById('super-pw2').value='');
     toast(role==='superadmin'?'Đã đăng nhập Super Admin':'Đã đăng nhập Admin');
     setTimeout(()=>promptQuickPinSetup(role),350);
     haptic(20);
-  }else{
-    if(err) err.textContent=role==='superadmin'?'Sai mật khẩu Admin hoặc cấp 2!':'Sai mật khẩu!';
+  }catch(e){
+    console.error(e);
+    if(err) err.textContent=firebaseUserMessage(e,'Sai mật khẩu Admin hoặc email Firebase Auth chưa đúng.');
+    document.getElementById(role==='superadmin'?'super-pw1':'login-pw').value='';
     playSound('err');
     haptic([40,30,40]);
   }
 }
-function continueAsViewer(){
-  setRole('viewer');
-  quickPinPasswordSessionTrusted=false;
-  localStorage.setItem(VK,'1');
-  localStorage.setItem(RK,'viewer');
-  closeLoginScreen();
-  toast('Bạn đang xem ở chế độ Viewer');
+async function continueAsViewer(){
+  try{
+    if(window._fbSignOut) await window._fbSignOut().catch(()=>{});
+    if(!window._fbSignInViewer) throw new Error('firebase-not-ready');
+    await window._fbSignInViewer();
+    setRole('viewer');
+    quickPinPasswordSessionTrusted=false;
+    localStorage.setItem(VK,'1');
+    localStorage.setItem(RK,'viewer');
+    closeLoginScreen();
+    startFB();
+    toast('Bạn đang xem ở chế độ Viewer');
+  }catch(e){
+    console.error(e);
+    toast(firebaseUserMessage(e,'Không thể kết nối chế độ Viewer. Kiểm tra Firebase Authentication.'),'err');
+  }
 }
 function doLogout(){
   setRole('viewer');
@@ -4039,18 +4129,24 @@ function doLogout(){
 function applyAdmin(a){
   setRole(a?'admin':'viewer');
 }
-function changePw(){
+async function changePw(){
   if(!requireRole('superadmin','Cần quyền Super Admin để đổi mật khẩu')) return;
   const nw=document.getElementById('new-pw').value;
   const p2=document.getElementById('pw2').value;
   if(!nw) return toast('Nhập mật khẩu mới','err');
   if(btoa(p2)!==PW2) return toast('Sai mật khẩu cấp 2!','err');
-  PW1=btoa(nw);
-  window._fbSetPw && window._fbSetPw(PW1);
-  localStorage.removeItem(SK);
-  document.getElementById('new-pw').value='';
-  document.getElementById('pw2').value='';
-  toast('Đã đổi mật khẩu. Cần đăng nhập lại.');
+  try{
+    if(!window._fbUpdateAdminPassword) throw new Error('firebase-not-ready');
+    await window._fbUpdateAdminPassword(nw);
+    localStorage.removeItem(SK);
+    clearQuickPinData();
+    document.getElementById('new-pw').value='';
+    document.getElementById('pw2').value='';
+    toast('Đã đổi mật khẩu Firebase Auth. Cần đăng nhập lại.');
+  }catch(e){
+    console.error(e);
+    toast(firebaseUserMessage(e,'Không đổi được mật khẩu. Hãy đăng nhập Super Admin lại rồi thử tiếp.'),'err');
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -5592,24 +5688,45 @@ syncDot('connecting');
 window.addEventListener('offline',()=>syncDot('offline'));
 window.addEventListener('online',()=>{syncDot('connecting');setTimeout(()=>syncDot(lastSyncAt?'synced':'loading',lastSyncAt),600);});
 
-function initStartup(){
+let startupHandled=false;
+function initStartupWithUser(user){
   const adminLogged = localStorage.getItem(SK)==='logged_in';
   const viewerOk    = localStorage.getItem(VK)==='1';
-  if(adminLogged){
+  if(adminLogged&&user&&!user.isAnonymous){
     const storedRole=localStorage.getItem(RK);
     setRole(storedRole==='superadmin'?'superadmin':'admin');
     closeLoginScreen();
-  }else if(viewerOk){
+    startFB();
+  }else if(viewerOk&&user){
     setRole('viewer');
     closeLoginScreen();
+    startFB();
   }else{
+    localStorage.removeItem(SK);
+    localStorage.removeItem(VK);
+    localStorage.removeItem(RK);
     setRole('viewer');
     openLoginScreen();
   }
 }
+function initStartup(){
+  if(window._fbOnAuthState){
+    window._fbOnAuthState(user=>{
+      if(startupHandled) return;
+      startupHandled=true;
+      initStartupWithUser(user);
+    });
+    setTimeout(()=>{
+      if(startupHandled) return;
+      startupHandled=true;
+      initStartupWithUser(window._fbCurrentUser?window._fbCurrentUser():null);
+    },1200);
+  }else{
+    initStartupWithUser(null);
+  }
+}
 
-document.addEventListener('firebase-ready',startFB);
-if(window._fbListen) startFB();
+document.addEventListener('firebase-ready',()=>{});
 
 setTimeout(()=>{moveRecTabInd();moveHistTabInd();},150);
 window.addEventListener('resize',()=>{moveRecTabInd();moveHistTabInd();});
