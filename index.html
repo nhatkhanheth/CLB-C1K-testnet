@@ -22,6 +22,7 @@
     getAuth,
     setPersistence,
     browserLocalPersistence,
+    inMemoryPersistence,
     onAuthStateChanged,
     signInAnonymously,
     signInWithEmailAndPassword,
@@ -38,14 +39,24 @@
     appId:"1:553963981005:web:5297ab8a0ad029a75c8184"
   };
   const ADMIN_AUTH_EMAIL = "nguyennhatkhanh.nk@gmail.com";
+  const LEVEL2_AUTH_EMAIL = "kboomk95@gmail.com";
   const app = initializeApp(cfg);
   const db = getDatabase(app);
   const auth = getAuth(app);
   await setPersistence(auth, browserLocalPersistence);
+  const level2App = initializeApp(cfg, "c1k-level2-verifier");
+  const level2Auth = getAuth(level2App);
+  await setPersistence(level2Auth, inMemoryPersistence);
   const configuredAdminEmail = () => localStorage.getItem('clb_admin_auth_email') || ADMIN_AUTH_EMAIL;
+  const configuredLevel2Email = () => localStorage.getItem('clb_level2_auth_email') || LEVEL2_AUTH_EMAIL;
   const requireAdminEmail = () => {
     const email = configuredAdminEmail();
     if(!email || email.includes('PASTE_')) throw new Error('admin-auth-email-not-configured');
+    return email;
+  };
+  const requireLevel2Email = () => {
+    const email = configuredLevel2Email();
+    if(!email || email.includes('PASTE_')) throw new Error('level2-auth-email-not-configured');
     return email;
   };
   window._fbCurrentUser = () => auth.currentUser;
@@ -53,8 +64,23 @@
   window._fbSignInAdmin = password => signInWithEmailAndPassword(auth, requireAdminEmail(), password);
   window._fbSignInViewer = () => signInAnonymously(auth);
   window._fbSignOut = () => signOut(auth);
-  window._fbUpdateAdminPassword = async newPassword => {
+  window._fbVerifyLevel2 = async password => {
+    try{
+      const cred = await signInWithEmailAndPassword(level2Auth, requireLevel2Email(), password);
+      await signOut(level2Auth).catch(()=>{});
+      return cred.user;
+    }catch(e){
+      await signOut(level2Auth).catch(()=>{});
+      if((e&&e.message||'').includes('level2-auth-email-not-configured')) throw e;
+      const err = new Error('level2-auth-failed');
+      err.code = e&&e.code||'';
+      err.original = e;
+      throw err;
+    }
+  };
+  window._fbUpdateAdminPassword = async (newPassword, level2Password) => {
     if(!auth.currentUser || auth.currentUser.isAnonymous) throw new Error('not-admin');
+    await window._fbVerifyLevel2(level2Password);
     await updatePassword(auth.currentUser, newPassword);
   };
   window._fbSet     = d  => set(ref(db,'clb_c1k'), d);
@@ -2142,6 +2168,37 @@ nav.sidebar a.nav-link *{pointer-events:none}
   .fund-badge{height:19px;padding:0 7px;font-size:10px}
   .member-name-wrap{gap:5px;flex-wrap:wrap}
   .member-name-birthday{padding:4px 7px;gap:5px}
+  .balance-table,
+  .members-table{
+    display:table!important;
+    table-layout:fixed;
+    width:100%;
+    overflow:visible!important;
+  }
+  .balance-table thead,
+  .balance-table tbody,
+  .members-table thead,
+  .members-table tbody{display:table-header-group}
+  .balance-table tbody,
+  .members-table tbody{display:table-row-group}
+  .balance-table tr,
+  .members-table tr{display:table-row}
+  .balance-table th,
+  .balance-table td,
+  .members-table th,
+  .members-table td{display:table-cell}
+  .balance-table th:nth-child(1),
+  .balance-table td:nth-child(1){width:39%;padding-left:20px}
+  .balance-table th:nth-child(2),
+  .balance-table td:nth-child(2){width:32%;text-align:left}
+  .balance-table th:nth-child(3),
+  .balance-table td:nth-child(3){width:29%;text-align:right;padding-right:20px}
+  .members-table th:nth-child(1),
+  .members-table td:nth-child(1){width:42%;padding-left:20px}
+  .members-table th:nth-child(2),
+  .members-table td:nth-child(2){width:35%}
+  .members-table th:nth-child(5),
+  .members-table td:nth-child(5){width:23%;text-align:right;padding-right:20px}
 }
 @media(prefers-reduced-motion:reduce){
   .birthday-banner,
@@ -2203,7 +2260,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
     <div id="ltab-c-super" style="display:none">
       <label class="login-label">Mật khẩu Admin</label>
       <input type="password" class="login-input" id="super-pw1" placeholder="Mật khẩu Admin" style="margin-bottom:12px" onkeydown="if(event.key==='Enter')doLogin('superadmin')">
-      <label class="login-label">Mật khẩu cấp 2</label>
+      <label class="login-label">Mật khẩu cấp 2 Firebase</label>
       <input type="password" class="login-input" id="super-pw2" placeholder="Xác nhận quyền Super Admin" onkeydown="if(event.key==='Enter')doLogin('superadmin')">
       <button class="login-btn" onclick="doLogin('superadmin')"><i data-lucide="shield-check"></i> Đăng nhập Super Admin</button>
       <button class="login-btn login-btn-view" onclick="continueAsViewer()"><i data-lucide="eye"></i> Xem không cần đăng nhập</button>
@@ -2286,7 +2343,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
 
   <div class="card mb20">
     <div class="sec"><i data-lucide="users"></i> Công nợ thành viên</div>
-    <table>
+    <table class="balance-table">
       <thead><tr><th>Thành viên</th><th>Số dư</th><th>Trạng thái</th></tr></thead>
       <tbody id="tbl-balance"></tbody>
     </table>
@@ -2352,19 +2409,19 @@ nav.sidebar a.nav-link *{pointer-events:none}
   </div>
   <div class="card">
     <div class="sec"><i data-lucide="list"></i> Danh sách</div>
-    <table><thead><tr><th>Tên</th><th>Số dư</th><th class="hm">Tổng nạp</th><th class="hm">Tổng chi</th><th></th></tr></thead>
+    <table class="members-table"><thead><tr><th>Tên</th><th>Số dư</th><th class="hm">Tổng nạp</th><th class="hm">Tổng chi</th><th></th></tr></thead>
     <tbody id="tbl-members"></tbody></table>
   </div>
 </div>
 
 <!-- RECORD -->
 <div class="page" id="page-record">
-  <div class="ph"><div><h1>Ghi chi tiêu</h1><p>Ghi buổi · Nạp nhanh · Định kỳ · Tennis</p></div></div>
+  <div class="ph"><div><h1>Ghi chi tiêu</h1><p>Ghi buổi · Nạp nhanh · Định kỳ · Messenger</p></div></div>
   <div class="tabs">
     <div class="tab on" id="tab-session" onclick="switchRecTab('session')"><i data-lucide="utensils"></i> Ghi buổi</div>
     <div class="tab" id="tab-quick" onclick="switchRecTab('quick')"><i data-lucide="zap"></i> Nạp / Trả</div>
     <div class="tab" id="tab-recurring" onclick="switchRecTab('recurring')"><i data-lucide="refresh-cw"></i> Định kỳ</div>
-    <div class="tab admin-tool" id="tab-tennis" onclick="switchRecTab('tennis')"><i data-lucide="calendar-days"></i> Tennis</div>
+    <div class="tab admin-tool" id="tab-tennis" onclick="switchRecTab('tennis')"><i data-lucide="messages-square"></i> Messenger</div>
     <div class="tab-indicator" id="rec-tab-ind"></div>
   </div>
   <div id="rec-session">
@@ -2449,13 +2506,13 @@ nav.sidebar a.nav-link *{pointer-events:none}
   </div>
   <div id="rec-tennis" class="admin-tool-block" style="display:none">
     <div class="card planner-card">
-      <div class="sec"><i data-lucide="calendar-days"></i> Tennis Month Planner</div>
+      <div class="sec"><i data-lucide="messages-square"></i> Messenger</div>
       <div class="planner-grid mb12">
         <div><label>Tháng</label><select id="tennis-month" onchange="updateTennisPlannerPreview()"></select></div>
         <div><label>Năm</label><input type="number" id="tennis-year" min="2020" max="2100" oninput="updateTennisPlannerPreview()"></div>
       </div>
       <div class="mb12">
-        <label>Ngày tennis trong tuần</label>
+        <label>Ngày trong tuần</label>
         <div class="planner-days" id="tennis-days">
           <button type="button" class="planner-day on" data-weekday="1" onclick="toggleTennisWeekday(this)">T2</button>
           <button type="button" class="planner-day" data-weekday="2" onclick="toggleTennisWeekday(this)">T3</button>
@@ -2475,8 +2532,8 @@ nav.sidebar a.nav-link *{pointer-events:none}
       </div>
       <div class="mb12"><label>Preview</label><textarea id="tennis-preview" class="planner-preview" readonly></textarea></div>
       <div class="planner-actions">
-        <button class="btn bp" onclick="copyTennisPlannerText()"><i data-lucide="copy"></i> Copy lịch tennis</button>
-        <button class="btn bg" onclick="updateTennisPlannerPreview()"><i data-lucide="refresh-cw"></i> Tạo draft thông báo</button>
+        <button class="btn bp" onclick="copyTennisPlannerText()"><i data-lucide="calendar-check"></i> Copy lịch tennis</button>
+        <button class="btn bg" onclick="copyPlannerMessengerSummary()"><i data-lucide="messages-square"></i> Copy Messenger tháng</button>
       </div>
     </div>
   </div>
@@ -2490,7 +2547,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
   </div>
   <div class="fl g8 mb20" style="flex-wrap:wrap;align-items:center">
     <select id="lb-month" onchange="renderLeaderboard()" style="width:auto;min-width:170px">
-      <option value="current">Tháng hiện tại</option>
+      <option value="current">Top tháng trước</option>
     </select>
   </div>
   <div id="lb-content"></div>
@@ -2510,7 +2567,6 @@ nav.sidebar a.nav-link *{pointer-events:none}
       <select id="f-type" onchange="renderHistory()" style="width:auto"><option value="">Tất cả loại</option><option value="session">Buổi chi tiêu</option><option value="topup">Nạp/Trừ</option></select>
       <select id="f-person" onchange="renderHistory()" style="width:auto"><option value="">Tất cả thành viên</option></select>
       <select id="f-cat" onchange="renderHistory()" style="width:auto"><option value="">Tất cả danh mục</option></select>
-      <button class="btn bb btn-sm admin-tool" onclick="copyMonthlyMessengerSummary()"><i data-lucide="messages-square"></i> Copy Messenger tháng</button>
     </div>
     <div class="card history-list-card"><div id="tbl-history"></div></div>
     <div id="person-summary" style="display:none" class="card mt20"></div>
@@ -2694,7 +2750,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
     <div class="mt" style="color:var(--red)"><i data-lucide="alert-octagon" style="color:var(--red)"></i>Xác nhận xoá tất cả</div>
     <p class="tm mb16">Hành động này không thể hoàn tác. Nhập cả 2 mật khẩu để xác nhận.</p>
     <div class="mb12"><label>Mật khẩu Admin</label><input type="password" id="clear-pw1" placeholder="Mật khẩu cấp 1"></div>
-    <div class="mb12"><label>Mật khẩu cấp 2</label><input type="password" id="clear-pw2" placeholder="Mật khẩu cấp 2"></div>
+    <div class="mb12"><label>Mật khẩu cấp 2 Firebase</label><input type="password" id="clear-pw2" placeholder="Mật khẩu cấp 2"></div>
     <div id="clear-err" style="color:var(--red);font-size:12px;min-height:16px;margin-bottom:10px"></div>
     <div class="fl g8">
       <button class="btn bd" onclick="confirmClearAll()" style="flex:1"><i data-lucide="trash-2"></i> Xoá tất cả</button>
@@ -2740,7 +2796,7 @@ nav.sidebar a.nav-link *{pointer-events:none}
       <div class="sec"><i data-lucide="key-round"></i> Đổi mật khẩu</div>
       <div class="fg mb12">
         <div><label>Mật khẩu mới</label><input type="password" id="new-pw" placeholder="Mật khẩu mới"></div>
-        <div><label>Mật khẩu cấp 2</label><input type="password" id="pw2" placeholder="Xác nhận"></div>
+        <div><label>Mật khẩu cấp 2 Firebase</label><input type="password" id="pw2" placeholder="Xác nhận"></div>
       </div>
       <button class="btn bg" onclick="changePw()"><i data-lucide="save"></i> Lưu</button>
     </div>
@@ -2836,8 +2892,6 @@ let currentRole = 'viewer';
 let lastDeletedTxn = null;
 let lastDeletedTimer = null;
 let lastSyncAt = 0;
-let PW1 = btoa('213141@@');
-const PW2 = btoa('999999');
 const SK = 'clb_admin_persistent_v4';
 const VK = 'clb_viewer_continue';
 const RK = 'clb_role_v1';
@@ -3295,7 +3349,15 @@ async function submitQuickPinModal(){
   if(mode==='change'){
     const verify=(document.getElementById('quick-pin-verify').value||'').trim();
     if(!verify){err.textContent='Nhập mật khẩu Admin hoặc PIN cũ';return;}
-    const ok=btoa(verify)===PW1 || await verifyQuickPinSecret(verify);
+    let ok=await verifyQuickPinSecret(verify);
+    if(!ok&&window._fbSignInAdmin){
+      try{
+        await window._fbSignInAdmin(verify);
+        ok=true;
+      }catch(e){
+        ok=false;
+      }
+    }
     if(!ok){err.textContent='Xác nhận không đúng';return;}
   }
   const saved=await saveQuickPin(pin,currentRole);
@@ -3601,6 +3663,18 @@ async function copyMessengerText(txnId){
 function getMessengerSummaryMonthKey(){
   return document.getElementById('f-month')?.value||getCurrentYm();
 }
+function getTennisPlannerMonthKey(){
+  const month=parseInt(document.getElementById('tennis-month')?.value||new Date().getMonth()+1,10);
+  const year=parseInt(document.getElementById('tennis-year')?.value||new Date().getFullYear(),10);
+  return `${year}-${String(month).padStart(2,'0')}`;
+}
+function buildMonthlyMessengerLine(txn){
+  if(isTennisTransaction(txn)){
+    const amount=Number(txn.amount)||((Number(txn.perPerson)||0)*(txn.memberIds||[]).length);
+    return [formatMessengerDescription(txn),formatCompactMoney(amount)].filter(Boolean).join(' ');
+  }
+  return txn.messengerText||buildMessengerText(txn);
+}
 function buildMonthlyMessengerSummary(monthKey=getMessengerSummaryMonthKey()){
   if(!requireAdminTool('Cần quyền Admin để copy tổng thông báo tháng')) return '';
   const key=monthKey||getCurrentYm();
@@ -3608,7 +3682,7 @@ function buildMonthlyMessengerSummary(monthKey=getMessengerSummaryMonthKey()){
   const txns=(S.transactions||[])
     .filter(t=>t.type==='session'&&(t.date||'').startsWith(key))
     .sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.createdAt||0)-(b.createdAt||0));
-  const lines=txns.map(t=>isTennisTransaction(t)?buildMessengerText(t,{includeExtraNotes:false}):(t.messengerText||buildMessengerText(t))).filter(Boolean);
+  const lines=txns.map(t=>buildMonthlyMessengerLine(t)).filter(Boolean);
   if(!lines.length) return '';
   const appLink=location.href.split('#')[0].split('?')[0];
   return [
@@ -3620,9 +3694,18 @@ function buildMonthlyMessengerSummary(monthKey=getMessengerSummaryMonthKey()){
     appLink
   ].join('\n');
 }
-async function copyMonthlyMessengerSummary(){
+async function copyMonthlyMessengerSummary(monthKey=getMessengerSummaryMonthKey()){
   if(!requireAdminTool('Cần quyền Admin để copy tổng thông báo tháng')) return;
-  const text=buildMonthlyMessengerSummary();
+  const text=buildMonthlyMessengerSummary(monthKey);
+  if(!text) return toast('Tháng này chưa có thông báo để copy','err');
+  await copyTextToClipboard(text,'Đã copy Messenger tháng');
+}
+async function copyPlannerMessengerSummary(){
+  if(!requireAdminTool('Cần quyền Admin để copy Messenger tháng')) return;
+  const key=getTennisPlannerMonthKey();
+  const text=buildMonthlyMessengerSummary(key);
+  const preview=document.getElementById('tennis-preview');
+  if(preview) preview.value=text||`Tháng ${parseInt(key.split('-')[1],10)} chưa có thông báo để copy.`;
   if(!text) return toast('Tháng này chưa có thông báo để copy','err');
   await copyTextToClipboard(text,'Đã copy Messenger tháng');
 }
@@ -3641,7 +3724,7 @@ function initTennisPlanner(){
   updateTennisPlannerPreview();
 }
 function toggleTennisWeekday(btn){
-  if(!requireAdminTool('Cần quyền Admin để dùng Tennis Planner')) return;
+  if(!requireAdminTool('Cần quyền Admin để dùng Messenger')) return;
   btn.classList.toggle('on');
   updateTennisPlannerPreview();
 }
@@ -3690,7 +3773,8 @@ function getWeeksForMonth(year,month,selectedWeekdays){
     if(excluded.has(isoDate(year,month,day))) continue;
     const key=getWeekStartKey(d);
     if(!byKey.has(key)){
-      const item={key,anchor:new Date(d),days:[]};
+      const [ky,km,kd]=key.split('-').map(Number);
+      const item={key,anchor:new Date(ky,km-1,kd),days:[]};
       byKey.set(key,item);
       weeks.push(item);
     }
@@ -3701,6 +3785,9 @@ function getWeeksForMonth(year,month,selectedWeekdays){
 function weekdayLabel(day){
   return ['CN','T2','T3','T4','T5','T6','T7'][day]||'';
 }
+function plannerDayLabel(d){
+  return `${weekdayLabel(d.getDay())} (${d.getDate()}/${d.getMonth()+1})`;
+}
 function composeTennisPlannerText(){
   const month=parseInt(document.getElementById('tennis-month')?.value||new Date().getMonth()+1,10);
   const year=parseInt(document.getElementById('tennis-year')?.value||new Date().getFullYear(),10);
@@ -3710,27 +3797,29 @@ function composeTennisPlannerText(){
   const weeks=getWeeksForMonth(year,month,selected);
   const shortMode=document.getElementById('tennis-short')?.checked!==false;
   document.getElementById('tennis-short')?.closest('.chip')?.classList.toggle('on',shortMode);
-  if(!weeks.length) return `${title}\n------\n\nKhông có lịch phù hợp.`;
+  if(!weeks.length) return `${title} tháng ${month}\n---------------\nKhông có lịch phù hợp.`;
   if(shortMode){
     return [
-      title,
-      '------',
-      '',
-      ...weeks.map(w=>`## Tuần ${w.anchor.getDate()}/${w.anchor.getMonth()+1}`)
-    ].join('\n\n');
+      `${title} tháng ${month}`,
+      '---------------',
+      ...weeks.flatMap((w,i)=>{
+        const line=`Tuần ${w.anchor.getDate()}/${w.anchor.getMonth()+1}`;
+        return i<weeks.length-1?[line,'-------------']:[line];
+      })
+    ].join('\n');
   }
   return [
     `${title} tháng ${month}`,
-    '--------------',
-    '',
-    ...weeks.map(w=>{
-      const labels=w.days.map(d=>weekdayLabel(d.getDay())).join(', ');
-      return `Tuần ${w.anchor.getDate()}/${w.anchor.getMonth()+1}: ${labels}`;
+    '---------------',
+    ...weeks.flatMap((w,i)=>{
+      const labels=w.days.map(d=>plannerDayLabel(d)).join(' ');
+      const line=`Tuần ${w.anchor.getDate()}/${w.anchor.getMonth()+1} - ${labels}`;
+      return i<weeks.length-1?[line,'-------------']:[line];
     })
   ].join('\n');
 }
 function buildTennisPlannerText(){
-  if(!requireAdminTool('Cần quyền Admin để dùng Tennis Planner')) return '';
+  if(!requireAdminTool('Cần quyền Admin để dùng Messenger')) return '';
   return composeTennisPlannerText();
 }
 function updateTennisPlannerPreview(){
@@ -3814,7 +3903,11 @@ function firebaseUserMessage(error, fallback='Không thể kết nối Firebase.
   const code=(error&&error.code||'').toString().toLowerCase();
   const msg=(error&&error.message||'').toString().toLowerCase();
   if(msg.includes('admin-auth-email-not-configured')) return 'Chưa cấu hình ADMIN_AUTH_EMAIL trong index.html.';
+  if(msg.includes('level2-auth-email-not-configured')) return 'Chưa cấu hình LEVEL2_AUTH_EMAIL trong index.html.';
+  if(msg.includes('level2-auth-failed')) return 'Sai mật khẩu cấp 2 hoặc LEVEL2_AUTH_EMAIL chưa đúng.';
   if(code.includes('auth/invalid-credential')||code.includes('auth/wrong-password')||code.includes('auth/user-not-found')) return 'Sai mật khẩu Admin hoặc email Firebase Auth chưa đúng.';
+  if(code.includes('auth/requires-recent-login')) return 'Phiên đăng nhập Admin đã quá lâu. Hãy đăng xuất, đăng nhập Super Admin lại rồi đổi mật khẩu.';
+  if(code.includes('auth/weak-password')) return 'Mật khẩu Firebase Auth quá yếu. Hãy dùng ít nhất 6 ký tự.';
   if(code.includes('auth/admin-restricted-operation')) return 'Firebase Authentication chưa bật Anonymous hoặc Email/Password.';
   if(code.includes('auth/unauthorized-domain')) return 'Domain hiện tại chưa được cho phép trong Firebase Auth. Hãy thêm domain hosting hoặc chạy qua localhost/HTTPS.';
   if(code.includes('permission-denied')||msg.includes('permission_denied')||msg.includes('permission denied')){
@@ -3867,7 +3960,6 @@ function startFB(){
     render(); syncDot('synced',val.updatedAt);
     checkMonthSnapshot();
   }, onFbError);
-  window._fbListenPw && window._fbListenPw(val=>{ if(val&&val.h) PW1=val.h; }, onFbError);
   window._fbListenSnaps && window._fbListenSnaps(val=>{ snapshots=val||{}; renderLeaderboard(); }, onFbError);
 }
 function syncDot(st,ts){
@@ -3963,9 +4055,11 @@ function switchLoginTab(t){
   document.getElementById('ltab-c-changepw').style.display=t==='changepw'?'block':'none';
   refreshIcons();
 }
-function doLogin(){
+async function doLogin(){
   const v=document.getElementById('login-pw').value;
-  if(btoa(v)===PW1){
+  try{
+    if(!window._fbSignInAdmin) throw new Error('firebase-not-ready');
+    await window._fbSignInAdmin(v);
     isAdmin=true;
     localStorage.setItem(SK,'logged_in');
     localStorage.setItem(VK,'1');
@@ -3973,7 +4067,7 @@ function doLogin(){
     applyAdmin(true);
     toast('Đăng nhập thành công!');
     haptic(20);
-  }else{
+  }catch(e){
     document.getElementById('login-err').textContent='❌ Sai mật khẩu!';
     document.getElementById('login-pw').value='';
     document.getElementById('login-pw').focus();
@@ -3988,14 +4082,19 @@ function continueAsViewer(){
   applyAdmin(false);
   toast('Bạn đang xem ở chế độ chỉ đọc');
 }
-function changePwLogin(){
+async function changePwLogin(){
   const nw=document.getElementById('cpw-new').value;
   const p2=document.getElementById('cpw-pw2').value;
   const err=document.getElementById('cpw-err');
   if(!nw){err.textContent='Nhập mật khẩu mới';return;}
-  if(btoa(p2)!==PW2){err.textContent='Sai mật khẩu cấp 2!';return;}
-  PW1=btoa(nw);
-  window._fbSetPw && window._fbSetPw(PW1);
+  if(!p2){err.textContent='Nhập mật khẩu cấp 2';return;}
+  try{
+    if(!window._fbUpdateAdminPassword) throw new Error('firebase-not-ready');
+    await window._fbUpdateAdminPassword(nw,p2);
+  }catch(e){
+    err.textContent=firebaseUserMessage(e,'Sai mật khẩu cấp 2 hoặc không đổi được mật khẩu.');
+    return;
+  }
   localStorage.removeItem(SK);
   document.getElementById('cpw-new').value='';
   document.getElementById('cpw-pw2').value='';
@@ -4024,13 +4123,17 @@ function applyAdmin(a){
   b.onclick = a ? doLogout : openLoginScreen;
   refreshIcons();
 }
-function changePw(){
+async function changePw(){
   const nw=document.getElementById('new-pw').value;
   const p2=document.getElementById('pw2').value;
   if(!nw) return toast('Nhập mật khẩu mới','err');
-  if(btoa(p2)!==PW2) return toast('Sai mật khẩu cấp 2!','err');
-  PW1=btoa(nw);
-  window._fbSetPw && window._fbSetPw(PW1);
+  if(!p2) return toast('Nhập mật khẩu cấp 2','err');
+  try{
+    if(!window._fbUpdateAdminPassword) throw new Error('firebase-not-ready');
+    await window._fbUpdateAdminPassword(nw,p2);
+  }catch(e){
+    return toast(firebaseUserMessage(e,'Sai mật khẩu cấp 2 hoặc không đổi được mật khẩu.'),'err');
+  }
   localStorage.removeItem(SK);
   document.getElementById('new-pw').value='';
   document.getElementById('pw2').value='';
@@ -4067,16 +4170,15 @@ async function doLogin(role='admin'){
   const p2=role==='superadmin'?document.getElementById('super-pw2').value:'';
   if(err) err.textContent='';
   if(!p1){ if(err) err.textContent='Nhập mật khẩu Admin'; return; }
-  if(role==='superadmin'&&btoa(p2)!==PW2){
-    if(err) err.textContent='Sai mật khẩu cấp 2!';
-    playSound('err');
-    haptic([40,30,40]);
-    return;
-  }
+  if(role==='superadmin'&&!p2){ if(err) err.textContent='Nhập mật khẩu cấp 2'; return; }
   try{
     if(window._fbSignOut) await window._fbSignOut().catch(()=>{});
     if(!window._fbSignInAdmin) throw new Error('firebase-not-ready');
     await window._fbSignInAdmin(p1);
+    if(role==='superadmin'){
+      if(!window._fbVerifyLevel2) throw new Error('firebase-not-ready');
+      await window._fbVerifyLevel2(p2);
+    }
     setRole(role);
     markQuickPinDeviceTrusted(role);
     clearQuickPinLock();
@@ -4093,7 +4195,8 @@ async function doLogin(role='admin'){
     haptic(20);
   }catch(e){
     console.error(e);
-    if(err) err.textContent=firebaseUserMessage(e,'Sai mật khẩu Admin hoặc email Firebase Auth chưa đúng.');
+    if(role==='superadmin'&&window._fbSignOut) await window._fbSignOut().catch(()=>{});
+    if(err) err.textContent=firebaseUserMessage(e,role==='superadmin'?'Sai mật khẩu Admin hoặc mật khẩu cấp 2.':'Sai mật khẩu Admin hoặc email Firebase Auth chưa đúng.');
     document.getElementById(role==='superadmin'?'super-pw1':'login-pw').value='';
     playSound('err');
     haptic([40,30,40]);
@@ -4134,15 +4237,19 @@ async function changePw(){
   const nw=document.getElementById('new-pw').value;
   const p2=document.getElementById('pw2').value;
   if(!nw) return toast('Nhập mật khẩu mới','err');
-  if(btoa(p2)!==PW2) return toast('Sai mật khẩu cấp 2!','err');
+  if(!p2) return toast('Nhập mật khẩu cấp 2','err');
   try{
     if(!window._fbUpdateAdminPassword) throw new Error('firebase-not-ready');
-    await window._fbUpdateAdminPassword(nw);
+    await window._fbUpdateAdminPassword(nw,p2);
+    if(window._fbSignOut) await window._fbSignOut().catch(()=>{});
     localStorage.removeItem(SK);
+    localStorage.removeItem(VK);
+    localStorage.removeItem(RK);
     clearQuickPinData();
     document.getElementById('new-pw').value='';
     document.getElementById('pw2').value='';
     toast('Đã đổi mật khẩu Firebase Auth. Cần đăng nhập lại.');
+    doLogout();
   }catch(e){
     console.error(e);
     toast(firebaseUserMessage(e,'Không đổi được mật khẩu. Hãy đăng nhập Super Admin lại rồi thử tiếp.'),'err');
@@ -4202,7 +4309,7 @@ function moveHistTabInd(){
   if(on&&ind){ind.style.left=on.offsetLeft+'px';ind.style.width=on.offsetWidth+'px';}
 }
 function switchRecTab(t){
-  if(t==='tennis'&&!requireAdminTool('Cần quyền Admin để dùng Tennis Planner')) t='session';
+  if(t==='tennis'&&!requireAdminTool('Cần quyền Admin để dùng Messenger')) t='session';
   ['session','quick','recurring','tennis'].forEach(x=>{
     const panel=document.getElementById('rec-'+x);
     const tab=document.getElementById('tab-'+x);
@@ -4629,29 +4736,41 @@ function updateRecTotalPreview(){
 }
 
 // ── LEADERBOARD ──
+function monthKeyFromDate(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+function previousMonthKey(){
+  const now=new Date();
+  return monthKeyFromDate(new Date(now.getFullYear(),now.getMonth()-1,1));
+}
+function isLeaderboardHiddenMember(member){
+  const key=formatMemberNameForMessenger(member?.name||'');
+  return key.includes('nhatkhanh');
+}
 function fillLbMonths(){
   const sel=document.getElementById('lb-month'); if(!sel) return;
-  const now=new Date(); const curYm=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const prevYm=previousMonthKey();
   const ms=new Set(S.transactions.map(t=>t.date.substring(0,7)));
   Object.keys(snapshots).forEach(k=>ms.add(k));
+  ms.add(prevYm);
   const cur=sel.value;
-  sel.innerHTML=`<option value="current">Tháng hiện tại (${fmtMonth(curYm)})</option>`+[...ms].sort().reverse().map(m=>`<option value="${m}" ${cur===m?'selected':''}>${fmtMonth(m)}</option>`).join('');
+  sel.innerHTML=`<option value="current">Top tháng trước (${fmtMonth(prevYm)})</option>`+[...ms].sort().reverse().map(m=>`<option value="${m}" ${cur===m?'selected':''}>${fmtMonth(m)}</option>`).join('');
 }
 function fmtMonth(ym){const[y,mo]=ym.split('-');return`Tháng ${parseInt(mo)}/${y}`;}
 
 function renderLeaderboard(){
   fillLbMonths();
   const val=document.getElementById('lb-month')?.value||'current';
-  const now=new Date();
-  const curYm=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const ym=val==='current'?curYm:val;
+  const ym=val==='current'?previousMonthKey():val;
   let spending;
-  if(val!=='current'&&snapshots[ym]) spending=snapshots[ym].spending||[];
+  if(snapshots[ym]) spending=snapshots[ym].spending||[];
   else spending=buildSnapshot(ym).spending||[];
+  spending=spending.filter(m=>{
+    const live=S.members.find(x=>x.id===m.id);
+    return !isLeaderboardHiddenMember(live||m);
+  });
 
   const el=document.getElementById('lb-content'); if(!el) return;
-  if(!spending.length){el.innerHTML='<div class="card"><div class="empty"><i data-lucide="trophy"></i>Chưa có dữ liệu tháng này</div></div>';refreshIcons();return;}
-
   function makeBoardHTML(title, icon, iconColor, arr, valFn, emptyMsg){
     return `
     <div class="lb-section">
@@ -4684,10 +4803,11 @@ function renderLeaderboard(){
 
   const bySpent=[...spending].sort((a,b)=>b.spent-a.spent).filter(m=>m.spent>0).slice(0,5);
   const byCount=[...spending].sort((a,b)=>b.count-a.count).filter(m=>m.count>0).slice(0,5);
-  const byDebt=[...spending].map(m=>{
-    const live=S.members.find(x=>x.id===m.id);
-    return {...m, liveBal:live?(live.balance||0):(m.balance||0)};
-  }).filter(m=>m.liveBal<0).sort((a,b)=>a.liveBal-b.liveBal).slice(0,5);
+  const byDebt=getGiftableMembers()
+    .filter(m=>(m.balance||0)<0)
+    .sort((a,b)=>(a.balance||0)-(b.balance||0))
+    .slice(0,5)
+    .map(m=>({...m,liveBal:m.balance||0}));
 
   el.innerHTML=`
     ${makeBoardHTML('Top Chi tiêu', 'flame', 'var(--acc)', bySpent, m=>fmt(m.spent), 'Chưa ai chi tiêu')}
@@ -4699,7 +4819,7 @@ function renderLeaderboard(){
           <div class="lb-ic"><i data-lucide="skull"></i></div>
           <div>
             <div class="doa-title">☠ Wanted — Dead or Alive ☠</div>
-            <div class="doa-sub">${fmtMonth(ym)} · đang bỏ trốn khỏi quỹ</div>
+            <div class="doa-sub">Hiện tại · đang bỏ trốn khỏi quỹ</div>
           </div>
         </div>
         ${byDebt.length
@@ -5437,13 +5557,22 @@ function clearAll(){
   document.getElementById('clear-err').textContent='';
   document.getElementById('ov-clearall').classList.add('open');
 }
-function confirmClearAll(){
+async function confirmClearAll(){
   if(!requireRole('superadmin','Cần quyền Super Admin để xóa toàn bộ dữ liệu')) return;
   const p1=document.getElementById('clear-pw1').value;
   const p2=document.getElementById('clear-pw2').value;
   const err=document.getElementById('clear-err');
-  if(btoa(p1)!==PW1){err.textContent='❌ Sai mật khẩu Admin!';return;}
-  if(btoa(p2)!==PW2){err.textContent='❌ Sai mật khẩu cấp 2!';return;}
+  if(!p1){err.textContent='Nhập mật khẩu Admin';return;}
+  if(!p2){err.textContent='Nhập mật khẩu cấp 2';return;}
+  try{
+    if(!window._fbSignInAdmin||!window._fbVerifyLevel2) throw new Error('firebase-not-ready');
+    await window._fbSignInAdmin(p1);
+    await window._fbVerifyLevel2(p2);
+  }catch(e){
+    console.error(e);
+    err.textContent=firebaseUserMessage(e,'Sai mật khẩu Admin hoặc mật khẩu cấp 2!');
+    return;
+  }
   S={members:[],transactions:[],recurring:[],settings:{appName:DEFAULT_APP_NAME}};
   fbSave(); render(); closeOv('ov-clearall'); toast('Đã xoá toàn bộ','err');
 }
